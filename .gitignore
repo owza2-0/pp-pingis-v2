@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+tmp/
+data/failures.txt
+data/failures.txt.bak
+data/media_failures.txt
+data/*.ndjson
+.DS_Store
