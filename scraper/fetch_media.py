@@ -12,6 +12,7 @@ import argparse
 import json
 import os
 import queue
+import re
 import sys
 import threading
 import time
@@ -141,6 +142,24 @@ def main() -> int:
             urls.extend(rec.get("media", []))
         except Exception:
             pass
+    # also collect original images declared in JSON-LD Product blocks
+    import glob
+    for f in glob.glob(os.path.join(ROOT, "site", "html", "**", "*.html"), recursive=True):
+        try:
+            html = open(f, encoding="utf-8", errors="replace").read()
+        except Exception:
+            continue
+        for block in re.findall(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>', html, re.S):
+            try:
+                d = json.loads(block)
+            except Exception:
+                continue
+            if isinstance(d, dict) and d.get("@type") == "Product":
+                im = d.get("image")
+                if isinstance(im, str):
+                    urls.append(im)
+                elif isinstance(im, list):
+                    urls.extend(x for x in im if isinstance(x, str))
     urls = sorted(set(u for u in urls if u.startswith("http")))
     done_urls = set()
     if os.path.exists(MANIFEST):

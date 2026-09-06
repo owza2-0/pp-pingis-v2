@@ -1,0 +1,3818 @@
+{
+ "categories": [
+  {
+   "url": "https://pp-pingis.se/bildspel-skor.html",
+   "name": "Bildspel skor",
+   "lang": "sv",
+   "file": "site/html/bildspel-skor.html"
+  },
+  {
+   "url": "https://pp-pingis.se/black-friday/black-collection/",
+   "name": "Black collection",
+   "lang": "sv",
+   "file": "site/html/black-friday/black-collection/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/black-friday/grymma-deals/",
+   "name": "Grymma deals",
+   "lang": "sv",
+   "file": "site/html/black-friday/grymma-deals/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/",
+   "name": "Pingisbollar-träningsbollar och tävlingsbollar",
+   "lang": "sv",
+   "file": "site/html/bollar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/bollar/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/bollar/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/bollar/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/nittaku/",
+   "name": "Nittaku",
+   "lang": "sv",
+   "file": "site/html/bollar/nittaku/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/bollar/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/bollar/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/xuschaofa/",
+   "name": "Xuschaofa",
+   "lang": "sv",
+   "file": "site/html/bollar/xuschaofa/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/bollar/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bord/",
+   "name": "Pingisbord-Olika modeller av bästa kvalitet",
+   "lang": "sv",
+   "file": "site/html/bord/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bord/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/bord/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bord/lomax/",
+   "name": "Lomax",
+   "lang": "sv",
+   "file": "site/html/bord/lomax/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/bord/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/bord/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bags/",
+   "name": "Bags",
+   "lang": "en",
+   "file": "site/html/en/bags/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bags/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/bags/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bags/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/bags/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bags/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/bags/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bags/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/bags/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bags/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/bags/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/",
+   "name": "Ping pong balls-training balls and competition balls",
+   "lang": "en",
+   "file": "site/html/en/balls/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/balls/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/balls/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/balls/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/nittaku/",
+   "name": "Nittaku",
+   "lang": "en",
+   "file": "site/html/en/balls/nittaku/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/balls/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/balls/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/xuschaofa/",
+   "name": "Xuschaofa",
+   "lang": "en",
+   "file": "site/html/en/balls/xuschaofa/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/balls/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/batcovers/",
+   "name": "Racket case-Protect your rack with a stylish and practical case",
+   "lang": "en",
+   "file": "site/html/en/batcovers/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/batcovers/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/batcovers/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/batcovers/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/batcovers/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/batcovers/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/batcovers/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/batcovers/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/batcovers/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/batcovers/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/batcovers/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/batcovers/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/batcovers/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bats-rackets/",
+   "name": "Ping pong racks-from beginner to pro",
+   "lang": "en",
+   "file": "site/html/en/bats-rackets/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bats-rackets/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/bats-rackets/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bats-rackets/butterfly/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/bats-rackets/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bats-rackets/cornilleau/",
+   "name": "Cornilleau",
+   "lang": "en",
+   "file": "site/html/en/bats-rackets/cornilleau/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bats-rackets/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/bats-rackets/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bats-rackets/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/bats-rackets/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bats-rackets/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/bats-rackets/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bats-rackets/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/bats-rackets/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/",
+   "name": "Frames",
+   "lang": "en",
+   "file": "site/html/en/blades/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/adidas/",
+   "name": "Adidas",
+   "lang": "en",
+   "file": "site/html/en/blades/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/blades/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/butterfly/",
+   "name": "Butterfly",
+   "lang": "en",
+   "file": "site/html/en/blades/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/blades/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/blades/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/blades/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/blades/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/blades/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/blades/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/",
+   "name": "Clothing &amp; textiles",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/jackets/",
+   "name": "Jackets",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/jackets/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/jackets/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/jackets/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/jackets/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/jackets/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/jackets/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/jackets/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/jackets/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/jackets/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/jackets/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/jackets/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/more-textiles/",
+   "name": "More textiles",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/more-textiles/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/more-textiles/butterfly/",
+   "name": "Butterfly",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/more-textiles/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/more-textiles/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/more-textiles/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/more-textiles/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/more-textiles/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shirts/",
+   "name": "Shirts",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shirts/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shirts/contra/",
+   "name": "Contra",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shirts/contra/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shirts/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shirts/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shirts/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shirts/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shirts/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shirts/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shirts/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shirts/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shirts/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shirts/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shirts/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shirts/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shorts-skirts/",
+   "name": "Shorts &amp; Skirts",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shorts-skirts/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shorts-skirts/adidas/",
+   "name": "Adidas",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shorts-skirts/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shorts-skirts/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shorts-skirts/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shorts-skirts/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shorts-skirts/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shorts-skirts/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shorts-skirts/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shorts-skirts/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/shorts-skirts/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/",
+   "name": "Socks",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/socks/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/socks/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/socks/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/socks/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/socks/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/socks/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/socks/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/socks/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/towels/",
+   "name": "Towels",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/towels/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/towels/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/towels/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/towels/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/towels/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/towels/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/towels/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/towels/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/towels/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/towels/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/towels/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/towels/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/towels/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/towels/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/towels/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/tracksuits/",
+   "name": "Tracksuits",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/tracksuits/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/tracksuits/adidas/",
+   "name": "Adidas",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/tracksuits/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/tracksuits/contra/",
+   "name": "Contra",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/tracksuits/contra/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/tracksuits/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/tracksuits/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/tracksuits/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/tracksuits/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/tracksuits/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/tracksuits/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/tracksuits/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/clothes-textiles/tracksuits/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/",
+   "name": "Club accessories",
+   "lang": "en",
+   "file": "site/html/en/club-material/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/club-material/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/dhs/",
+   "name": "DHS",
+   "lang": "en",
+   "file": "site/html/en/club-material/dhs/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/club-material/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/club-material/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/club-material/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/club-material/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/club-material/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/club-material/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/discount/",
+   "name": "Discount",
+   "lang": "en",
+   "file": "site/html/en/discount/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/discount/0-15/",
+   "name": "0-15%",
+   "lang": "en",
+   "file": "site/html/en/discount/0-15/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/discount/15-30/",
+   "name": "15-30%",
+   "lang": "en",
+   "file": "site/html/en/discount/15-30/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/discount/30-45/",
+   "name": "30-45%",
+   "lang": "en",
+   "file": "site/html/en/discount/30-45/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/discount/45-60/",
+   "name": "45-60%",
+   "lang": "en",
+   "file": "site/html/en/discount/45-60/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/",
+   "name": "For the player",
+   "lang": "en",
+   "file": "site/html/en/for-the-player/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/for-the-player/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/butterfly/",
+   "name": "Butterfly",
+   "lang": "en",
+   "file": "site/html/en/for-the-player/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/for-the-player/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/for-the-player/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/for-the-player/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/for-the-player/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/for-the-player/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/for-the-player/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/",
+   "name": "Glue &amp; racket care",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/",
+   "name": "Cleaner",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/cleaner/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/cleaner/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/contra/",
+   "name": "Contra",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/cleaner/contra/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/cleaner/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/cleaner/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/cleaner/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/cleaner/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/cleaner/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/",
+   "name": "Edge Tape",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/edge-tape/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/edge-tape/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/edge-tape/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/edge-tape/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/edge-tape/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/edge-tape/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/edge-tape/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/victas/",
+   "name": "Victas",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/edge-tape/victas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/edge-tape/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/",
+   "name": "Glue without VOC",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/glue-without-voc/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/glue-without-voc/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/glue-without-voc/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/glue-without-voc/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/glue-without-voc/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/glue-without-voc/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/glue-without-voc/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/glue-without-voc/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/more-accessories/",
+   "name": "More accessories",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/more-accessories/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/more-accessories/contra/",
+   "name": "Contra",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/more-accessories/contra/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/more-accessories/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/more-accessories/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/more-accessories/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/more-accessories/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/more-accessories/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/more-accessories/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/more-accessories/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/more-accessories/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/more-accessories/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/more-accessories/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/more-accessories/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/more-accessories/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/sponges/",
+   "name": "Sponges",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/sponges/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/sponges/contra/",
+   "name": "Contra",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/sponges/contra/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/sponges/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/sponges/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/sponges/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/sponges/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/sponges/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/sponges/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/sponges/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/sponges/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/sponges/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/glue-bat-accessories/sponges/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/net-post-sets/",
+   "name": "Net stands",
+   "lang": "en",
+   "file": "site/html/en/net-post-sets/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/net-post-sets/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/net-post-sets/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/net-post-sets/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/net-post-sets/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/net-post-sets/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/net-post-sets/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/news.html",
+   "name": "News",
+   "lang": "en",
+   "file": "site/html/en/news.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/robots/",
+   "name": "Robots",
+   "lang": "en",
+   "file": "site/html/en/robots/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/robots/donic/",
+   "name": "Donic Newgy Robo-Pong",
+   "lang": "en",
+   "file": "site/html/en/robots/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/robots/joola-tt-buddy/",
+   "name": "Joola TT-Buddy",
+   "lang": "en",
+   "file": "site/html/en/robots/joola-tt-buddy/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/robots/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/robots/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/robots/ttmatic/",
+   "name": "TTmatic",
+   "lang": "en",
+   "file": "site/html/en/robots/ttmatic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/",
+   "name": "Rubber tiles",
+   "lang": "en",
+   "file": "site/html/en/rubbers/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/adidas/",
+   "name": "Adidas",
+   "lang": "en",
+   "file": "site/html/en/rubbers/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/rubbers/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/butterfly/",
+   "name": "Butterfly",
+   "lang": "en",
+   "file": "site/html/en/rubbers/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/",
+   "name": "Category",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/anti-spin/",
+   "name": "Anti spin",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/anti-spin/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/anti-spin/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/anti-spin/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/anti-spin/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/anti-spin/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/anti-spin/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/anti-spin/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/",
+   "name": "Backside",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/adidas/",
+   "name": "Adidas",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/dhs/",
+   "name": "DHS",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/dhs/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/friendship/",
+   "name": "Friendship",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/friendship/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/juic/",
+   "name": "Juic",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/juic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/nittaku/",
+   "name": "Nittaku",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/nittaku/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/victas/",
+   "name": "Victas",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/victas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/backside/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/long-pimples-out/",
+   "name": "Long pimples out",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/long-pimples-out/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/long-pimples-out/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/long-pimples-out/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/long-pimples-out/friendship/",
+   "name": "Friendship",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/long-pimples-out/friendship/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/long-pimples-out/hallmark/",
+   "name": "Hallmark",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/long-pimples-out/hallmark/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/long-pimples-out/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/long-pimples-out/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/long-pimples-out/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/long-pimples-out/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/long-pimples-out/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/long-pimples-out/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/long-pimples-out/tsp/",
+   "name": "TSP",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/long-pimples-out/tsp/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/long-pimples-out/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/long-pimples-out/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/medium-pimples-out/",
+   "name": "Medium pimples out",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/medium-pimples-out/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/medium-pimples-out/friendship/",
+   "name": "Friendship",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/medium-pimples-out/friendship/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/medium-pimples-out/hallmark/",
+   "name": "Hallmark",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/medium-pimples-out/hallmark/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/short-pimples-out/",
+   "name": "Short pimples out",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/short-pimples-out/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/short-pimples-out/andro/",
+   "name": "Andro",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/short-pimples-out/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/short-pimples-out/friendship/",
+   "name": "Friendship",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/short-pimples-out/friendship/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/short-pimples-out/juic/",
+   "name": "Juic",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/short-pimples-out/juic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/short-pimples-out/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/short-pimples-out/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/short-pimples-out/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/rubbers/category/short-pimples-out/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/dhs/",
+   "name": "DHS",
+   "lang": "en",
+   "file": "site/html/en/rubbers/dhs/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/rubbers/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/friendship/",
+   "name": "Friendship",
+   "lang": "en",
+   "file": "site/html/en/rubbers/friendship/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/rubbers/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/group-9653642/",
+   "name": "PP-Pingis",
+   "lang": "en",
+   "file": "site/html/en/rubbers/group-9653642/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/hallmark/",
+   "name": "Hallmark",
+   "lang": "en",
+   "file": "site/html/en/rubbers/hallmark/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/rubbers/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/juic/",
+   "name": "Juic",
+   "lang": "en",
+   "file": "site/html/en/rubbers/juic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/nittaku/",
+   "name": "Nittaku",
+   "lang": "en",
+   "file": "site/html/en/rubbers/nittaku/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/rubbers/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/rubbers/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/tsp/",
+   "name": "TSP",
+   "lang": "en",
+   "file": "site/html/en/rubbers/tsp/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/victas/",
+   "name": "Victas",
+   "lang": "en",
+   "file": "site/html/en/rubbers/victas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/rubbers/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/",
+   "name": "Ping pong shoes-comfortable, fast, good grip and best quality",
+   "lang": "en",
+   "file": "site/html/en/shoes/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/adidas/",
+   "name": "Adidas",
+   "lang": "en",
+   "file": "site/html/en/shoes/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/butterfly/",
+   "name": "Butterfly",
+   "lang": "en",
+   "file": "site/html/en/shoes/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/shoes/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/gewo/",
+   "name": "Gewo",
+   "lang": "en",
+   "file": "site/html/en/shoes/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/group-8707063/",
+   "name": "PP-Pingis",
+   "lang": "en",
+   "file": "site/html/en/shoes/group-8707063/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/joola/",
+   "name": "Joola",
+   "lang": "en",
+   "file": "site/html/en/shoes/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/mizuno/",
+   "name": "Mizuno",
+   "lang": "en",
+   "file": "site/html/en/shoes/mizuno/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/stiga/",
+   "name": "Stiga",
+   "lang": "en",
+   "file": "site/html/en/shoes/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/tibhar/",
+   "name": "Tibhar",
+   "lang": "en",
+   "file": "site/html/en/shoes/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/shoes/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/special-offers.html",
+   "name": "Special offers",
+   "lang": "en",
+   "file": "site/html/en/special-offers.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/tables/",
+   "name": "Ping pong table",
+   "lang": "en",
+   "file": "site/html/en/tables/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/tables/donic/",
+   "name": "Donic",
+   "lang": "en",
+   "file": "site/html/en/tables/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/tables/lomax/",
+   "name": "Lomax",
+   "lang": "en",
+   "file": "site/html/en/tables/lomax/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/tables/yasaka/",
+   "name": "Yasaka",
+   "lang": "en",
+   "file": "site/html/en/tables/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/en/terms-conditions.html",
+   "name": "Terms &amp; conditions",
+   "lang": "en",
+   "file": "site/html/en/terms-conditions.html"
+  },
+  {
+   "url": "https://pp-pingis.se/extrapriser.html",
+   "name": "Extrapriser",
+   "lang": "sv",
+   "file": "site/html/extrapriser.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fardiga-racketar/",
+   "name": "Pingisrack-från nybörjare till proffs",
+   "lang": "sv",
+   "file": "site/html/fardiga-racketar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fardiga-racketar/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/fardiga-racketar/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fardiga-racketar/butterfly/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/fardiga-racketar/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fardiga-racketar/cornilleau/",
+   "name": "Cornilleau",
+   "lang": "sv",
+   "file": "site/html/fardiga-racketar/cornilleau/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fardiga-racketar/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/fardiga-racketar/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fardiga-racketar/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/fardiga-racketar/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fardiga-racketar/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/fardiga-racketar/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fardiga-racketar/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/fardiga-racketar/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fodral/",
+   "name": "Racketfodral-Skydda ditt rack med ett snyggt och praktiskt fodral",
+   "lang": "sv",
+   "file": "site/html/fodral/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fodral/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/fodral/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fodral/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/fodral/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fodral/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/fodral/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fodral/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/fodral/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fodral/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/fodral/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/fodral/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/fodral/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/",
+   "name": "Gummiplattor",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/adidas/",
+   "name": "Adidas",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/butterfly/",
+   "name": "Butterfly",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/dhs/",
+   "name": "DHS",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/dhs/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/friendship/",
+   "name": "Friendship",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/friendship/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/hallmark/",
+   "name": "Hallmark",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/hallmark/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/juic/",
+   "name": "Juic",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/juic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/",
+   "name": "Kategori",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/antiloop/",
+   "name": "Antiloop",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/antiloop/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/antiloop/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/antiloop/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/antiloop/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/antiloop/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/antiloop/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/antiloop/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/",
+   "name": "Backside",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/adidas/",
+   "name": "Adidas",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/dhs/",
+   "name": "DHS",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/dhs/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/friendship/",
+   "name": "Friendship",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/friendship/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/juic/",
+   "name": "Juic",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/juic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/nittaku/",
+   "name": "Nittaku",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/nittaku/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/victas/",
+   "name": "Victas",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/victas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/backside/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/kortnabb/",
+   "name": "Kortnabb",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/kortnabb/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/kortnabb/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/kortnabb/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/kortnabb/friendship/",
+   "name": "Friendship",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/kortnabb/friendship/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/kortnabb/juic/",
+   "name": "Juic",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/kortnabb/juic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/kortnabb/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/kortnabb/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/kortnabb/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/kortnabb/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/langnabb/",
+   "name": "Långnabb",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/langnabb/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/langnabb/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/langnabb/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/langnabb/friendship/",
+   "name": "Friendship",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/langnabb/friendship/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/langnabb/hallmark/",
+   "name": "Hallmark",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/langnabb/hallmark/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/langnabb/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/langnabb/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/langnabb/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/langnabb/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/langnabb/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/langnabb/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/langnabb/tsp/",
+   "name": "TSP",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/langnabb/tsp/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/langnabb/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/langnabb/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/mellannabb/",
+   "name": "Mellannabb",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/mellannabb/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/mellannabb/friendship/",
+   "name": "Friendship",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/mellannabb/friendship/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/mellannabb/hallmark/",
+   "name": "Hallmark",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/kategori/mellannabb/hallmark/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/nittaku/",
+   "name": "Nittaku",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/nittaku/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/tsp/",
+   "name": "TSP",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/tsp/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/victas/",
+   "name": "Victas",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/victas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/xiom/",
+   "name": "Xiom",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/xiom/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/gummiplattor/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/joola-utforsaljning/",
+   "name": "Joola utförsäljning",
+   "lang": "sv",
+   "file": "site/html/joola-utforsaljning/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-1/",
+   "name": "lucka 1",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-1/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-10/",
+   "name": "lucka 10",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-10/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-11/",
+   "name": "lucka 11",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-11/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-12/",
+   "name": "lucka 12",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-12/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-13/",
+   "name": "lucka 13",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-13/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-14/",
+   "name": "lucka 14",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-14/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-15/",
+   "name": "lucka 15",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-15/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-16/",
+   "name": "lucka 16",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-16/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-17/",
+   "name": "lucka 17",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-17/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-18/",
+   "name": "lucka 18",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-18/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-19/",
+   "name": "lucka 19",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-19/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-2/",
+   "name": "lucka 2",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-2/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-20/",
+   "name": "lucka 20",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-20/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-21/",
+   "name": "lucka 21",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-21/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-22/",
+   "name": "lucka 22",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-22/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-23/",
+   "name": "lucka 23",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-23/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-24/",
+   "name": "lucka 24",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-24/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-3/",
+   "name": "lucka 3",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-3/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-4/",
+   "name": "lucka 4",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-4/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-5/",
+   "name": "lucka 5",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-5/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-6/",
+   "name": "lucka 6",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-6/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-7/",
+   "name": "lucka 7",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-7/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-8/",
+   "name": "lucka 8",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-8/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/juldeals/lucka-9/",
+   "name": "lucka 9",
+   "lang": "sv",
+   "file": "site/html/juldeals/lucka-9/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/junior/",
+   "name": "Junior",
+   "lang": "sv",
+   "file": "site/html/junior/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/",
+   "name": "Kläder &amp; textilier",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/handdukar/",
+   "name": "Handdukar",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/handdukar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/handdukar/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/handdukar/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/handdukar/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/handdukar/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/handdukar/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/handdukar/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/handdukar/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/handdukar/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/handdukar/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/handdukar/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/handdukar/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/handdukar/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/handdukar/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/handdukar/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/jackor/",
+   "name": "Jackor",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/jackor/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/jackor/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/jackor/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/jackor/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/jackor/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/jackor/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/jackor/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/jackor/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/jackor/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/jackor/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/jackor/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/overaller/",
+   "name": "Overaller",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/overaller/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/overaller/adidas/",
+   "name": "Adidas",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/overaller/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/overaller/contra/",
+   "name": "Contra",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/overaller/contra/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/overaller/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/overaller/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/overaller/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/overaller/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/overaller/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/overaller/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/overaller/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/overaller/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/ovrigt/",
+   "name": "Övriga textilier",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/ovrigt/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/ovrigt/butterfly/",
+   "name": "Butterfly",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/ovrigt/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/ovrigt/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/ovrigt/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/ovrigt/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/ovrigt/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/shorts/",
+   "name": "Shorts &amp; Kjolar",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/shorts/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/shorts/adidas/",
+   "name": "Adidas",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/shorts/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/shorts/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/shorts/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/shorts/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/shorts/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/shorts/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/shorts/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/shorts/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/shorts/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/",
+   "name": "Strumpor",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/strumpor/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/strumpor/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/strumpor/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/strumpor/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/strumpor/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/strumpor/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/strumpor/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/strumpor/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/trojor/",
+   "name": "Tröjor",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/trojor/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/trojor/contra/",
+   "name": "Contra",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/trojor/contra/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/trojor/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/trojor/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/trojor/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/trojor/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/trojor/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/trojor/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/trojor/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/trojor/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/trojor/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/trojor/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/trojor/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/klader-textilier/trojor/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/",
+   "name": "Klubbtillbehör-allt du behöver till bordtennisklubben",
+   "lang": "sv",
+   "file": "site/html/klubbtillbehor/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/klubbtillbehor/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/dhs/",
+   "name": "DHS",
+   "lang": "sv",
+   "file": "site/html/klubbtillbehor/dhs/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/klubbtillbehor/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/klubbtillbehor/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/klubbtillbehor/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/klubbtillbehor/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/klubbtillbehor/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/klubbtillbehor/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/kopvillkor.html",
+   "name": "Köpvillkor",
+   "lang": "sv",
+   "file": "site/html/kopvillkor.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/",
+   "name": "Lim &amp; racketvård",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/",
+   "name": "Cleaner",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/cleaner/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/cleaner/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/contra/",
+   "name": "Contra",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/cleaner/contra/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/cleaner/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/cleaner/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/cleaner/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/cleaner/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/cleaner/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/",
+   "name": "Godkänt Fästlim",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/godkant-fastlim/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/godkant-fastlim/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/godkant-fastlim/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/godkant-fastlim/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/godkant-fastlim/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/godkant-fastlim/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/godkant-fastlim/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/godkant-fastlim/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/",
+   "name": "Kantband",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/kantband/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/kantband/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/kantband/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/kantband/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/kantband/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/kantband/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/kantband/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/victas/",
+   "name": "Victas",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/kantband/victas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/kantband/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/ovrig-racketvard/",
+   "name": "Övrig Racketvård",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/ovrig-racketvard/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/ovrig-racketvard/contra/",
+   "name": "Contra",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/ovrig-racketvard/contra/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/ovrig-racketvard/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/ovrig-racketvard/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/ovrig-racketvard/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/ovrig-racketvard/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/ovrig-racketvard/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/ovrig-racketvard/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/ovrig-racketvard/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/ovrig-racketvard/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/ovrig-racketvard/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/ovrig-racketvard/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/ovrig-racketvard/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/ovrig-racketvard/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/svampar/",
+   "name": "Svampar",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/svampar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/svampar/contra/",
+   "name": "Contra",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/svampar/contra/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/svampar/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/svampar/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/svampar/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/svampar/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/svampar/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/svampar/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/svampar/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/svampar/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/svampar/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/lim-racketvard/svampar/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/natstallningar/",
+   "name": "Nätställningar",
+   "lang": "sv",
+   "file": "site/html/natstallningar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/natstallningar/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/natstallningar/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/natstallningar/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/natstallningar/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/natstallningar/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/natstallningar/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/nyheter.html",
+   "name": "Nyheter",
+   "lang": "sv",
+   "file": "site/html/nyheter.html"
+  },
+  {
+   "url": "https://pp-pingis.se/rabatt/",
+   "name": "Rabatt",
+   "lang": "sv",
+   "file": "site/html/rabatt/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/rabatt/0-15/",
+   "name": "0-15%",
+   "lang": "sv",
+   "file": "site/html/rabatt/0-15/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/rabatt/15-30/",
+   "name": "15-30%",
+   "lang": "sv",
+   "file": "site/html/rabatt/15-30/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/rabatt/30-45/",
+   "name": "30-45%",
+   "lang": "sv",
+   "file": "site/html/rabatt/30-45/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/rabatt/45-60/",
+   "name": "45-60%",
+   "lang": "sv",
+   "file": "site/html/rabatt/45-60/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/robotar/",
+   "name": "Robotar",
+   "lang": "sv",
+   "file": "site/html/robotar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/robotar/donic/",
+   "name": "Donic Newgy Robo-Pong",
+   "lang": "sv",
+   "file": "site/html/robotar/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/robotar/joola/",
+   "name": "Joola TT-Buddy",
+   "lang": "sv",
+   "file": "site/html/robotar/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/robotar/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/robotar/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/robotar/ttmatic/",
+   "name": "TTmatic",
+   "lang": "sv",
+   "file": "site/html/robotar/ttmatic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/",
+   "name": "Pingisskor-bekväma, snabba, bra grepp och bästa kvaliten",
+   "lang": "sv",
+   "file": "site/html/skor/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/adidas/",
+   "name": "Adidas",
+   "lang": "sv",
+   "file": "site/html/skor/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/asics-1/",
+   "name": "ASICS",
+   "lang": "sv",
+   "file": "site/html/skor/asics-1/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/butterfly/",
+   "name": "Butterfly",
+   "lang": "sv",
+   "file": "site/html/skor/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/skor/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/skor/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/skor/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/mizuno/",
+   "name": "Mizuno",
+   "lang": "sv",
+   "file": "site/html/skor/mizuno/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/skor/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/skor/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/skor/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/specialpaket/",
+   "name": "Specialpaket",
+   "lang": "sv",
+   "file": "site/html/specialpaket/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/",
+   "name": "Spelartillbehör",
+   "lang": "sv",
+   "file": "site/html/spelartillbehor/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/spelartillbehor/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/butterfly/",
+   "name": "Butterfly",
+   "lang": "sv",
+   "file": "site/html/spelartillbehor/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/spelartillbehor/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/spelartillbehor/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/spelartillbehor/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/spelartillbehor/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/spelartillbehor/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/spelartillbehor/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/",
+   "name": "Stommar",
+   "lang": "sv",
+   "file": "site/html/stommar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/adidas/",
+   "name": "Adidas",
+   "lang": "sv",
+   "file": "site/html/stommar/adidas/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/andro/",
+   "name": "Andro",
+   "lang": "sv",
+   "file": "site/html/stommar/andro/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/butterfly/",
+   "name": "Butterfly",
+   "lang": "sv",
+   "file": "site/html/stommar/butterfly/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/stommar/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/stommar/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/stommar/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/stommar/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/tibhar/",
+   "name": "Tibhar",
+   "lang": "sv",
+   "file": "site/html/stommar/tibhar/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/stommar/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/utforsaljning/",
+   "name": "Utförsäljning",
+   "lang": "sv",
+   "file": "site/html/utforsaljning/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/vaskor/",
+   "name": "Väskor",
+   "lang": "sv",
+   "file": "site/html/vaskor/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/vaskor/donic/",
+   "name": "Donic",
+   "lang": "sv",
+   "file": "site/html/vaskor/donic/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/vaskor/gewo/",
+   "name": "Gewo",
+   "lang": "sv",
+   "file": "site/html/vaskor/gewo/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/vaskor/joola/",
+   "name": "Joola",
+   "lang": "sv",
+   "file": "site/html/vaskor/joola/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/vaskor/stiga/",
+   "name": "Stiga",
+   "lang": "sv",
+   "file": "site/html/vaskor/stiga/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/vaskor/yasaka/",
+   "name": "Yasaka",
+   "lang": "sv",
+   "file": "site/html/vaskor/yasaka/index.html"
+  },
+  {
+   "url": "https://pp-pingis.se/villkor-info.html",
+   "name": "Villkor &amp; information",
+   "lang": "sv",
+   "file": "site/html/villkor-info.html"
+  }
+ ],
+ "breadcrumb_categories": [
+  {
+   "url": "https://pp-pingis.se/bollar/",
+   "name": "Bollar"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/joola/",
+   "name": "Joola"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/nittaku/",
+   "name": "Nittaku"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/xuschaofa/",
+   "name": "Xuschaofa"
+  },
+  {
+   "url": "https://pp-pingis.se/bollar/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/bord/",
+   "name": "Bord"
+  },
+  {
+   "url": "https://pp-pingis.se/bord/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/bord/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bags/",
+   "name": "Bags"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bags/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bags/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/",
+   "name": "Balls"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/joola/",
+   "name": "Joola"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/nittaku/",
+   "name": "Nittaku"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/xuschaofa/",
+   "name": "Xuschaofa"
+  },
+  {
+   "url": "https://pp-pingis.se/en/balls/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/batcovers/",
+   "name": "Batcovers"
+  },
+  {
+   "url": "https://pp-pingis.se/en/batcovers/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/batcovers/tibhar/",
+   "name": "Tibhar"
+  },
+  {
+   "url": "https://pp-pingis.se/en/batcovers/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bats-rackets/",
+   "name": "Bats / Rackets"
+  },
+  {
+   "url": "https://pp-pingis.se/en/bats-rackets/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/",
+   "name": "Blades"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/andro/",
+   "name": "Andro"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/joola/",
+   "name": "Joola"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/tibhar/",
+   "name": "Tibhar"
+  },
+  {
+   "url": "https://pp-pingis.se/en/blades/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/",
+   "name": "Clothes & Textiles"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/jackets/",
+   "name": "Jackets"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/jackets/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/more-textiles/",
+   "name": "More textiles"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shirts/",
+   "name": "Shirts"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shirts/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shorts-skirts/",
+   "name": "Shorts & Skirts"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shorts-skirts/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/shorts-skirts/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/",
+   "name": "Socks"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/andro/",
+   "name": "Andro"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/joola/",
+   "name": "Joola"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/stiga/",
+   "name": "Stiga"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/tibhar/",
+   "name": "Tibhar"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/socks/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/towels/",
+   "name": "Towels"
+  },
+  {
+   "url": "https://pp-pingis.se/en/clothes-textiles/tracksuits/",
+   "name": "Tracksuits"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/",
+   "name": "Club material"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/en/club-material/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/discount/",
+   "name": "Discount"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/",
+   "name": "For the player"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/andro/",
+   "name": "Andro"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/stiga/",
+   "name": "Stiga"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/tibhar/",
+   "name": "Tibhar"
+  },
+  {
+   "url": "https://pp-pingis.se/en/for-the-player/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/",
+   "name": "Glue & Bat accessories"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/",
+   "name": "Cleaner"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/cleaner/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/",
+   "name": "Edge Tape"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/edge-tape/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/",
+   "name": "Glue without VOC"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/glue-without-voc/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/more-accessories/",
+   "name": "More accessories"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/more-accessories/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/more-accessories/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/sponges/",
+   "name": "Sponges"
+  },
+  {
+   "url": "https://pp-pingis.se/en/glue-bat-accessories/sponges/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/net-post-sets/",
+   "name": "Net & Post sets"
+  },
+  {
+   "url": "https://pp-pingis.se/en/net-post-sets/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/net-post-sets/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/robots/",
+   "name": "Robots"
+  },
+  {
+   "url": "https://pp-pingis.se/en/robots/donic/",
+   "name": "Donic Newgy Robo-Pong"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/",
+   "name": "Rubbers"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/andro/",
+   "name": "Andro"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/",
+   "name": "Category"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/anti-spin/",
+   "name": "Anti spin"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/",
+   "name": "Backside"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/victas/",
+   "name": "Victas"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/backside/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/long-pimples-out/",
+   "name": "Long pimples out"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/medium-pimples-out/",
+   "name": "Medium pimples out"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/category/short-pimples-out/",
+   "name": "Short pimples out"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/dhs/",
+   "name": "DHS"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/friendship/",
+   "name": "Friendship"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/juic/",
+   "name": "Juic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/nittaku/",
+   "name": "Nittaku"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/stiga/",
+   "name": "Stiga"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/tibhar/",
+   "name": "Tibhar"
+  },
+  {
+   "url": "https://pp-pingis.se/en/rubbers/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/",
+   "name": "Shoes"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/mizuno/",
+   "name": "Mizuno"
+  },
+  {
+   "url": "https://pp-pingis.se/en/shoes/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/en/tables/",
+   "name": "Tables"
+  },
+  {
+   "url": "https://pp-pingis.se/en/tables/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/en/tables/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/fardiga-racketar/",
+   "name": "Färdiga racketar"
+  },
+  {
+   "url": "https://pp-pingis.se/fardiga-racketar/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/fodral/",
+   "name": "Fodral"
+  },
+  {
+   "url": "https://pp-pingis.se/fodral/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/fodral/tibhar/",
+   "name": "Tibhar"
+  },
+  {
+   "url": "https://pp-pingis.se/fodral/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/",
+   "name": "Gummiplattor"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/andro/",
+   "name": "Andro"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/dhs/",
+   "name": "DHS"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/friendship/",
+   "name": "Friendship"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/juic/",
+   "name": "Juic"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/",
+   "name": "Kategori"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/antiloop/",
+   "name": "Antiloop"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/",
+   "name": "Backside"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/victas/",
+   "name": "Victas"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/backside/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/kortnabb/",
+   "name": "Kortnabb"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/langnabb/",
+   "name": "Långnabb"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/kategori/mellannabb/",
+   "name": "Mellannabb"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/nittaku/",
+   "name": "Nittaku"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/stiga/",
+   "name": "Stiga"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/tibhar/",
+   "name": "Tibhar"
+  },
+  {
+   "url": "https://pp-pingis.se/gummiplattor/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/",
+   "name": "Kläder & textilier"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/handdukar/",
+   "name": "Handdukar"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/jackor/",
+   "name": "Jackor"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/jackor/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/overaller/",
+   "name": "Overaller"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/ovrigt/",
+   "name": "Övriga textilier"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/shorts/",
+   "name": "Shorts & Kjolar"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/shorts/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/shorts/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/",
+   "name": "Strumpor"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/andro/",
+   "name": "Andro"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/joola/",
+   "name": "Joola"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/stiga/",
+   "name": "Stiga"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/tibhar/",
+   "name": "Tibhar"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/strumpor/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/trojor/",
+   "name": "Tröjor"
+  },
+  {
+   "url": "https://pp-pingis.se/klader-textilier/trojor/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/",
+   "name": "Klubbtillbehör"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/klubbtillbehor/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/",
+   "name": "Lim & racketvård"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/",
+   "name": "Cleaner"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/cleaner/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/",
+   "name": "Godkänt Fästlim"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/godkant-fastlim/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/",
+   "name": "Kantband"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/kantband/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/ovrig-racketvard/",
+   "name": "Övrig Racketvård"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/ovrig-racketvard/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/ovrig-racketvard/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/svampar/",
+   "name": "Svampar"
+  },
+  {
+   "url": "https://pp-pingis.se/lim-racketvard/svampar/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/natstallningar/",
+   "name": "Nätställningar"
+  },
+  {
+   "url": "https://pp-pingis.se/natstallningar/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/natstallningar/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/rabatt/",
+   "name": "Rabatt"
+  },
+  {
+   "url": "https://pp-pingis.se/robotar/",
+   "name": "Robotar"
+  },
+  {
+   "url": "https://pp-pingis.se/robotar/donic/",
+   "name": "Donic Newgy Robo-Pong"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/",
+   "name": "Skor"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/mizuno/",
+   "name": "Mizuno"
+  },
+  {
+   "url": "https://pp-pingis.se/skor/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/specialpaket/",
+   "name": "Specialpaket"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/",
+   "name": "Spelartillbehör"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/andro/",
+   "name": "Andro"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/stiga/",
+   "name": "Stiga"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/tibhar/",
+   "name": "Tibhar"
+  },
+  {
+   "url": "https://pp-pingis.se/spelartillbehor/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/",
+   "name": "Stommar"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/andro/",
+   "name": "Andro"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/gewo/",
+   "name": "Gewo"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/joola/",
+   "name": "Joola"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/tibhar/",
+   "name": "Tibhar"
+  },
+  {
+   "url": "https://pp-pingis.se/stommar/yasaka/",
+   "name": "Yasaka"
+  },
+  {
+   "url": "https://pp-pingis.se/utforsaljning/",
+   "name": "Utförsäljning"
+  },
+  {
+   "url": "https://pp-pingis.se/vaskor/",
+   "name": "Väskor"
+  },
+  {
+   "url": "https://pp-pingis.se/vaskor/donic/",
+   "name": "Donic"
+  },
+  {
+   "url": "https://pp-pingis.se/vaskor/yasaka/",
+   "name": "Yasaka"
+  }
+ ]
+}

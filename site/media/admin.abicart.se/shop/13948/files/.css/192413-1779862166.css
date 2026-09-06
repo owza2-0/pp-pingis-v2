@@ -1,0 +1,85 @@
+.fabrikk--header-wrapper,
+.tws-mega-menu .btn,
+.tws-top-menu.navbar-default {
+    background-color: #000 !important;
+}
+
+.tws-top-menu.navbar-default {
+    border: 0;
+}
+
+.tws-micro-cart--label,
+.tws-mega-menu--search-button span,
+.fa-search,
+.tws-top-menu--item > a:link {
+    color: #fff !important;
+}
+
+.tws-top-menu--item > a {
+    color: #000 !important;
+}
+
+.tws-top-menu li a {
+    color: #fff !important;
+}
+
+.tws-top-menu li li a {
+    color: #556B2F !important;
+}
+
+.tws-articles-two--labels {
+    z-index: 1;
+}
+
+.slot--article-description .tws-article-description--text-container {
+  max-height: none !important;
+}
+
+.tws-article-images--current-image {
+    background-color: hsla(0, 0%, 0%, 0);
+}
+
+.tws-article-list--list .tws-list--type-grid .tws-article-list--product-image, .tws-article-search-page--list .tws-list--type-grid .tws-article-list--product-image {
+    border: none;
+}
+.tws-api--price-current {
+    color: black;
+}
+
+.tws-mini-cart .tws-mini-cart--header-cart-button {
+   
+    color: #fff;
+   
+}
+
+.fa {
+  
+  color: #f35656;
+  
+  }
+.fabrikk--buy-button-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap; 
+    align-items: center;
+      flex-direction: row;
+    align-items: flex-start;
+}
+
+
+.fabrikk--buy-button-group::after {
+    content: "";
+    display: inline-block;
+    width: 60px; 
+    height: 40px;
+    margin-left: 15px; 
+    background-image: url('https://cdn.abicart.com/shop/13948/files/Klarna_Payment_Badge.svg.webp');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right top;
+    margin: 10px; 
+}
+.tws-compare-articles-button--button {
+    font-weight: bold;
+    width: max-content;
+}

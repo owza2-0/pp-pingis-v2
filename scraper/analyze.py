@@ -58,6 +58,7 @@ def main() -> int:
                 "lang": lang,
                 "name": prod.get("name"),
                 "productID": pid or None,
+                "category": (rec.get("breadcrumb") or [])[:-1] if (rec.get("breadcrumb") or []) and rec["breadcrumb"][-1] == prod.get("name") else (rec.get("breadcrumb") or []),
                 "price": norm_price(prod.get("offers", {}).get("priceSpecification") if isinstance(prod.get("offers"), dict) else None),
                 "availability": (prod.get("offers") or {}).get("availability") if isinstance(prod.get("offers"), dict) else None,
                 "images": prod.get("image", []) if isinstance(prod.get("image"), list) else [prod["image"]] if prod.get("image") else [],
@@ -103,6 +104,7 @@ def main() -> int:
         en = m["_languages"].get("en")
         if sv and en:
             merged_products.append({**{k: sv[k] for k in ("name", "productID", "price", "availability", "images", "description")},
+                                    "category": sv.get("category") or [],
                                     "sv": {"url": sv["url"], "file": sv["file"]},
                                     "en": {"url": en["url"], "file": en["file"]},
                                     "languages": ["sv", "en"]})
