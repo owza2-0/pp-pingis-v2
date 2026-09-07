@@ -441,7 +441,7 @@ function homeView() {
       <div class="hero__stage">
         <div class="hero__ring"></div>
         <div class="hero__panel">
-          <img class="hero__product" id="heroProduct" src="${img(hero.imgs[0])}" srcset="${img(hero.imgs[0])} 1x, ${img(hero.imgs[0], "@2x")} 2x" alt="${esc(hero.name)}">
+          <img class="hero__product" id="heroProduct" src="assets/img/hero.pic.webp" alt="${esc(hero.name)}">
         </div>
         <a class="hero__tag" href="#/produkt/${hero.id}">
           <div class="mono-label">Månadens stomme</div>
