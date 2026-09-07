@@ -225,6 +225,13 @@ function observeReveals() {
 const KIND_ORDER = ["Stommar", "Gummiplattor", "Färdiga racketar", "Bollar", "Bord & nät", "Robotar", "Kläder & skor", "Väskor & fodral", "Racketvård & lim", "Tillbehör"];
 const kindCount = k => PRODUCTS.filter(p => p.kind === k).length;
 
+const CATEGORY_GROUPS = [
+  { id: "all", name: "Alla produkter", kinds: [] },
+  { id: "rackets", name: "Racket & Delar", kinds: ["Stommar", "Gummiplattor", "Färdiga racketar"] },
+  { id: "training", name: "Spel & Träning", kinds: ["Bollar", "Robotar", "Bord & nät"] },
+  { id: "gear", name: "Vård & Tillbehör", kinds: ["Racketvård & lim", "Väskor & fodral", "Kläder & skor", "Tillbehör"] }
+];
+
 function homeView() {
   const hero = BY_ID.get(HERO_ID);
   const featured = PRODUCTS.filter(p => p.stock && p.price >= 400 && ["Stommar", "Gummiplattor", "Färdiga racketar", "Robotar"].includes(p.kind))
@@ -336,16 +343,27 @@ function homeView() {
 }
 
 /* ---------------- shop ---------------- */
-let shopState = { kind: "", brand: "", q: "", sort: "pop" };
+let shopState = { group: "all", kind: "", brand: "", q: "", sort: "pop" };
 
 function shopView(params) {
+  const initialKind = params.get("kind") || "";
+  const initialGroup = params.get("group") || "";
+  
+  let activeGroup = "all";
+  if (initialGroup) {
+    activeGroup = initialGroup;
+  } else if (initialKind) {
+    const parentGroup = CATEGORY_GROUPS.find(g => g.kinds.includes(initialKind));
+    if (parentGroup) activeGroup = parentGroup.id;
+  }
+
   shopState = {
-    kind: params.get("kind") || "",
+    group: activeGroup,
+    kind: initialKind,
     brand: params.get("brand") || "",
     q: params.get("q") || "",
     sort: params.get("sort") || "pop",
   };
-  const kinds = KIND_ORDER.filter(k => kindCount(k) > 0);
   const brands = [...new Set(PRODUCTS.map(p => p.brand).filter(Boolean))].sort();
 
   app.innerHTML = `
@@ -357,22 +375,28 @@ function shopView(params) {
     </div>
   </div>
   <div class="filters">
-    <div class="wrap filters__row">
-      <div class="filters__chips">
-        <button class="chip" data-kind="">Allt</button>
-        ${kinds.map(k => `<button class="chip" data-kind="${esc(k)}">${esc(k)}</button>`).join("")}
+    <div class="wrap">
+      <div class="filters__groups">
+        ${CATEGORY_GROUPS.map(g => `
+          <button class="group-tab ${g.id === shopState.group ? "is-active" : ""}" data-group="${g.id}">
+            ${esc(g.name)}
+          </button>
+        `).join("")}
       </div>
-      <input class="filters__search" type="search" id="shopSearch" placeholder="Filtrera …" value="${esc(shopState.q)}" aria-label="Filtrera produkter">
-      <select class="filters__select" id="brandSelect" aria-label="Varumärke">
-        <option value="">Alla märken</option>
-        ${brands.map(b => `<option ${b === shopState.brand ? "selected" : ""}>${esc(b)}</option>`).join("")}
-      </select>
-      <select class="filters__select" id="sortSelect" aria-label="Sortera">
-        <option value="pop">Populärast</option>
-        <option value="price-asc">Pris: lägst först</option>
-        <option value="price-desc">Pris: högst först</option>
-        <option value="name">Namn A–Ö</option>
-      </select>
+      <div class="filters__row">
+        <div class="filters__chips" id="filtersChips"></div>
+        <input class="filters__search" type="search" id="shopSearch" placeholder="Filtrera …" value="${esc(shopState.q)}" aria-label="Filtrera produkter">
+        <select class="filters__select" id="brandSelect" aria-label="Varumärke">
+          <option value="">Alla märken</option>
+          ${brands.map(b => `<option ${b === shopState.brand ? "selected" : ""}>${esc(b)}</option>`).join("")}
+        </select>
+        <select class="filters__select" id="sortSelect" aria-label="Sortera">
+          <option value="pop">Populärast</option>
+          <option value="price-asc">Pris: lägst först</option>
+          <option value="price-desc">Pris: högst först</option>
+          <option value="name">Namn A–Ö</option>
+        </select>
+      </div>
     </div>
   </div>
   <div class="wrap shop__grid">
@@ -384,15 +408,58 @@ function shopView(params) {
   </div>`;
 
   $("#sortSelect").value = shopState.sort;
-  $$("#app .chip").forEach(c => {
-    c.classList.toggle("is-on", c.dataset.kind === shopState.kind);
-    c.addEventListener("click", () => {
-      shopState.kind = c.dataset.kind;
-      $$("#app .chip").forEach(x => x.classList.toggle("is-on", x === c));
+
+  function renderSubChips() {
+    const activeGroup = CATEGORY_GROUPS.find(g => g.id === shopState.group) || CATEGORY_GROUPS[0];
+    const subKinds = activeGroup.id === "all" 
+      ? KIND_ORDER.filter(k => kindCount(k) > 0)
+      : activeGroup.kinds.filter(k => kindCount(k) > 0);
+      
+    const container = $("#filtersChips");
+    if (!container) return;
+    
+    container.innerHTML = `
+      <button class="chip ${shopState.kind === "" ? "is-on" : ""}" data-kind="">
+        Visa allt
+      </button>
+      ${subKinds.map(k => `
+        <button class="chip ${shopState.kind === k ? "is-on" : ""}" data-kind="${esc(k)}">
+          ${esc(k)} <small class="chip__count">${kindCount(k)}</small>
+        </button>
+      `).join("")}
+    `;
+    
+    $$(".chip", container).forEach(c => {
+      c.addEventListener("click", () => {
+        const k = c.dataset.kind;
+        shopState.kind = k;
+        $$(".chip", container).forEach(x => x.classList.toggle("is-on", x === c));
+        renderShopGrid();
+        
+        let url = `#/butik?group=${shopState.group}`;
+        if (k) url += `&kind=${encodeURIComponent(k)}`;
+        history.replaceState(null, "", url);
+      });
+    });
+  }
+
+  renderSubChips();
+
+  $$(".group-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      const gId = tab.dataset.group;
+      shopState.group = gId;
+      shopState.kind = ""; // Clear sub-category when switching groups
+      
+      $$(".group-tab").forEach(t => t.classList.toggle("is-active", t === tab));
+      renderSubChips();
       renderShopGrid();
-      history.replaceState(null, "", `#/butik${shopState.kind ? `?kind=${encodeURIComponent(shopState.kind)}` : ""}`);
+      
+      const url = `#/butik?group=${gId}`;
+      history.replaceState(null, "", url);
     });
   });
+
   $("#brandSelect").addEventListener("change", e => { shopState.brand = e.target.value; renderShopGrid(); });
   $("#sortSelect").addEventListener("change", e => { shopState.sort = e.target.value; renderShopGrid(); });
   $("#shopSearch").addEventListener("input", e => { shopState.q = e.target.value; renderShopGrid(); });
@@ -401,7 +468,10 @@ function shopView(params) {
 }
 
 function renderShopGrid() {
+  const activeGroup = CATEGORY_GROUPS.find(g => g.id === shopState.group) || CATEGORY_GROUPS[0];
+
   let list = PRODUCTS.filter(p =>
+    (activeGroup.id === "all" || activeGroup.kinds.includes(p.kind)) &&
     (!shopState.kind || p.kind === shopState.kind) &&
     (!shopState.brand || p.brand === shopState.brand) &&
     (!shopState.q || (p.name + " " + (p.brand || "") + " " + p.kind).toLowerCase().includes(shopState.q.toLowerCase()))
@@ -418,8 +488,21 @@ function renderShopGrid() {
   $("#shopEmpty").hidden = list.length > 0;
   $("#shopGrid").innerHTML = list.map(productCard).join("");
   bindQuickAdd($("#shopGrid"));
-  // reveal immediately for grid updates
   $$("#shopGrid .reveal").forEach(el => el.classList.add("is-in"));
+
+  // Dynamic page title update based on current category selection
+  const titleEl = $(".shop__title");
+  if (titleEl) {
+    if (shopState.kind) {
+      titleEl.innerHTML = esc(shopState.kind);
+    } else if (activeGroup.id !== "all") {
+      titleEl.innerHTML = esc(activeGroup.name);
+    } else if (shopState.brand) {
+      titleEl.innerHTML = esc(shopState.brand);
+    } else {
+      titleEl.innerHTML = "Alla <em style='font-style:italic;font-weight:300;color:var(--accent)'>prylar</em>";
+    }
+  }
 }
 
 /* ---------------- product detail ---------------- */
