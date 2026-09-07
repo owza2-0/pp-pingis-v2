@@ -99,12 +99,68 @@ function renderCart() {
 
   foot.innerHTML = `
     <div class="cart__totalrow"><span>Totalt (inkl. moms)</span><b>${kr(total)}</b></div>
-    <button class="btn btn--accent btn--full" id="checkoutBtn">
-      Skicka beställning
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-    </button>`;
+    <div class="cart__actions">
+      <button class="btn btn--accent btn--full" id="checkoutBtn">
+        Skicka via e-post
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </button>
+      <button class="btn btn--ghost btn--full" id="copyOrderBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        Kopiera order till urklipp
+      </button>
+    </div>
+    <div class="cart__help">
+      Frågor eller telefonorder? <a href="tel:+46700316655">070-031 66 55</a>
+    </div>`;
 
   $("#checkoutBtn").addEventListener("click", checkout);
+  $("#copyOrderBtn").addEventListener("click", copyOrder);
+}
+
+function formatOrderText() {
+  const lines = cart.map(i => {
+    const p = BY_ID.get(i.id);
+    return p ? `${i.qty} × ${p.name} — ${kr(p.price * i.qty)} (art.nr ${p.id})` : "";
+  }).filter(Boolean);
+  return [
+    "Beställning till PP-Pingis (info@pp-pingis.se):",
+    "--------------------------------------------------",
+    ...lines,
+    "--------------------------------------------------",
+    `Totalt: ${kr(cartTotal())} (inkl. moms)`,
+    "",
+    "Namn:",
+    "Leveransadress:",
+    "Telefon:",
+    "Övriga önskemål (t.ex. greppform, svamptjocklek):"
+  ].join("\n");
+}
+
+function copyOrder() {
+  const text = formatOrderText();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      toast("Orderdetaljer kopierade till urklipp!");
+    }).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand("copy");
+    toast("Orderdetaljer kopierade till urklipp!");
+  } catch (err) {
+    toast("Kunde inte kopiera automatiskt");
+  }
+  document.body.removeChild(ta);
 }
 
 function checkout() {
@@ -133,7 +189,7 @@ function closeCart() { drawer.classList.remove("is-open"); drawer.setAttribute("
 $("#cartToggle").addEventListener("click", openCart);
 $("#cartClose").addEventListener("click", closeCart);
 scrim.addEventListener("click", closeCart);
-document.addEventListener("keydown", e => { if (e.key === "Escape") { closeCart(); closeSearch(); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { closeCart(); closeSearch(); closeLightbox(); } });
 
 $("#cartItems").addEventListener("click", e => {
   const inc = e.target.closest("[data-inc]"), dec = e.target.closest("[data-dec]"), rm = e.target.closest("[data-rm]");
@@ -176,11 +232,99 @@ searchInput.addEventListener("input", () => {
       </a>`).join("")
     : `<div class="mono-label" style="padding:14px 12px">Inga träffar på ”${esc(q)}”</div>`;
 });
+
+searchInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const q = searchInput.value.trim();
+    if (q) {
+      closeSearch();
+      location.hash = `#/butik?q=${encodeURIComponent(q)}`;
+    }
+  }
+});
 searchResults.addEventListener("click", e => { if (e.target.closest("a")) closeSearch(); });
 
-/* ---------------- shared fragments ---------------- */
+/* ---------------- lightbox ---------------- */
+const lightbox = $("#lightboxModal"), lightboxImg = $("#lightboxImg"), lightboxCaption = $("#lightboxCaption");
+function openLightbox(src, alt = "") {
+  if (!lightbox) return;
+  lightboxImg.src = src;
+  lightboxImg.alt = alt;
+  if (lightboxCaption) lightboxCaption.textContent = alt;
+  lightbox.hidden = false;
+  lightbox.setAttribute("aria-hidden", "false");
+  lightbox.classList.add("is-open");
+  document.body.style.overflow = "hidden";
+}
+function closeLightbox() {
+  if (!lightbox || lightbox.hidden) return;
+  lightbox.classList.remove("is-open");
+  lightbox.hidden = true;
+  lightbox.setAttribute("aria-hidden", "true");
+  if (!drawer.classList.contains("is-open")) {
+    document.body.style.overflow = "";
+  }
+}
+$("#lightboxClose")?.addEventListener("click", closeLightbox);
+lightbox?.addEventListener("click", e => {
+  if (e.target === lightbox || e.target.classList.contains("lightbox__content")) {
+    closeLightbox();
+  }
+});
+
+/* ---------------- shared fragments & spec parser ---------------- */
 const arrowSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8"/></svg>`;
 const bagSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 7h12l1.5 13.5a1 1 0 0 1-1 1.1H5.5a1 1 0 0 1-1-1.1L6 7Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/><path d="M12 12v5m-2.5-2.5h5" stroke-linecap="round"/></svg>`;
+
+function parseSpecs(desc) {
+  if (!desc) return { cleanDesc: "", stats: [], badges: [] };
+  const lines = desc.split("\n");
+  const kept = [];
+  const stats = [];
+  const badges = [];
+
+  const statRegex = /^(?:[-*•]\s*)?(Fart|Kontroll|Skruv|Spin|Hårdhet|Vikt)\s*[:：]\s*(.+)$/i;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const m = trimmed.match(statRegex);
+    if (m) {
+      const key = m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase();
+      let val = m[2].trim();
+      if (["Fart", "Kontroll", "Skruv", "Spin"].includes(key)) {
+        let pct = 50;
+        const slashM = val.match(/^(\d+(?:\.\d+)?)\s*\/\s*(\d+)/);
+        if (slashM) {
+          pct = Math.min(100, Math.round((parseFloat(slashM[1]) / parseFloat(slashM[2])) * 100));
+        } else {
+          const numM = val.match(/^(\d+(?:\.\d+)?)\s*(\+{1,2}|-)?/);
+          if (numM) {
+            let base = parseFloat(numM[1]);
+            if (base <= 12) {
+              let score = base;
+              if (numM[2] === "+") score += 0.3;
+              if (numM[2] === "++") score += 0.6;
+              if (numM[2] === "-") score -= 0.3;
+              pct = Math.min(100, Math.round((score / 10.5) * 100));
+            } else if (base <= 100) {
+              pct = Math.min(100, Math.round(base));
+            }
+          }
+        }
+        stats.push({ key: key === "Spin" ? "Skruv" : key, val, pct });
+      } else {
+        if (val && val !== "gram" && !/^ca:?\s*gram$/i.test(val)) {
+          badges.push({ key, val });
+        }
+      }
+    } else {
+      kept.push(line);
+    }
+  }
+
+  const cleanDesc = kept.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  return { cleanDesc, stats, badges };
+}
 
 function productCard(p, i = 0) {
   const hot = p.price >= 900 && p.stock && ["Stommar", "Gummiplattor", "Färdiga racketar"].includes(p.kind);
@@ -363,6 +507,7 @@ function shopView(params) {
     brand: params.get("brand") || "",
     q: params.get("q") || "",
     sort: params.get("sort") || "pop",
+    inStock: params.get("stock") === "1",
   };
   const brands = [...new Set(PRODUCTS.map(p => p.brand).filter(Boolean))].sort();
 
@@ -385,6 +530,9 @@ function shopView(params) {
       </div>
       <div class="filters__row">
         <div class="filters__chips" id="filtersChips"></div>
+        <button class="chip chip--toggle ${shopState.inStock ? "is-on" : ""}" id="stockFilterBtn" type="button" aria-pressed="${shopState.inStock}">
+          <span class="chip__dot"></span> Endast i lager
+        </button>
         <input class="filters__search" type="search" id="shopSearch" placeholder="Filtrera …" value="${esc(shopState.q)}" aria-label="Filtrera produkter">
         <select class="filters__select" id="brandSelect" aria-label="Varumärke">
           <option value="">Alla märken</option>
@@ -438,6 +586,8 @@ function shopView(params) {
         
         let url = `#/butik?group=${shopState.group}`;
         if (k) url += `&kind=${encodeURIComponent(k)}`;
+        if (shopState.brand) url += `&brand=${encodeURIComponent(shopState.brand)}`;
+        if (shopState.inStock) url += `&stock=1`;
         history.replaceState(null, "", url);
       });
     });
@@ -455,12 +605,36 @@ function shopView(params) {
       renderSubChips();
       renderShopGrid();
       
-      const url = `#/butik?group=${gId}`;
+      let url = `#/butik?group=${gId}`;
+      if (shopState.brand) url += `&brand=${encodeURIComponent(shopState.brand)}`;
+      if (shopState.inStock) url += `&stock=1`;
       history.replaceState(null, "", url);
     });
   });
 
-  $("#brandSelect").addEventListener("change", e => { shopState.brand = e.target.value; renderShopGrid(); });
+  const stockBtn = $("#stockFilterBtn");
+  stockBtn?.addEventListener("click", () => {
+    shopState.inStock = !shopState.inStock;
+    stockBtn.classList.toggle("is-on", shopState.inStock);
+    stockBtn.setAttribute("aria-pressed", shopState.inStock);
+    renderShopGrid();
+
+    let url = `#/butik?group=${shopState.group}`;
+    if (shopState.kind) url += `&kind=${encodeURIComponent(shopState.kind)}`;
+    if (shopState.brand) url += `&brand=${encodeURIComponent(shopState.brand)}`;
+    if (shopState.inStock) url += `&stock=1`;
+    history.replaceState(null, "", url);
+  });
+
+  $("#brandSelect").addEventListener("change", e => {
+    shopState.brand = e.target.value;
+    renderShopGrid();
+    let url = `#/butik?group=${shopState.group}`;
+    if (shopState.kind) url += `&kind=${encodeURIComponent(shopState.kind)}`;
+    if (shopState.brand) url += `&brand=${encodeURIComponent(shopState.brand)}`;
+    if (shopState.inStock) url += `&stock=1`;
+    history.replaceState(null, "", url);
+  });
   $("#sortSelect").addEventListener("change", e => { shopState.sort = e.target.value; renderShopGrid(); });
   $("#shopSearch").addEventListener("input", e => { shopState.q = e.target.value; renderShopGrid(); });
 
@@ -474,6 +648,7 @@ function renderShopGrid() {
     (activeGroup.id === "all" || activeGroup.kinds.includes(p.kind)) &&
     (!shopState.kind || p.kind === shopState.kind) &&
     (!shopState.brand || p.brand === shopState.brand) &&
+    (!shopState.inStock || p.stock) &&
     (!shopState.q || (p.name + " " + (p.brand || "") + " " + p.kind).toLowerCase().includes(shopState.q.toLowerCase()))
   );
   if (shopState.sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
@@ -512,6 +687,7 @@ function productView(id) {
   const related = PRODUCTS.filter(x => x.id !== id && (x.kind === p.kind || x.brand === p.brand))
     .sort((a, b) => Number(b.stock) - Number(a.stock) || b.price - a.price).slice(0, 4);
   document.title = `${p.name} — PP PINGIS`;
+  const { cleanDesc, stats, badges } = parseSpecs(p.desc);
 
   app.innerHTML = `
   <div class="view pdp wrap">
@@ -520,7 +696,13 @@ function productView(id) {
     </nav>
     <div class="pdp__grid">
       <div class="pdp__gallery">
-        <div class="pdp__main"><img id="pdpMain" src="${img(p.imgs[0], "@2x")}" alt="${esc(p.name)}"></div>
+        <div class="pdp__main" id="pdpMainWrap" role="button" tabindex="0" title="Klicka för att förstora bild">
+          <img id="pdpMain" src="${img(p.imgs[0], "@2x")}" alt="${esc(p.name)}">
+          <span class="pdp__zoom-hint">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg>
+            Förstora
+          </span>
+        </div>
         ${p.imgs.length > 1 ? `<div class="pdp__thumbs">
           ${p.imgs.map((im, i) => `<button class="pdp__thumb ${i === 0 ? "is-on" : ""}" data-img="${im}"><img src="${img(im)}" alt="Bild ${i + 1}"></button>`).join("")}
         </div>` : ""}
@@ -533,7 +715,39 @@ function productView(id) {
           <span class="pdp__vat">inkl. moms</span>
         </div>
         <div class="pdp__stock ${p.stock ? "" : "pdp__stock--out"}"><i></i>${p.stock ? "I lager — skickas inom 24 h" : "Tillfälligt slut"}</div>
-        ${p.desc ? `<p class="pdp__desc">${esc(p.desc)}</p>` : ""}
+        ${cleanDesc ? `<p class="pdp__desc">${esc(cleanDesc)}</p>` : ""}
+
+        ${stats.length || badges.length ? `
+        <div class="pdp__pro-stats">
+          <div class="mono-label pdp__pro-title">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m12 16 4-4-4-4m-4 4h8"/></svg>
+            Tekniska Pro-Egenskaper
+          </div>
+          ${stats.length ? `
+            <div class="pdp__statbars">
+              ${stats.map(s => `
+                <div class="pdp__statbar">
+                  <div class="pdp__statlabel">
+                    <span>${esc(s.key)}</span>
+                    <b>${esc(s.val)}</b>
+                  </div>
+                  <div class="pdp__statmeter">
+                    <div class="pdp__statfill" style="width:${s.pct}%"></div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          ` : ""}
+          ${badges.length ? `
+            <div class="pdp__statbadges">
+              ${badges.map(b => `
+                <span class="pdp__statbadge"><b>${esc(b.key)}:</b> ${esc(b.val)}</span>
+              `).join("")}
+            </div>
+          ` : ""}
+        </div>
+        ` : ""}
+
         <div class="pdp__buyrow">
           <span class="qty">
             <button id="qtyDec" aria-label="Minska antal">−</button>
@@ -563,12 +777,19 @@ function productView(id) {
     <div class="pgrid">${related.map(productCard).join("")}</div>
   </section>` : ""}`;
 
-  // gallery
+  // gallery & zoom
+  let activeImg = p.imgs[0];
+  const mainWrap = $("#pdpMainWrap");
+  const main = $("#pdpMain");
+
+  const openMainZoom = () => openLightbox(img(activeImg, "@2x"), p.name);
+  mainWrap?.addEventListener("click", openMainZoom);
+  mainWrap?.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openMainZoom(); } });
+
   $$(".pdp__thumb").forEach(t => t.addEventListener("click", () => {
     $$(".pdp__thumb").forEach(x => x.classList.toggle("is-on", x === t));
-    const main = $("#pdpMain");
-    const base = t.dataset.img;
-    main.src = img(base, "@2x");
+    activeImg = t.dataset.img;
+    main.src = img(activeImg, "@2x");
     main.style.animation = "none"; void main.offsetWidth; main.style.animation = "";
   }));
 
