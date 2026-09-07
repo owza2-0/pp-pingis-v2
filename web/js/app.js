@@ -893,7 +893,7 @@ function heroParallax() {
     const r = stage.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
-    el.style.translate = `${x * 26}px ${y * 18}px`;
+    el.style.translate = `${x * 34}px ${y * 22}px`;
   });
   stage.addEventListener("mouseleave", () => { el.style.translate = "0 0"; });
 }
