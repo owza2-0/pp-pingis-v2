@@ -31,9 +31,10 @@
   </a>
   <nav class="nav__links" aria-label="Huvudmeny">
     <a href="#/" data-nav="home">Hem</a>
-    <a href="#/butik" data-nav="shop">Butik</a>
-    <a href="#/butik?kind=Stommar" data-nav="blades">Stommar</a>
-    <a href="#/butik?kind=Gummiplattor" data-nav="rubbers">Gummi</a>
+    <a href="#/butik" data-nav="shop">Alla prylar</a>
+    <a href="#/butik?group=rackets" data-nav="rackets">Stommar &amp; Gummi</a>
+    <a href="#/butik?group=training" data-nav="training">Bollar &amp; Träning</a>
+    <a href="#/butik?group=care" data-nav="care">Vård &amp; Tillbehör</a>
   </nav>
   <div class="nav__actions">
     <button class="nav__searchbtn" id="searchToggle" aria-label="Sök">
@@ -63,18 +64,16 @@
       <p>Bordtennisbutik i Garphyttan, Örebro. Personlig service, snabba leveranser och prylar som håller match efter match.</p>
     </div>
     <div class="footer__col">
-      <h4>Butik</h4>
-      <a href="#/butik?kind=Stommar">Stommar</a>
-      <a href="#/butik?kind=Gummiplattor">Gummiplattor</a>
-      <a href="#/butik?kind=Färdiga racketar">Färdiga racketar</a>
-      <a href="#/butik?kind=Bollar">Bollar</a>
+      <h4>Utrustning</h4>
+      <a href="#/butik?group=rackets">Stommar &amp; Gummi</a>
+      <a href="#/butik?group=complete">Färdiga racketar</a>
+      <a href="#/butik?group=training">Bollar &amp; Träning</a>
     </div>
     <div class="footer__col">
-      <h4>Mer</h4>
-      <a href="#/butik?kind=Kläder & skor">Kläder &amp; skor</a>
-      <a href="#/butik?kind=Racketvård & lim">Racketvård &amp; lim</a>
-      <a href="#/butik?kind=Bord & nät">Bord &amp; nät</a>
-      <a href="#/butik?kind=Robotar">Robotar</a>
+      <h4>Tillbehör &amp; Mer</h4>
+      <a href="#/butik?group=apparel">Kläder &amp; Väskor</a>
+      <a href="#/butik?group=care">Vård &amp; Tillbehör</a>
+      <a href="#/butik">Alla produkter (305)</a>
     </div>
     <div class="footer__col">
       <h4>Kontakt</h4>
@@ -112,15 +111,14 @@
   </div>
   <div class="mob-menu__body">
     <div class="mob-menu__section">
-      <div class="mono-label mob-menu__title">Meny</div>
+      <div class="mono-label mob-menu__title">Kategorier</div>
       <a href="#/" class="mob-link" data-mob-nav="home">Hem</a>
-      <a href="#/butik" class="mob-link" data-mob-nav="shop">Alla produkter</a>
-      <a href="#/butik?kind=Stommar" class="mob-link" data-mob-nav="blades">Stommar</a>
-      <a href="#/butik?kind=Gummiplattor" class="mob-link" data-mob-nav="rubbers">Gummiplattor</a>
-      <a href="#/butik?kind=F%C3%A4rdiga%20racketar" class="mob-link">Färdiga racketar</a>
-      <a href="#/butik?kind=Bollar" class="mob-link">Bollar</a>
-      <a href="#/butik?kind=Kl%C3%A4der%20%26%20skor" class="mob-link">Kläder & skor</a>
-      <a href="#/butik?kind=Racketv%C3%A5rd%20%26%20lim" class="mob-link">Racketvård & lim</a>
+      <a href="#/butik" class="mob-link" data-mob-nav="shop">Alla produkter <span class="mob-link__count">305</span></a>
+      <a href="#/butik?group=rackets" class="mob-link" data-mob-nav="rackets">Stommar &amp; Gummi <span class="mob-link__count">131</span></a>
+      <a href="#/butik?group=complete" class="mob-link" data-mob-nav="complete">Färdiga Racketar <span class="mob-link__count">9</span></a>
+      <a href="#/butik?group=training" class="mob-link" data-mob-nav="training">Bollar &amp; Träning <span class="mob-link__count">29</span></a>
+      <a href="#/butik?group=apparel" class="mob-link" data-mob-nav="apparel">Kläder &amp; Väskor <span class="mob-link__count">65</span></a>
+      <a href="#/butik?group=care" class="mob-link" data-mob-nav="care">Vård &amp; Tillbehör <span class="mob-link__count">71</span></a>
     </div>
     <div class="mob-menu__footer">
       <div class="mono-label mob-menu__title">Personlig service</div>

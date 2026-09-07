@@ -379,10 +379,15 @@ const kindCount = k => PRODUCTS.filter(p => p.kind === k).length;
 
 const CATEGORY_GROUPS = [
   { id: "all", name: "Alla produkter", kinds: [] },
-  { id: "rackets", name: "Racket & Delar", kinds: ["Stommar", "Gummiplattor", "Färdiga racketar"] },
-  { id: "training", name: "Spel & Träning", kinds: ["Bollar", "Robotar", "Bord & nät"] },
-  { id: "gear", name: "Vård & Tillbehör", kinds: ["Racketvård & lim", "Väskor & fodral", "Kläder & skor", "Tillbehör"] }
+  { id: "rackets", name: "Stommar & Gummi", kinds: ["Stommar", "Gummiplattor"], desc: "Pro-stommar & tävlingsgummin för maximal fart, känsla och spinn.", wide: true },
+  { id: "complete", name: "Färdiga Racketar", kinds: ["Färdiga racketar"], desc: "Kvalitetsmonterade racketar för både motion och seriespel, klara ur kartong." },
+  { id: "training", name: "Bollar & Träning", kinds: ["Bollar", "Bord & nät", "Robotar"], desc: "3-stjärniga tävlingsbollar, bollrobotar, nät och bord för hall och hemma." },
+  { id: "apparel", name: "Kläder & Väskor", kinds: ["Kläder & skor", "Väskor & fodral"], desc: "Spelartröjor, shorts, greppvänliga skor och vadderade racketväskor." },
+  { id: "care", name: "Vård & Tillbehör", kinds: ["Racketvård & lim", "Tillbehör"], desc: "VOC-fritt lim, rengöringsskum, grepplindor, kantskydd och tillbehör." }
 ];
+
+const HOME_CATEGORIES = CATEGORY_GROUPS.filter(g => g.id !== "all");
+const groupCount = kinds => PRODUCTS.filter(p => kinds.includes(p.kind)).length;
 
 function homeView() {
   const hero = BY_ID.get(HERO_ID);
@@ -395,12 +400,22 @@ function homeView() {
     .sort((a, b) => b.n - a.n);
   const marqueeItems = ["Fri frakt över 1 249 kr", "Yasaka", "Donic", "Gewo", "Tibhar", "Snabba leveranser", "Personlig service", "Joola", "Andro", "Nittaku"];
 
-  const catTiles = KIND_ORDER.map((k, i) => `
-    <a class="cattile reveal ${i % 5 === 0 ? "cattile--wide" : ""}" style="transition-delay:${(i % 4) * 55}ms" href="#/butik?kind=${encodeURIComponent(k)}">
-      <span class="cattile__count">${String(kindCount(k)).padStart(2, "0")} produkter</span>
-      <span class="cattile__name">${esc(k)}</span>
-      <span class="cattile__arrow">${arrowSvg}</span>
-    </a>`).join("");
+  const catTiles = HOME_CATEGORIES.map((cat, i) => {
+    const totalInCat = groupCount(cat.kinds);
+    const subPills = cat.kinds.map(k => `<span class="cattile__pill">${esc(k)} <small>${kindCount(k)}</small></span>`).join("");
+    return `
+    <a class="cattile reveal ${cat.wide ? "cattile--wide" : ""}" style="transition-delay:${i * 65}ms" href="#/butik?group=${cat.id}">
+      <div class="cattile__top">
+        <span class="cattile__badge mono-label">${totalInCat} produkter</span>
+        <span class="cattile__arrow" aria-hidden="true">${arrowSvg}</span>
+      </div>
+      <div class="cattile__body">
+        <h3 class="cattile__name">${esc(cat.name)}</h3>
+        <p class="cattile__desc">${esc(cat.desc)}</p>
+        <div class="cattile__pills">${subPills}</div>
+      </div>
+    </a>`;
+  }).join("");
 
   return `
   <div class="view">
@@ -415,7 +430,7 @@ function homeView() {
         <p class="hero__sub">Stommar, gummi och racketar från världens bästa märken — handplockade av folk som själva står vid bordet. Allt i lager, allt på riktigt.</p>
         <div class="hero__ctas">
           <a class="btn btn--accent" href="#/butik">Shoppa allt ${arrowSvg}</a>
-          <a class="btn btn--ghost" href="#/butik?kind=Stommar">Utforska stommar</a>
+          <a class="btn btn--ghost" href="#/butik?group=rackets">Utforska stommar & gummi</a>
         </div>
         <div class="hero__meta">
           <div><b>${PRODUCTS.length}+</b><span>Produkter</span></div>
@@ -529,12 +544,14 @@ function shopView(params) {
   </div>
   <div class="filters">
     <div class="wrap">
-      <div class="filters__groups">
-        ${CATEGORY_GROUPS.map(g => `
-          <button class="group-tab ${g.id === shopState.group ? "is-active" : ""}" data-group="${g.id}">
-            ${esc(g.name)}
-          </button>
-        `).join("")}
+      <div class="filters__groups" role="tablist" aria-label="Huvudkategorier">
+        ${CATEGORY_GROUPS.map(g => {
+          const count = g.id === "all" ? PRODUCTS.length : groupCount(g.kinds);
+          return `
+          <button class="group-tab ${g.id === shopState.group ? "is-active" : ""}" data-group="${g.id}" role="tab" aria-selected="${g.id === shopState.group}">
+            ${esc(g.name)} <span class="group-tab__count">${count}</span>
+          </button>`;
+        }).join("")}
       </div>
       <div class="filters__row">
         <div class="filters__chips" id="filtersChips"></div>
@@ -576,12 +593,16 @@ function shopView(params) {
     const container = $("#filtersChips");
     if (!container) return;
     
+    const totalGroupCount = activeGroup.id === "all" 
+      ? PRODUCTS.length 
+      : groupCount(activeGroup.kinds);
+
     container.innerHTML = `
-      <button class="chip ${shopState.kind === "" ? "is-on" : ""}" data-kind="">
-        Visa allt
+      <button class="chip ${shopState.kind === "" ? "is-on" : ""}" data-kind="" aria-pressed="${shopState.kind === ""}">
+        Visa alla <small class="chip__count">${totalGroupCount}</small>
       </button>
       ${subKinds.map(k => `
-        <button class="chip ${shopState.kind === k ? "is-on" : ""}" data-kind="${esc(k)}">
+        <button class="chip ${shopState.kind === k ? "is-on" : ""}" data-kind="${esc(k)}" aria-pressed="${shopState.kind === k}">
           ${esc(k)} <small class="chip__count">${kindCount(k)}</small>
         </button>
       `).join("")}
@@ -591,13 +612,17 @@ function shopView(params) {
       c.addEventListener("click", () => {
         const k = c.dataset.kind;
         shopState.kind = k;
-        $$(".chip", container).forEach(x => x.classList.toggle("is-on", x === c));
+        $$(".chip", container).forEach(x => {
+          const active = x === c;
+          x.classList.toggle("is-on", active);
+          x.setAttribute("aria-pressed", active);
+        });
         renderShopGrid();
         
-        let url = `#/butik?group=${shopState.group}`;
-        if (k) url += `&kind=${encodeURIComponent(k)}`;
-        if (shopState.brand) url += `&brand=${encodeURIComponent(shopState.brand)}`;
-        if (shopState.inStock) url += `&stock=1`;
+        let url = shopState.group === "all" ? `#/butik` : `#/butik?group=${shopState.group}`;
+        if (k) url += `${url.includes("?") ? "&" : "?"}kind=${encodeURIComponent(k)}`;
+        if (shopState.brand) url += `${url.includes("?") ? "&" : "?"}brand=${encodeURIComponent(shopState.brand)}`;
+        if (shopState.inStock) url += `${url.includes("?") ? "&" : "?"}stock=1`;
         history.replaceState(null, "", url);
       });
     });
@@ -611,13 +636,17 @@ function shopView(params) {
       shopState.group = gId;
       shopState.kind = ""; // Clear sub-category when switching groups
       
-      $$(".group-tab").forEach(t => t.classList.toggle("is-active", t === tab));
+      $$(".group-tab").forEach(t => {
+        const active = t === tab;
+        t.classList.toggle("is-active", active);
+        t.setAttribute("aria-selected", active);
+      });
       renderSubChips();
       renderShopGrid();
       
-      let url = `#/butik?group=${gId}`;
-      if (shopState.brand) url += `&brand=${encodeURIComponent(shopState.brand)}`;
-      if (shopState.inStock) url += `&stock=1`;
+      let url = gId === "all" ? `#/butik` : `#/butik?group=${gId}`;
+      if (shopState.brand) url += `${url.includes("?") ? "&" : "?"}brand=${encodeURIComponent(shopState.brand)}`;
+      if (shopState.inStock) url += `${url.includes("?") ? "&" : "?"}stock=1`;
       history.replaceState(null, "", url);
     });
   });
@@ -698,11 +727,13 @@ function productView(id) {
     .sort((a, b) => Number(b.stock) - Number(a.stock) || b.price - a.price).slice(0, 4);
   document.title = `${p.name} — PP PINGIS`;
   const { cleanDesc, stats, badges } = parseSpecs(p.desc);
+  const parentGroup = CATEGORY_GROUPS.find(g => g.kinds.includes(p.kind));
+  const groupCrumb = parentGroup ? `<a href="#/butik?group=${parentGroup.id}">${esc(parentGroup.name)}</a> / ` : "";
 
   app.innerHTML = `
   <div class="view pdp wrap">
     <nav class="pdp__crumbs mono-label" aria-label="Brödsmulor">
-      <a href="#/">Hem</a> / <a href="#/butik">Butik</a> / <a href="#/butik?kind=${encodeURIComponent(p.kind)}">${esc(p.kind)}</a> / <span style="color:var(--ink-dim)">${esc(p.name)}</span>
+      <a href="#/">Hem</a> / <a href="#/butik">Butik</a> / ${groupCrumb}<a href="#/butik?group=${parentGroup ? parentGroup.id : 'all'}&kind=${encodeURIComponent(p.kind)}">${esc(p.kind)}</a> / <span style="color:var(--ink-dim)">${esc(p.name)}</span>
     </nav>
     <div class="pdp__grid">
       <div class="pdp__gallery">
@@ -835,7 +866,14 @@ function route() {
     heroParallax();
     window.scrollTo({ top: 0, behavior: "instant" });
   } else if (path === "/butik") {
-    $("[data-nav='shop']")?.classList.add("is-active");
+    const grp = params.get("group") || (params.get("kind") ? CATEGORY_GROUPS.find(g => g.kinds.includes(params.get("kind")))?.id : "");
+    if (grp && $(`[data-nav='${grp}']`)) {
+      $(`[data-nav='${grp}']`)?.classList.add("is-active");
+      $(`[data-mob-nav='${grp}']`)?.classList.add("is-active");
+    } else {
+      $("[data-nav='shop']")?.classList.add("is-active");
+      $("[data-mob-nav='shop']")?.classList.add("is-active");
+    }
     shopView(params);
     window.scrollTo({ top: 0, behavior: "instant" });
   } else if (path.startsWith("/produkt/")) {
