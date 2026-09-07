@@ -182,14 +182,22 @@ function checkout() {
   location.href = `mailto:Info@pp-pingis.se?subject=${encodeURIComponent("Beställning via pp-pingis.se")}&body=${encodeURIComponent(body)}`;
 }
 
-/* cart drawer open/close */
-const drawer = $("#cartDrawer"), scrim = $("#scrim");
-function openCart() { renderCart(); drawer.classList.add("is-open"); drawer.setAttribute("aria-hidden", "false"); scrim.hidden = false; document.body.style.overflow = "hidden"; }
-function closeCart() { drawer.classList.remove("is-open"); drawer.setAttribute("aria-hidden", "true"); scrim.hidden = true; document.body.style.overflow = ""; }
-$("#cartToggle").addEventListener("click", openCart);
-$("#cartClose").addEventListener("click", closeCart);
-scrim.addEventListener("click", closeCart);
-document.addEventListener("keydown", e => { if (e.key === "Escape") { closeCart(); closeSearch(); closeLightbox(); } });
+/* drawers & modals */
+const drawer = $("#cartDrawer"), scrim = $("#scrim"), mobMenu = $("#mobMenu");
+function openCart() { closeMenu(); closeSearch(); renderCart(); drawer.classList.add("is-open"); drawer.setAttribute("aria-hidden", "false"); scrim.hidden = false; document.body.style.overflow = "hidden"; }
+function closeCart() { drawer.classList.remove("is-open"); drawer.setAttribute("aria-hidden", "true"); if (!mobMenu?.classList.contains("is-open")) { scrim.hidden = true; document.body.style.overflow = ""; } }
+
+function openMenu() { closeCart(); closeSearch(); mobMenu?.classList.add("is-open"); mobMenu?.setAttribute("aria-hidden", "false"); scrim.hidden = false; document.body.style.overflow = "hidden"; $("#menuToggle")?.setAttribute("aria-expanded", "true"); }
+function closeMenu() { mobMenu?.classList.remove("is-open"); mobMenu?.setAttribute("aria-hidden", "true"); if (!drawer.classList.contains("is-open")) { scrim.hidden = true; document.body.style.overflow = ""; } $("#menuToggle")?.setAttribute("aria-expanded", "false"); }
+
+$("#cartToggle")?.addEventListener("click", openCart);
+$("#cartClose")?.addEventListener("click", closeCart);
+$("#menuToggle")?.addEventListener("click", () => mobMenu?.classList.contains("is-open") ? closeMenu() : openMenu());
+$("#menuClose")?.addEventListener("click", closeMenu);
+scrim?.addEventListener("click", () => { closeCart(); closeMenu(); });
+mobMenu?.addEventListener("click", e => { if (e.target.closest("a")) closeMenu(); });
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") { closeCart(); closeMenu(); closeSearch(); closeLightbox(); } });
 
 $("#cartItems").addEventListener("click", e => {
   const inc = e.target.closest("[data-inc]"), dec = e.target.closest("[data-dec]"), rm = e.target.closest("[data-rm]");
@@ -530,20 +538,22 @@ function shopView(params) {
       </div>
       <div class="filters__row">
         <div class="filters__chips" id="filtersChips"></div>
-        <button class="chip chip--toggle ${shopState.inStock ? "is-on" : ""}" id="stockFilterBtn" type="button" aria-pressed="${shopState.inStock}">
-          <span class="chip__dot"></span> Endast i lager
-        </button>
-        <input class="filters__search" type="search" id="shopSearch" placeholder="Filtrera …" value="${esc(shopState.q)}" aria-label="Filtrera produkter">
-        <select class="filters__select" id="brandSelect" aria-label="Varumärke">
-          <option value="">Alla märken</option>
-          ${brands.map(b => `<option ${b === shopState.brand ? "selected" : ""}>${esc(b)}</option>`).join("")}
-        </select>
-        <select class="filters__select" id="sortSelect" aria-label="Sortera">
-          <option value="pop">Populärast</option>
-          <option value="price-asc">Pris: lägst först</option>
-          <option value="price-desc">Pris: högst först</option>
-          <option value="name">Namn A–Ö</option>
-        </select>
+        <div class="filters__controls">
+          <button class="chip chip--toggle ${shopState.inStock ? "is-on" : ""}" id="stockFilterBtn" type="button" aria-pressed="${shopState.inStock}">
+            <span class="chip__dot"></span> Endast i lager
+          </button>
+          <input class="filters__search" type="search" id="shopSearch" placeholder="Filtrera …" value="${esc(shopState.q)}" aria-label="Filtrera produkter">
+          <select class="filters__select" id="brandSelect" aria-label="Varumärke">
+            <option value="">Alla märken</option>
+            ${brands.map(b => `<option ${b === shopState.brand ? "selected" : ""}>${esc(b)}</option>`).join("")}
+          </select>
+          <select class="filters__select" id="sortSelect" aria-label="Sortera">
+            <option value="pop">Populärast</option>
+            <option value="price-asc">Pris: lägst först</option>
+            <option value="price-desc">Pris: högst först</option>
+            <option value="name">Namn A–Ö</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -810,13 +820,15 @@ function route() {
   const hash = location.hash || "#/";
   const [path, qs] = hash.slice(1).split("?");
   const params = new URLSearchParams(qs || "");
-  closeCart(); closeSearch();
+  closeCart(); closeMenu(); closeSearch(); closeLightbox();
 
   $$("[data-nav]").forEach(a => a.classList.remove("is-active"));
+  $$("[data-mob-nav]").forEach(a => a.classList.remove("is-active"));
   document.title = "PP PINGIS — Bordtennis på allvar";
 
   if (path === "/" || path === "") {
     $("[data-nav='home']")?.classList.add("is-active");
+    $("[data-mob-nav='home']")?.classList.add("is-active");
     app.innerHTML = homeView();
     bindQuickAdd(app);
     observeReveals();

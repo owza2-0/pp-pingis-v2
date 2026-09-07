@@ -43,6 +43,9 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 7h12l1.5 13.5a1 1 0 0 1-1 1.1H5.5a1 1 0 0 1-1-1.1L6 7Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>
       <span class="nav__cartcount" id="cartCount" hidden>0</span>
     </button>
+    <button class="nav__menubtn" id="menuToggle" aria-label="Öppna mobilmeny" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
   </div>
 </header>
 
@@ -97,6 +100,41 @@
   <div class="cart__ship" id="cartShip"></div>
   <div class="cart__items" id="cartItems"></div>
   <div class="cart__foot" id="cartFoot"></div>
+</aside>
+<aside class="mob-menu" id="mobMenu" aria-label="Mobilnavigering" aria-hidden="true">
+  <div class="mob-menu__head">
+    <a class="nav__logo" href="#/" aria-label="PP Pingis">
+      <span class="nav__logo-ball"></span>PP<em>PINGIS</em>
+    </a>
+    <button class="mob-menu__close" id="menuClose" aria-label="Stäng meny">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="mob-menu__body">
+    <div class="mob-menu__section">
+      <div class="mono-label mob-menu__title">Meny</div>
+      <a href="#/" class="mob-link" data-mob-nav="home">Hem</a>
+      <a href="#/butik" class="mob-link" data-mob-nav="shop">Alla produkter</a>
+      <a href="#/butik?kind=Stommar" class="mob-link" data-mob-nav="blades">Stommar</a>
+      <a href="#/butik?kind=Gummiplattor" class="mob-link" data-mob-nav="rubbers">Gummiplattor</a>
+      <a href="#/butik?kind=F%C3%A4rdiga%20racketar" class="mob-link">Färdiga racketar</a>
+      <a href="#/butik?kind=Bollar" class="mob-link">Bollar</a>
+      <a href="#/butik?kind=Kl%C3%A4der%20%26%20skor" class="mob-link">Kläder & skor</a>
+      <a href="#/butik?kind=Racketv%C3%A5rd%20%26%20lim" class="mob-link">Racketvård & lim</a>
+    </div>
+    <div class="mob-menu__footer">
+      <div class="mono-label mob-menu__title">Personlig service</div>
+      <a class="mob-menu__contact-btn" href="tel:+46700316655">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        070-031 66 55
+      </a>
+      <a class="mob-menu__contact-btn" href="mailto:Info@pp-pingis.se">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        Info@pp-pingis.se
+      </a>
+      <span class="mob-menu__badge">Fri frakt över 1 249 kr · Snabb leverans</span>
+    </div>
+  </div>
 </aside>
 <div class="scrim" id="scrim" hidden></div>
 
