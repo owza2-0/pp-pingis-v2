@@ -25,20 +25,19 @@ const saveCart = () => localStorage.setItem(CART_KEY, JSON.stringify(cart));
 const cartCount = () => cart.reduce((n, i) => n + i.qty, 0);
 const cartTotal = () => cart.reduce((n, i) => n + i.qty * (BY_ID.get(i.id)?.price || 0), 0);
 
-function addToCart(id, qty = 1) {
-  const row = cart.find(i => i.id === id);
-  if (row) row.qty += qty; else cart.push({ id, qty });
+function addToCart(id, qty = 1, note = "") {
+  const row = cart.find(i => i.id === id && (i.note || "") === note);
+  if (row) row.qty += qty; else cart.push({ id, qty, ...(note ? { note } : {}) });
   saveCart(); renderCart();
   const p = BY_ID.get(id);
   toast(`${p ? p.name : "Produkten"} ligger i varukorgen`);
   bumpCartIcon();
 }
 
-function setQty(id, qty) {
-  const row = cart.find(i => i.id === id);
-  if (!row) return;
-  row.qty = qty;
-  if (row.qty <= 0) cart = cart.filter(i => i.id !== id);
+function setQtyByIndex(idx, qty) {
+  if (!cart[idx]) return;
+  cart[idx].qty = qty;
+  if (cart[idx].qty <= 0) cart.splice(idx, 1);
   saveCart(); renderCart();
 }
 
@@ -68,7 +67,7 @@ function renderCart() {
     return;
   }
 
-  items.innerHTML = cart.map(i => {
+  items.innerHTML = cart.map((i, idx) => {
     const p = BY_ID.get(i.id);
     if (!p) return "";
     return `
@@ -76,19 +75,36 @@ function renderCart() {
       <a class="citem__img" href="#/produkt/${p.id}"><img src="${img(p.imgs[0])}" alt="${esc(p.name)}" loading="lazy"></a>
       <div>
         <div class="citem__name">${esc(p.name)}</div>
+        ${i.note ? `<div style="font-family:var(--font-mono);font-size:11px;color:var(--accent);margin:2px 0 4px;line-height:1.3;">✦ ${esc(i.note)}</div>` : ""}
         <div class="citem__price">${kr(p.price)} / st</div>
         <div class="citem__row">
           <span class="citem__qty">
-            <button data-dec="${p.id}" aria-label="Minska">−</button>
+            <button data-cdec="${idx}" aria-label="Minska">−</button>
             <output>${i.qty}</output>
-            <button data-inc="${p.id}" aria-label="Öka">+</button>
+            <button data-cinc="${idx}" aria-label="Öka">+</button>
           </span>
-          <button class="citem__rm" data-rm="${p.id}">Ta bort</button>
+          <button class="citem__rm" data-crm="${idx}">Ta bort</button>
         </div>
       </div>
       <div class="citem__total">${kr(p.price * i.qty)}</div>
     </div>`;
   }).join("");
+
+  items.onclick = e => {
+    const dec = e.target.closest("[data-cdec]");
+    const inc = e.target.closest("[data-cinc]");
+    const rm = e.target.closest("[data-crm]");
+    if (dec) {
+      const idx = parseInt(dec.dataset.cdec, 10);
+      setQtyByIndex(idx, (cart[idx]?.qty || 1) - 1);
+    } else if (inc) {
+      const idx = parseInt(inc.dataset.cinc, 10);
+      setQtyByIndex(idx, (cart[idx]?.qty || 0) + 1);
+    } else if (rm) {
+      const idx = parseInt(rm.dataset.crm, 10);
+      setQtyByIndex(idx, 0);
+    }
+  };
 
   const total = cartTotal();
   const left = Math.max(0, FREE_SHIP - total);
@@ -120,7 +136,8 @@ function renderCart() {
 function formatOrderText() {
   const lines = cart.map(i => {
     const p = BY_ID.get(i.id);
-    return p ? `${i.qty} × ${p.name} — ${kr(p.price * i.qty)} (art.nr ${p.id})` : "";
+    const note = i.note ? `\n    ✦ Specialanpassning: ${i.note}` : "";
+    return p ? `${i.qty} × ${p.name} — ${kr(p.price * i.qty)} (art.nr ${p.id})${note}` : "";
   }).filter(Boolean);
   return [
     "Beställning till PP-Pingis (info@pp-pingis.se):",
@@ -430,7 +447,7 @@ function homeView() {
         <p class="hero__sub">Stommar, gummi och racketar från världens bästa märken — handplockade av folk som själva står vid bordet. Allt i lager, allt på riktigt.</p>
         <div class="hero__ctas">
           <a class="btn btn--accent" href="#/butik">Shoppa allt ${arrowSvg}</a>
-          <a class="btn btn--ghost" href="#/butik?group=rackets">Utforska stommar & gummi</a>
+          <a class="btn btn--ghost" href="#/bygg-racket"><span style="color:var(--accent)">✦</span> Bygg racket i 3D</a>
         </div>
         <div class="hero__meta">
           <div><b>${PRODUCTS.length}+</b><span>Produkter</span></div>
@@ -440,8 +457,23 @@ function homeView() {
       </div>
       <div class="hero__stage">
         <div class="hero__ring"></div>
-        <div class="hero__panel">
+        <div class="hero__panel" id="heroPanel">
+          <div class="hero__canvas3d" id="hero3dContainer" title="Dra för att rotera racket i 3D"></div>
           <img class="hero__product" id="heroProduct" src="assets/img/hero.pic.webp" alt="${esc(hero.name)}">
+        </div>
+        <div class="hero__tools">
+          <button class="btn-tool" id="heroFlipBtn" title="Vänd racket (Forehand / Backhand)" type="button">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v-3a4 4 0 0 1 4-4h12M16 1 20 5l-4 4M20 12v3a4 4 0 0 1-4 4H4M8 23l-4-4 4-4"/></svg>
+            <span>Vänd</span>
+          </button>
+          <button class="btn-tool" id="heroBounceBtn" title="Studsa 40+ bordtennisboll" type="button">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="7" r="2.5" fill="currentColor"/></svg>
+            <span>Studsa</span>
+          </button>
+          <a class="btn-tool btn-tool--accent" href="#/bygg-racket" title="Öppna 3D Racketverkstad">
+            <span>Bygg 3D</span>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
         <a class="hero__tag" href="#/produkt/${hero.id}">
           <div class="mono-label">Månadens stomme</div>
@@ -799,6 +831,14 @@ function productView(id) {
             ${p.stock ? "Lägg i varukorg" : "Slutsåld"} ${p.stock ? bagSvg : ""}
           </button>
         </div>
+        ${p.kind === "Stommar" ? `
+        <a href="#/bygg-racket?blade=${p.id}" class="btn btn--ghost" style="width:100%;justify-content:center;margin-top:10px;margin-bottom:14px;gap:8px;font-size:13px;">
+          <span style="color:var(--accent)">✦</span> Bygg komplett racket med denna stomme i 3D
+        </a>` : ""}
+        ${p.kind === "Gummiplattor" ? `
+        <a href="#/bygg-racket?rubber=${p.id}" class="btn btn--ghost" style="width:100%;justify-content:center;margin-top:10px;margin-bottom:14px;gap:8px;font-size:13px;">
+          <span style="color:var(--accent)">✦</span> Montera detta gummi i 3D-Racketverkstaden
+        </a>` : ""}
         <div class="mono-label" style="margin-bottom:8px">Art.nr ${p.id} · Fri frakt över 1 249 kr</div>
         <dl class="pdp__specs">
           <div class="pdp__spec"><dt>Kategori</dt><dd>${esc(p.kind)}</dd></div>
@@ -846,6 +886,744 @@ function productView(id) {
   window.scrollTo({ top: 0, behavior: "instant" });
 }
 
+/* ---------------- 3D HERO RACKET ---------------- */
+let hero3DInstance = null;
+
+function initHero3D() {
+  const container = $("#hero3dContainer");
+  const fallbackImg = $("#heroProduct");
+  const panel = $("#heroPanel");
+  if (!container) return;
+
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || !window.THREE || !window.PPRacket3D) {
+    if (panel) panel.classList.add("hero__panel--2d");
+    if (fallbackImg) fallbackImg.style.display = "block";
+    heroParallaxFallback();
+    return;
+  }
+
+  try {
+    if (hero3DInstance) {
+      hero3DInstance.dispose();
+      hero3DInstance = null;
+    }
+
+    hero3DInstance = new PPRacket3D.RacketViewer({
+      container: container,
+      mode: "hero",
+      bladeData: { name: "DONIC WALDNER OFF" },
+      fhData: { name: "BLUESTAR A1", color: "red", colorHex: "#d62020", spongeColor: "#1b74f0" },
+      bhData: { name: "BLUESTAR A2", color: "black", colorHex: "#18191c", spongeColor: "#1b74f0" },
+      edgeTapeData: { name: "DONIC · PP-PINGIS" }
+    });
+
+    if (fallbackImg) fallbackImg.style.display = "none";
+    if (panel) panel.classList.remove("hero__panel--2d");
+
+    $("#heroFlipBtn")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      hero3DInstance?.flipRacket();
+    });
+    $("#heroBounceBtn")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      hero3DInstance?.bounceBall();
+    });
+  } catch (err) {
+    console.warn("3D initialization failed, using 2D fallback:", err);
+    if (panel) panel.classList.add("hero__panel--2d");
+    if (fallbackImg) fallbackImg.style.display = "block";
+    heroParallaxFallback();
+  }
+}
+
+function heroParallaxFallback() {
+  const el = $("#heroProduct");
+  if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const stage = el.closest(".hero");
+  if (!stage) return;
+  stage.addEventListener("mousemove", e => {
+    const r = stage.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    el.style.translate = `${x * 34}px ${y * 22}px`;
+  });
+  stage.addEventListener("mouseleave", () => { el.style.translate = "0 0"; });
+}
+
+/* ---------------- 3D RACKETVERKSTAD (CUSTOM STUDIO) ---------------- */
+let workshop3DInstance = null;
+
+function workshopView(params) {
+  if (hero3DInstance) {
+    hero3DInstance.dispose();
+    hero3DInstance = null;
+  }
+  if (workshop3DInstance) {
+    workshop3DInstance.dispose();
+    workshop3DInstance = null;
+  }
+
+  const allBlades = PRODUCTS.filter(p => p.kind === "Stommar");
+  const allRubbers = PRODUCTS.filter(p => p.kind === "Gummiplattor");
+  const allTapes = PRODUCTS.filter(p => p.cats.includes("Kantband") || p.name.toLowerCase().includes("kantband"));
+
+  const initialBladeId = params.get("blade") || HERO_ID;
+  const initialRubberId = params.get("rubber");
+
+  let selectedBlade = BY_ID.get(initialBladeId) || allBlades[0];
+  let selectedFh = (initialRubberId && BY_ID.get(initialRubberId)) || allRubbers.find(r => r.name.includes("BlueStar A1")) || allRubbers[0];
+  let selectedBh = allRubbers.find(r => r.name.includes("BlueStar A2")) || allRubbers[1] || allRubbers[0];
+  let selectedTape = allTapes[0] || { id: "tape-0", name: "PP-Pingis Kantband 12mm", price: 0 };
+
+  let currentStep = 1;
+  let fhColor = "red";
+  let fhThickness = "Max (2.2 mm)";
+  let bhThickness = "2.0 mm";
+  let gripType = "Konkav (Flared)";
+  let freeAssembly = true;
+
+  let bladeFilterBrand = "all";
+  let fhFilterBrand = "all";
+  let bhFilterBrand = "all";
+
+  const RUBBER_COLORS = [
+    { id: "red", name: "Röd (Klassisk)", hex: "#d62020", sponge: "#1b74f0" },
+    { id: "blue", name: "Blå (Modern ITTF)", hex: "#1d61d8", sponge: "#ff6600" },
+    { id: "pink", name: "Rosa (ITTF)", hex: "#e03380", sponge: "#ffaa00" },
+    { id: "green", name: "Grön (ITTF)", hex: "#1ca04e", sponge: "#ff9900" },
+    { id: "black", name: "Svart", hex: "#16171a", sponge: "#1b74f0" }
+  ];
+
+  function calcComboStats() {
+    const bStats = parseSpecs(selectedBlade.desc).stats;
+    const fStats = parseSpecs(selectedFh.desc).stats;
+    const bhStats = parseSpecs(selectedBh.desc).stats;
+
+    const getStat = (list, key, fallback) => {
+      const s = list.find(x => x.key.toLowerCase() === key.toLowerCase());
+      return s ? s.pct : fallback;
+    };
+
+    const bSpeed = getStat(bStats, "Fart", 85);
+    const fSpeed = getStat(fStats, "Fart", 92);
+    const bhSpeed = getStat(bhStats, "Fart", 88);
+
+    const bCtrl = getStat(bStats, "Kontroll", 75);
+    const fCtrl = getStat(fStats, "Kontroll", 65);
+    const bhCtrl = getStat(bhStats, "Kontroll", 70);
+
+    const fSpin = getStat(fStats, "Skruv", 95);
+    const bhSpin = getStat(bhStats, "Skruv", 92);
+
+    const totalSpeed = Math.round(bSpeed * 0.48 + fSpeed * 0.32 + bhSpeed * 0.2);
+    const totalSpin = Math.round(fSpin * 0.55 + bhSpin * 0.45);
+    const totalControl = Math.round(bCtrl * 0.55 + (fCtrl + bhCtrl) * 0.225);
+
+    let bWeight = 85;
+    const wMatch = selectedBlade.desc.match(/vikt[:\s]+(?:ca\.?\s*)?(\d+)/i);
+    if (wMatch) bWeight = parseInt(wMatch[1], 10);
+    const totalWeight = bWeight + 92 + 3;
+
+    return {
+      speed: { pct: totalSpeed, val: (totalSpeed / 10).toFixed(1) },
+      spin: { pct: totalSpin, val: (totalSpin / 10).toFixed(1) },
+      control: { pct: totalControl, val: (totalControl / 10).toFixed(1) },
+      weight: { val: `${totalWeight} g`, pct: Math.min(100, Math.round((totalWeight / 220) * 100)) }
+    };
+  }
+
+  function getBrands(items) {
+    const set = new Set();
+    items.forEach(i => { if (i.brand) set.add(i.brand); });
+    return ["all", ...Array.from(set).sort()];
+  }
+  const bladeBrands = getBrands(allBlades);
+  const rubberBrands = getBrands(allRubbers);
+
+  app.innerHTML = `
+  <div class="view workshop wrap">
+    <div class="workshop__header">
+      <nav class="mono-label pdp__crumbs" style="margin-bottom:14px;">
+        <a href="#/">Hem</a> / <a href="#/butik?group=rackets">Stommar &amp; Gummi</a> / <span style="color:var(--ink-dim)">Racketverkstad 3D</span>
+      </nav>
+      <h1 class="workshop__title display">PP-Pingis <em>Racketverkstad</em></h1>
+      <p class="workshop__lead">Skräddarsy ditt bordtennisracket i 3D. Välj stomme och applicera gummiplattor med valfri färg och svamptjocklek. Vi bjuder på professionell montering, limning med VOC-fritt tävlingslim och kantband!</p>
+    </div>
+
+    <div class="workshop__grid">
+      <!-- 3D Studio Viewport -->
+      <div class="workshop__stage-wrap">
+        <div class="workshop__viewport">
+          <div class="workshop__viewport-hint"><i></i><span>3D Studio · 360° vy</span></div>
+          <div class="workshop__viewport-canvas" id="workshopCanvas" title="Dra för att rotera racket i 3D"></div>
+          <div class="workshop__3d-tools">
+            <button class="btn-tool" id="wsFlipBtn" type="button" title="Vänd racket">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v-3a4 4 0 0 1 4-4h12M16 1 20 5l-4 4M20 12v3a4 4 0 0 1-4 4H4M8 23l-4-4 4-4"/></svg>
+              <span>Vänd</span>
+            </button>
+            <button class="btn-tool" id="wsExplodeBtn" type="button" title="Sprängskiss / Visa alla lager i 3D">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              <span id="wsExplodeLabel">Lager</span>
+            </button>
+            <button class="btn-tool" id="wsBounceBtn" type="button" title="Studsa 40+ boll med ljud">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="7" r="2.5" fill="currentColor"/></svg>
+              <span>Studsa</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="workshop__stats-card" id="wsStatsCard"></div>
+      </div>
+
+      <!-- Configurator Controls -->
+      <div class="workshop__controls">
+        <div class="workshop__stepper" role="tablist">
+          <button class="step-tab ${currentStep === 1 ? 'is-active' : ''}" data-step="1">
+            <span class="step-tab__num">STEG 1</span>
+            <span class="step-tab__title">Stomme</span>
+          </button>
+          <button class="step-tab ${currentStep === 2 ? 'is-active' : ''}" data-step="2">
+            <span class="step-tab__num">STEG 2</span>
+            <span class="step-tab__title">Forehand</span>
+          </button>
+          <button class="step-tab ${currentStep === 3 ? 'is-active' : ''}" data-step="3">
+            <span class="step-tab__num">STEG 3</span>
+            <span class="step-tab__title">Backhand</span>
+          </button>
+          <button class="step-tab ${currentStep === 4 ? 'is-active' : ''}" data-step="4">
+            <span class="step-tab__num">STEG 4</span>
+            <span class="step-tab__title">Montering</span>
+          </button>
+        </div>
+
+        <div class="workshop__step-content" id="wsStepContent"></div>
+      </div>
+    </div>
+  </div>`;
+
+  // Init 3D Engine
+  const container = $("#workshopCanvas");
+  if (container && window.THREE && window.PPRacket3D) {
+    const curFhColor = RUBBER_COLORS.find(c => c.id === fhColor) || RUBBER_COLORS[0];
+    workshop3DInstance = new PPRacket3D.RacketViewer({
+      container,
+      mode: "studio",
+      bladeData: { name: selectedBlade.name },
+      fhData: { name: selectedFh.name, color: fhColor, colorHex: curFhColor.hex, spongeColor: curFhColor.sponge },
+      bhData: { name: selectedBh.name, color: "black", colorHex: "#16171a", spongeColor: "#1b74f0" },
+      edgeTapeData: { name: selectedTape.name || "PP-PINGIS" }
+    });
+
+    $("#wsFlipBtn")?.addEventListener("click", () => workshop3DInstance?.flipRacket());
+    $("#wsExplodeBtn")?.addEventListener("click", () => {
+      const active = workshop3DInstance?.toggleExplodedView();
+      $("#wsExplodeBtn")?.classList.toggle("btn-tool--active", active);
+      $("#wsExplodeLabel").textContent = active ? "Ihop" : "Lager";
+    });
+    $("#wsBounceBtn")?.addEventListener("click", () => workshop3DInstance?.bounceBall());
+  }
+
+  function renderStats() {
+    const stats = calcComboStats();
+    const el = $("#wsStatsCard");
+    if (!el) return;
+    el.innerHTML = `
+      <div class="workshop__stats-head">
+        <h4>Beräknade Spelegenskaper</h4>
+        <span class="mono-label" style="color:var(--accent)">Pro-Kombination</span>
+      </div>
+      <div class="workshop__stats-grid">
+        <div class="stat-box">
+          <div class="stat-box__label"><span>Fart</span><b>${stats.speed.val}/10</b></div>
+          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" style="width:${stats.speed.pct}%"></div></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box__label"><span>Skruv</span><b>${stats.spin.val}/10</b></div>
+          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" style="width:${stats.spin.pct}%"></div></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box__label"><span>Kontroll</span><b>${stats.control.val}/10</b></div>
+          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" style="width:${stats.control.pct}%"></div></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box__label"><span>Vikt ca</span><b>${stats.weight.val}</b></div>
+          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" style="width:${stats.weight.pct}%"></div></div>
+        </div>
+      </div>
+    `;
+  }
+
+  function setStep(newStep) {
+    currentStep = newStep;
+    $$(".step-tab").forEach(tab => {
+      tab.classList.toggle("is-active", parseInt(tab.dataset.step, 10) === currentStep);
+    });
+
+    // Auto-vrid 3D-racketen om man går till backhand
+    if (currentStep === 3 && !workshop3DInstance?.isFlipped) {
+      workshop3DInstance?.flipRacket();
+    } else if ((currentStep === 1 || currentStep === 2) && workshop3DInstance?.isFlipped) {
+      workshop3DInstance?.flipRacket();
+    }
+
+    renderStepContent();
+  }
+
+  function renderStepContent() {
+    const content = $("#wsStepContent");
+    if (!content) return;
+
+    if (currentStep === 1) {
+      // STEG 1: STOMME
+      const filteredBlades = bladeFilterBrand === "all" ? allBlades : allBlades.filter(b => b.brand === bladeFilterBrand);
+      content.innerHTML = `
+        <div class="step-sec__head">
+          <div>
+            <h3>Välj Stomme (Träblad)</h3>
+            <p>Stommen är rackets ryggrad och avgör grundfart, styvhet och vibrationskänsla.</p>
+          </div>
+          <span class="mono-label">${filteredBlades.length} stommar</span>
+        </div>
+
+        <div class="workshop__subfilter">
+          ${bladeBrands.map(b => `
+            <button class="wchip ${bladeFilterBrand === b ? 'is-active' : ''}" data-bfilter="${b}">
+              ${b === "all" ? "Alla märken" : b}
+            </button>
+          `).join("")}
+        </div>
+
+        <div class="workshop__cards-grid">
+          ${filteredBlades.map(b => {
+            const isSel = b.id === selectedBlade.id;
+            const sp = parseSpecs(b.desc).stats;
+            const fSpeed = sp.find(s => s.key === "Fart")?.val;
+            const fCtrl = sp.find(s => s.key === "Kontroll")?.val;
+            return `
+            <div class="wcard ${isSel ? 'is-selected' : ''}" data-blade-id="${b.id}">
+              <div class="wcard__check">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="wcard__imgwrap">
+                <img src="${img(b.imgs[0])}" alt="${esc(b.name)}" loading="lazy">
+              </div>
+              <div class="wcard__meta">
+                <span class="wcard__brand">${esc(b.brand || 'Stomme')}</span>
+                <div class="wcard__name">${esc(b.name)}</div>
+                <div class="wcard__price">${kr(b.price)}</div>
+                <div class="wcard__specs">
+                  ${fSpeed ? `<span class="wcard__badge">Fart: ${fSpeed}</span>` : ""}
+                  ${fCtrl ? `<span class="wcard__badge">Kontroll: ${fCtrl}</span>` : ""}
+                </div>
+              </div>
+            </div>`;
+          }).join("")}
+        </div>
+
+        <button class="workshop__next-btn" id="toFhBtn" type="button">
+          <span>Nästa steg: Välj Forehand-gummi</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      `;
+
+      content.querySelectorAll("[data-bfilter]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          bladeFilterBrand = btn.dataset.bfilter;
+          renderStepContent();
+        });
+      });
+
+      content.querySelectorAll("[data-blade-id]").forEach(card => {
+        card.addEventListener("click", () => {
+          const id = card.dataset.bladeId;
+          const found = BY_ID.get(id);
+          if (found) {
+            selectedBlade = found;
+            workshop3DInstance?.updateBlade({ name: selectedBlade.name });
+            renderStats();
+            renderStepContent();
+          }
+        });
+      });
+
+      $("#toFhBtn")?.addEventListener("click", () => setStep(2));
+
+    } else if (currentStep === 2) {
+      // STEG 2: FOREHAND
+      const filteredRubbers = fhFilterBrand === "all" ? allRubbers : allRubbers.filter(r => r.brand === fhFilterBrand);
+      content.innerHTML = `
+        <div class="step-sec__head">
+          <div>
+            <h3>Välj Forehand-gummi</h3>
+            <p>Välj din primära attackplatta, svamptjocklek och önskad gummifärg.</p>
+          </div>
+          <span class="mono-label">${filteredRubbers.length} gummin</span>
+        </div>
+
+        <div class="rubber-options">
+          <div class="option-row">
+            <span class="option-label">Gummifärg (ITTF-godkänd):</span>
+            <div class="swatches">
+              ${RUBBER_COLORS.map(c => `
+                <button class="swatch-btn ${fhColor === c.id ? 'is-active' : ''}" data-fh-color="${c.id}" type="button">
+                  <i style="background:${c.hex}"></i>
+                  <span>${c.name.split(" ")[0]}</span>
+                </button>
+              `).join("")}
+            </div>
+          </div>
+
+          <div class="option-row">
+            <span class="option-label">Svamptjocklek:</span>
+            <div class="thickness-group">
+              <button class="thick-btn ${fhThickness.startsWith('2.0') ? 'is-active' : ''}" data-fh-thick="2.0 mm" type="button">2.0 mm (Mer kontroll)</button>
+              <button class="thick-btn ${fhThickness.startsWith('Max') ? 'is-active' : ''}" data-fh-thick="Max (2.2 mm)" type="button">Max (Maximal fart)</button>
+            </div>
+          </div>
+
+          <button class="btn-apply-rubber" id="applyFhBtn" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m10 15 5-3-5-3v6z"/></svg>
+            <span>Rulla på ${esc(selectedFh.name)} på Forehand</span>
+          </button>
+        </div>
+
+        <div class="workshop__subfilter">
+          ${rubberBrands.map(b => `
+            <button class="wchip ${fhFilterBrand === b ? 'is-active' : ''}" data-fhb="${b}">
+              ${b === "all" ? "Alla märken" : b}
+            </button>
+          `).join("")}
+        </div>
+
+        <div class="workshop__cards-grid">
+          ${filteredRubbers.map(r => {
+            const isSel = r.id === selectedFh.id;
+            const sp = parseSpecs(r.desc).stats;
+            const fSpeed = sp.find(s => s.key === "Fart")?.val;
+            const fSpin = sp.find(s => s.key === "Skruv")?.val;
+            return `
+            <div class="wcard ${isSel ? 'is-selected' : ''}" data-fh-id="${r.id}">
+              <div class="wcard__check">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="wcard__imgwrap">
+                <img src="${img(r.imgs[0])}" alt="${esc(r.name)}" loading="lazy">
+              </div>
+              <div class="wcard__meta">
+                <span class="wcard__brand">${esc(r.brand || 'Gummi')}</span>
+                <div class="wcard__name">${esc(r.name)}</div>
+                <div class="wcard__price">${kr(r.price)}</div>
+                <div class="wcard__specs">
+                  ${fSpeed ? `<span class="wcard__badge">Fart: ${fSpeed}</span>` : ""}
+                  ${fSpin ? `<span class="wcard__badge">Spinn: ${fSpin}</span>` : ""}
+                </div>
+              </div>
+            </div>`;
+          }).join("")}
+        </div>
+
+        <button class="workshop__next-btn" id="toBhBtn" type="button">
+          <span>Nästa steg: Välj Backhand-gummi</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      `;
+
+      content.querySelectorAll("[data-fh-color]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          fhColor = btn.dataset.fhColor;
+          const cur = RUBBER_COLORS.find(c => c.id === fhColor) || RUBBER_COLORS[0];
+          workshop3DInstance?.updateForehand({
+            name: selectedFh.name,
+            color: fhColor,
+            colorHex: cur.hex,
+            spongeColor: cur.sponge
+          });
+          renderStepContent();
+        });
+      });
+
+      content.querySelectorAll("[data-fh-thick]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          fhThickness = btn.dataset.fhThick;
+          renderStepContent();
+        });
+      });
+
+      content.querySelectorAll("[data-fhb]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          fhFilterBrand = btn.dataset.fhb;
+          renderStepContent();
+        });
+      });
+
+      content.querySelectorAll("[data-fh-id]").forEach(card => {
+        card.addEventListener("click", () => {
+          const id = card.dataset.fhId;
+          const found = BY_ID.get(id);
+          if (found) {
+            selectedFh = found;
+            const cur = RUBBER_COLORS.find(c => c.id === fhColor) || RUBBER_COLORS[0];
+            workshop3DInstance?.updateForehand({
+              name: selectedFh.name,
+              color: fhColor,
+              colorHex: cur.hex,
+              spongeColor: cur.sponge
+            });
+            renderStats();
+            renderStepContent();
+          }
+        });
+      });
+
+      $("#applyFhBtn")?.addEventListener("click", () => {
+        workshop3DInstance?.applyRubberAnimation("fh");
+        toast(`Gummit ${selectedFh.name} rullades på forehand!`);
+      });
+
+      $("#toBhBtn")?.addEventListener("click", () => setStep(3));
+
+    } else if (currentStep === 3) {
+      // STEG 3: BACKHAND
+      const filteredRubbers = bhFilterBrand === "all" ? allRubbers : allRubbers.filter(r => r.brand === bhFilterBrand);
+      content.innerHTML = `
+        <div class="step-sec__head">
+          <div>
+            <h3>Välj Backhand-gummi (Svart)</h3>
+            <p>I tävlingsbordtennis ska ena sidan alltid vara svart när den andra är färgad.</p>
+          </div>
+          <span class="mono-label">${filteredRubbers.length} gummin</span>
+        </div>
+
+        <div class="rubber-options">
+          <div class="option-row">
+            <span class="option-label">Färg:</span>
+            <div class="swatches">
+              <span class="swatch-btn is-active"><i style="background:#16171a"></i><span>Svart (Tävlingskrav)</span></span>
+            </div>
+          </div>
+
+          <div class="option-row">
+            <span class="option-label">Svamptjocklek:</span>
+            <div class="thickness-group">
+              <button class="thick-btn ${bhThickness.startsWith('2.0') ? 'is-active' : ''}" data-bh-thick="2.0 mm" type="button">2.0 mm (Optimal kontroll)</button>
+              <button class="thick-btn ${bhThickness.startsWith('Max') ? 'is-active' : ''}" data-bh-thick="Max (2.2 mm)" type="button">Max (Maximal fart)</button>
+            </div>
+          </div>
+
+          <button class="btn-apply-rubber" id="applyBhBtn" type="button">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m10 15 5-3-5-3v6z"/></svg>
+            <span>Rulla på ${esc(selectedBh.name)} på Backhand</span>
+          </button>
+        </div>
+
+        <div class="workshop__subfilter">
+          ${rubberBrands.map(b => `
+            <button class="wchip ${bhFilterBrand === b ? 'is-active' : ''}" data-bhb="${b}">
+              ${b === "all" ? "Alla märken" : b}
+            </button>
+          `).join("")}
+        </div>
+
+        <div class="workshop__cards-grid">
+          ${filteredRubbers.map(r => {
+            const isSel = r.id === selectedBh.id;
+            const sp = parseSpecs(r.desc).stats;
+            const fSpeed = sp.find(s => s.key === "Fart")?.val;
+            const fSpin = sp.find(s => s.key === "Skruv")?.val;
+            return `
+            <div class="wcard ${isSel ? 'is-selected' : ''}" data-bh-id="${r.id}">
+              <div class="wcard__check">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="wcard__imgwrap">
+                <img src="${img(r.imgs[0])}" alt="${esc(r.name)}" loading="lazy">
+              </div>
+              <div class="wcard__meta">
+                <span class="wcard__brand">${esc(r.brand || 'Gummi')}</span>
+                <div class="wcard__name">${esc(r.name)}</div>
+                <div class="wcard__price">${kr(r.price)}</div>
+                <div class="wcard__specs">
+                  ${fSpeed ? `<span class="wcard__badge">Fart: ${fSpeed}</span>` : ""}
+                  ${fSpin ? `<span class="wcard__badge">Spinn: ${fSpin}</span>` : ""}
+                </div>
+              </div>
+            </div>`;
+          }).join("")}
+        </div>
+
+        <button class="workshop__next-btn" id="toAssemblyBtn" type="button">
+          <span>Nästa steg: Kantband & Montering</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      `;
+
+      content.querySelectorAll("[data-bh-thick]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          bhThickness = btn.dataset.bhThick;
+          renderStepContent();
+        });
+      });
+
+      content.querySelectorAll("[data-bhb]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          bhFilterBrand = btn.dataset.bhb;
+          renderStepContent();
+        });
+      });
+
+      content.querySelectorAll("[data-bh-id]").forEach(card => {
+        card.addEventListener("click", () => {
+          const id = card.dataset.bhId;
+          const found = BY_ID.get(id);
+          if (found) {
+            selectedBh = found;
+            workshop3DInstance?.updateBackhand({
+              name: selectedBh.name,
+              color: "black",
+              colorHex: "#16171a",
+              spongeColor: "#1b74f0"
+            });
+            renderStats();
+            renderStepContent();
+          }
+        });
+      });
+
+      $("#applyBhBtn")?.addEventListener("click", () => {
+        workshop3DInstance?.applyRubberAnimation("bh");
+        toast(`Gummit ${selectedBh.name} rullades på backhand!`);
+      });
+
+      $("#toAssemblyBtn")?.addEventListener("click", () => setStep(4));
+
+    } else if (currentStep === 4) {
+      // STEG 4: MONTERING & KLART
+      const totalPrice = selectedBlade.price + selectedFh.price + selectedBh.price;
+      const fhColorName = (RUBBER_COLORS.find(c => c.id === fhColor)?.name || fhColor).split(" ")[0];
+
+      content.innerHTML = `
+        <div class="step-sec__head">
+          <div>
+            <h3>Montering & Sammanställning</h3>
+            <p>Välj greppform, kantband och låt oss göra ditt mästarracket spelklart!</p>
+          </div>
+          <span class="mono-label" style="color:var(--ok)">✓ Redo för limning</span>
+        </div>
+
+        <div class="rubber-options">
+          <div class="option-row">
+            <span class="option-label">Greppform på handtag:</span>
+            <div class="swatches">
+              ${["Konkav (Flared)", "Rak (Straight)", "Anatomisk"].map(g => `
+                <button class="swatch-btn ${gripType === g ? 'is-active' : ''}" data-grip="${g}" type="button">
+                  <span>${g}</span>
+                </button>
+              `).join("")}
+            </div>
+          </div>
+
+          <div class="option-row">
+            <span class="option-label">Skyddande kantband:</span>
+            <div class="swatches">
+              ${(allTapes.length ? allTapes.slice(0, 3) : [{ id: "tape-0", name: "Donic Kantband 12mm" }]).map(t => `
+                <button class="swatch-btn ${selectedTape.id === t.id ? 'is-active' : ''}" data-tape-id="${t.id}" type="button">
+                  <span>${t.name}</span>
+                </button>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+
+        <div class="assembly-badge">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          <div>
+            <h5>Kostnadsfri professionell montering ingår!</h5>
+            <p>Vi limmar dina gummin med godkänt vattenbaserat VOC-fritt tävlingslim, pressar med gummikavel, skär med rakblad för millimeterexakta kanter och applicerar skyddande kantband. Racket är klart för match direkt ur kartongen.</p>
+          </div>
+        </div>
+
+        <div class="workshop__summary-card">
+          <h4 style="font-size:16px;font-weight:800;letter-spacing:-0.01em;">Ditt Specialbyggda Racket</h4>
+          <div class="summary-table">
+            <div class="sum-row">
+              <span><b>Stomme:</b> ${esc(selectedBlade.name)} (${gripType})</span>
+              <span>${kr(selectedBlade.price)}</span>
+            </div>
+            <div class="sum-row">
+              <span><b>Forehand:</b> ${esc(selectedFh.name)} [${fhColorName}, ${fhThickness}]</span>
+              <span>${kr(selectedFh.price)}</span>
+            </div>
+            <div class="sum-row">
+              <span><b>Backhand:</b> ${esc(selectedBh.name)} [Svart, ${bhThickness}]</span>
+              <span>${kr(selectedBh.price)}</span>
+            </div>
+            <div class="sum-row sum-row--free">
+              <span><b>Kantband:</b> ${esc(selectedTape.name)}</span>
+              <span>0 kr (Ingår)</span>
+            </div>
+            <div class="sum-row sum-row--free">
+              <span><b>Professionell montering & lackning:</b></span>
+              <span>0 kr (GRATIS)</span>
+            </div>
+            <div class="sum-total">
+              <div>
+                <span>Totalt pris</span>
+                <div class="mono-label" style="color:var(--ok);font-size:11px;margin-top:2px;">✦ Fri frakt ingår</div>
+              </div>
+              <span class="price">${kr(totalPrice)}</span>
+            </div>
+          </div>
+
+          <button class="btn btn--accent btn--full" id="wsAddToCartBtn" type="button" style="padding:16px;font-size:15px;font-weight:800;justify-content:center;">
+            Lägg specialbyggt racket i varukorgen ${bagSvg}
+          </button>
+        </div>
+      `;
+
+      content.querySelectorAll("[data-grip]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          gripType = btn.dataset.grip;
+          renderStepContent();
+        });
+      });
+
+      content.querySelectorAll("[data-tape-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const tId = btn.dataset.tapeId;
+          const found = allTapes.find(t => t.id === tId) || { id: tId, name: btn.textContent.trim() };
+          selectedTape = found;
+          workshop3DInstance?.updateEdgeTape({ name: selectedTape.name });
+          renderStepContent();
+        });
+      });
+
+      $("#wsAddToCartBtn")?.addEventListener("click", () => {
+        const fhNote = `Forehand på specialracket: ${fhColorName} (${fhThickness})`;
+        const bhNote = `Backhand på specialracket: Svart (${bhThickness})`;
+        const bladeNote = `Specialbyggt racket (${gripType}). Professionellt monterat & limmat med ${selectedTape.name}.`;
+
+        addToCart(selectedBlade.id, 1, bladeNote);
+        addToCart(selectedFh.id, 1, fhNote);
+        addToCart(selectedBh.id, 1, bhNote);
+
+        toast(`Ditt specialbyggda ${selectedBlade.name}-racket ligger i varukorgen!`);
+        openCart();
+      });
+    }
+  }
+
+  // Stepper-klick
+  $$(".step-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      const s = parseInt(tab.dataset.step, 10);
+      setStep(s);
+    });
+  });
+
+  renderStats();
+  renderStepContent();
+}
+
 /* ---------------- router ---------------- */
 function route() {
   const hash = location.hash || "#/";
@@ -857,13 +1635,32 @@ function route() {
   $$("[data-mob-nav]").forEach(a => a.classList.remove("is-active"));
   document.title = "PP PINGIS — Bordtennis på allvar";
 
+  if (path !== "/" && path !== "") {
+    if (hero3DInstance) {
+      hero3DInstance.dispose();
+      hero3DInstance = null;
+    }
+  }
+  if (path !== "/bygg-racket") {
+    if (workshop3DInstance) {
+      workshop3DInstance.dispose();
+      workshop3DInstance = null;
+    }
+  }
+
   if (path === "/" || path === "") {
     $("[data-nav='home']")?.classList.add("is-active");
     $("[data-mob-nav='home']")?.classList.add("is-active");
     app.innerHTML = homeView();
     bindQuickAdd(app);
     observeReveals();
-    heroParallax();
+    initHero3D();
+    window.scrollTo({ top: 0, behavior: "instant" });
+  } else if (path === "/bygg-racket") {
+    $("[data-nav='workshop']")?.classList.add("is-active");
+    $("[data-mob-nav='workshop']")?.classList.add("is-active");
+    document.title = "PP PINGIS — Racketverkstad (Bygg eget racket i 3D)";
+    workshopView(params);
     window.scrollTo({ top: 0, behavior: "instant" });
   } else if (path === "/butik") {
     const grp = params.get("group") || (params.get("kind") ? CATEGORY_GROUPS.find(g => g.kinds.includes(params.get("kind")))?.id : "");
@@ -882,20 +1679,6 @@ function route() {
     app.innerHTML = homeView();
     observeReveals();
   }
-}
-
-/* hero mouse parallax */
-function heroParallax() {
-  const el = $("#heroProduct");
-  if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const stage = el.closest(".hero");
-  stage.addEventListener("mousemove", e => {
-    const r = stage.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - 0.5;
-    const y = (e.clientY - r.top) / r.height - 0.5;
-    el.style.translate = `${x * 34}px ${y * 22}px`;
-  });
-  stage.addEventListener("mouseleave", () => { el.style.translate = "0 0"; });
 }
 
 /* nav scroll state */
