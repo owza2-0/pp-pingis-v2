@@ -1080,19 +1080,19 @@ function workshopView(params) {
         <div class="workshop__stepper" role="tablist">
           <button class="step-tab ${currentStep === 1 ? 'is-active' : ''}" data-step="1">
             <span class="step-tab__num">STEG 1</span>
-            <span class="step-tab__title">Stomme</span>
+            <span class="step-tab__title">🪵 Stomme</span>
           </button>
           <button class="step-tab ${currentStep === 2 ? 'is-active' : ''}" data-step="2">
             <span class="step-tab__num">STEG 2</span>
-            <span class="step-tab__title">Forehand</span>
+            <span class="step-tab__title">🔴 Forehand</span>
           </button>
           <button class="step-tab ${currentStep === 3 ? 'is-active' : ''}" data-step="3">
             <span class="step-tab__num">STEG 3</span>
-            <span class="step-tab__title">Backhand</span>
+            <span class="step-tab__title">⚫ Backhand</span>
           </button>
           <button class="step-tab ${currentStep === 4 ? 'is-active' : ''}" data-step="4">
             <span class="step-tab__num">STEG 4</span>
-            <span class="step-tab__title">Montering</span>
+            <span class="step-tab__title">🔧 Montering</span>
           </button>
         </div>
 
@@ -1130,27 +1130,36 @@ function workshopView(params) {
     el.innerHTML = `
       <div class="workshop__stats-head">
         <h4>Beräknade Spelegenskaper</h4>
-        <span class="mono-label" style="color:var(--accent)">Pro-Kombination</span>
+        <span class="mono-label" style="color:var(--accent);display:inline-flex;align-items:center;gap:6px"><i style="width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);display:inline-block;animation:pulseDot 2s infinite"></i>Pro-Kombination</span>
       </div>
       <div class="workshop__stats-grid">
         <div class="stat-box">
           <div class="stat-box__label"><span>Fart</span><b>${stats.speed.val}/10</b></div>
-          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" style="width:${stats.speed.pct}%"></div></div>
+          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" data-target="${stats.speed.pct}" style="width:0%"></div></div>
         </div>
         <div class="stat-box">
           <div class="stat-box__label"><span>Skruv</span><b>${stats.spin.val}/10</b></div>
-          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" style="width:${stats.spin.pct}%"></div></div>
+          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" data-target="${stats.spin.pct}" style="width:0%"></div></div>
         </div>
         <div class="stat-box">
           <div class="stat-box__label"><span>Kontroll</span><b>${stats.control.val}/10</b></div>
-          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" style="width:${stats.control.pct}%"></div></div>
+          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" data-target="${stats.control.pct}" style="width:0%"></div></div>
         </div>
         <div class="stat-box">
           <div class="stat-box__label"><span>Vikt ca</span><b>${stats.weight.val}</b></div>
-          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" style="width:${stats.weight.pct}%"></div></div>
+          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" data-target="${stats.weight.pct}" style="width:0%"></div></div>
         </div>
       </div>
     `;
+
+    // Animera barfyllningar med kort fördröjning
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        el.querySelectorAll(".stat-box__bar-fill").forEach(bar => {
+          bar.style.width = bar.dataset.target + "%";
+        });
+      }, 60);
+    });
   }
 
   function setStep(newStep) {
@@ -1166,7 +1175,23 @@ function workshopView(params) {
       workshop3DInstance?.flipRacket();
     }
 
-    renderStepContent();
+    // Animerad steg-transition
+    const content = $("#wsStepContent");
+    if (content) {
+      content.classList.add("is-fading");
+      setTimeout(() => {
+        renderStepContent();
+        content.classList.remove("is-fading");
+        content.classList.add("is-entering");
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            content.classList.remove("is-entering");
+          });
+        });
+      }, 150);
+    } else {
+      renderStepContent();
+    }
   }
 
   function renderStepContent() {
