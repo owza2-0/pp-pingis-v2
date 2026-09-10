@@ -254,6 +254,39 @@ window.PPRacket3D = (function () {
     return tex;
   }
 
+  // Skapa en högkvalitativ bump map för ytgummits nabbstruktur
+  function createRubberBumpMap() {
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext("2d");
+    
+    // Basnivå (neutral grå för bump)
+    ctx.fillStyle = "#808080";
+    ctx.fillRect(0, 0, 512, 512);
+
+    // Tätt nabb-mönster (pimples-in som buktar ut ytterst subtilt under ljus)
+    ctx.fillStyle = "#9c9c9c"; // Subtil ljusskillnad för svag upphöjning
+    const spacing = 12;
+    const radius = 3.5;
+    for (let y = 0; y < 512; y += spacing) {
+      for (let x = 0; x < 512; x += spacing) {
+        // Förskjut varannan rad för ett naturligt hexmönster
+        const offsetX = (Math.floor(y / spacing) % 2 === 0) ? 0 : spacing / 2;
+        ctx.beginPath();
+        ctx.arc(x + offsetX, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    // Repetera så nabbarna blir små och realistiska över hela ytan
+    tex.repeat.set(4, 4);
+    return tex;
+  }
+
   // Hjälpfunktion för att ljusna en hex-färg
   function lightenHex(hex, amount) {
     hex = hex.replace("#", "");
@@ -435,10 +468,12 @@ window.PPRacket3D = (function () {
     ctx.globalAlpha = 1;
 
     const handleTex = new THREE.CanvasTexture(canvas);
-    const handleMat = new THREE.MeshStandardMaterial({
+    const handleMat = new THREE.MeshPhysicalMaterial({
       map: handleTex,
-      roughness: 0.4,
+      roughness: 0.45,
       metalness: 0.06,
+      clearcoat: 0.28,
+      clearcoatRoughness: 0.4,
     });
 
     const mesh = new THREE.Mesh(geom, handleMat);
@@ -670,15 +705,19 @@ window.PPRacket3D = (function () {
       });
       const woodEdgeTex = createPlywoodEdgeTexture();
 
-      const woodFaceMat = new THREE.MeshStandardMaterial({
+      const woodFaceMat = new THREE.MeshPhysicalMaterial({
         map: woodFaceTex,
-        roughness: 0.32,
+        roughness: 0.35,
         metalness: 0.05,
+        clearcoat: 0.22,
+        clearcoatRoughness: 0.45,
       });
-      const woodEdgeMat = new THREE.MeshStandardMaterial({
+      const woodEdgeMat = new THREE.MeshPhysicalMaterial({
         map: woodEdgeTex,
         roughness: 0.55,
         metalness: 0.03,
+        clearcoat: 0.1,
+        clearcoatRoughness: 0.6,
       });
 
       // Material för yta och kant
@@ -750,24 +789,35 @@ window.PPRacket3D = (function () {
         bevelSegments: 3,
       });
 
-      // FH Ytgummi
+      // Skapa en delad bumpMap för ytgummits nabbstruktur
+      const rubberBumpMap = createRubberBumpMap();
+
+      // FH Ytgummi (Högkvalitativt MeshPhysicalMaterial med clearcoat och nabb-bump)
       const fhTex = createRubberTexture(this.fhData.name, this.fhData.color !== "black", this.fhData.colorHex);
-      this.fhRubberMat = new THREE.MeshStandardMaterial({
+      this.fhRubberMat = new THREE.MeshPhysicalMaterial({
         map: fhTex,
-        roughness: 0.22,
-        metalness: 0.05,
+        bumpMap: rubberBumpMap,
+        bumpScale: 0.005,
+        roughness: 0.42,
+        metalness: 0.08,
+        clearcoat: 0.85,
+        clearcoatRoughness: 0.12,
       });
       this.fhRubberMesh = new THREE.Mesh(topsheetGeom, this.fhRubberMat);
       this.fhRubberMesh.position.set(0, 0, 0.057);
       this.fhRubberMesh.castShadow = true;
       this.layerGroups.fhTopsheet.add(this.fhRubberMesh);
 
-      // BH Ytgummi (svart)
+      // BH Ytgummi (svart) (Högkvalitativt MeshPhysicalMaterial med clearcoat och nabb-bump)
       const bhTex = createRubberTexture(this.bhData.name, false, this.bhData.colorHex || "#17181c");
-      this.bhRubberMat = new THREE.MeshStandardMaterial({
+      this.bhRubberMat = new THREE.MeshPhysicalMaterial({
         map: bhTex,
-        roughness: 0.22,
-        metalness: 0.05,
+        bumpMap: rubberBumpMap,
+        bumpScale: 0.005,
+        roughness: 0.42,
+        metalness: 0.08,
+        clearcoat: 0.85,
+        clearcoatRoughness: 0.12,
       });
       this.bhRubberMesh = new THREE.Mesh(topsheetGeom.clone(), this.bhRubberMat);
       // Vänd mot baksidan
