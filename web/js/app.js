@@ -466,10 +466,6 @@ function homeView() {
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v-3a4 4 0 0 1 4-4h12M16 1 20 5l-4 4M20 12v3a4 4 0 0 1-4 4H4M8 23l-4-4 4-4"/></svg>
             <span>Vänd</span>
           </button>
-          <button class="btn-tool" id="heroBounceBtn" title="Studsa 40+ bordtennisboll" type="button">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="7" r="2.5" fill="currentColor"/></svg>
-            <span>Studsa</span>
-          </button>
           <a class="btn-tool btn-tool--accent" href="#/bygg-racket" title="Öppna 3D Racketverkstad">
             <span>Bygg 3D</span>
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -924,10 +920,6 @@ function initHero3D() {
       e.stopPropagation();
       hero3DInstance?.flipRacket();
     });
-    $("#heroBounceBtn")?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      hero3DInstance?.bounceBall();
-    });
   } catch (err) {
     console.warn("3D initialization failed, using 2D fallback:", err);
     if (panel) panel.classList.add("hero__panel--2d");
@@ -1065,10 +1057,6 @@ function workshopView(params) {
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
               <span id="wsExplodeLabel">Lager</span>
             </button>
-            <button class="btn-tool" id="wsBounceBtn" type="button" title="Studsa 40+ boll med ljud">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="7" r="2.5" fill="currentColor"/></svg>
-              <span>Studsa</span>
-            </button>
           </div>
         </div>
 
@@ -1120,7 +1108,6 @@ function workshopView(params) {
       $("#wsExplodeBtn")?.classList.toggle("btn-tool--active", active);
       $("#wsExplodeLabel").textContent = active ? "Ihop" : "Lager";
     });
-    $("#wsBounceBtn")?.addEventListener("click", () => workshop3DInstance?.bounceBall());
   }
 
   function renderStats() {

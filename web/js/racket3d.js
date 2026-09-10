@@ -520,10 +520,6 @@ window.PPRacket3D = (function () {
       this.initLighting();
       this.initInteractions();
 
-      if (this.mode === "hero") {
-        this.initHeroEffects();
-      }
-
       this.animate = this.animate.bind(this);
       this.rafId = requestAnimationFrame(this.animate);
 
@@ -894,59 +890,6 @@ window.PPRacket3D = (function () {
       );
 
       window.addEventListener("touchend", onUp);
-
-      // Klick i hero = rolig studs/flick
-      if (this.mode === "hero") {
-        el.addEventListener("click", () => {
-          this.bounceBall();
-        });
-      }
-    }
-
-    initHeroEffects() {
-      // Skapa en 3D-bordtennisboll som kan studsa
-      const ballGeom = new THREE.SphereGeometry(0.18, 32, 32);
-      const ballCanvas = document.createElement("canvas");
-      ballCanvas.width = 256;
-      ballCanvas.height = 256;
-      const bctx = ballCanvas.getContext("2d");
-      bctx.fillStyle = "#faf7f2"; // celluloidfri matt vit
-      bctx.fillRect(0, 0, 256, 256);
-      bctx.fillStyle = "#ff4a1c";
-      bctx.font = "bold 20px Archivo, sans-serif";
-      bctx.textAlign = "center";
-      bctx.fillText("DONIC", 128, 110);
-      bctx.fillText("★★★ 40+", 128, 140);
-
-      const ballTex = new THREE.CanvasTexture(ballCanvas);
-      const ballMat = new THREE.MeshStandardMaterial({
-        map: ballTex,
-        roughness: 0.35,
-        metalness: 0.05,
-      });
-
-      this.ballMesh = new THREE.Mesh(ballGeom, ballMat);
-      this.ballMesh.castShadow = true;
-      this.ballMesh.position.set(0.4, 2.5, 0.3);
-      this.scene.add(this.ballMesh);
-
-      this.ballPhysics = {
-        active: false,
-        vy: 0,
-        y: 2.5,
-        targetY: 2.5,
-      };
-    }
-
-    bounceBall() {
-      if (!this.ballMesh) return;
-      this.ballPhysics.active = true;
-      this.ballPhysics.vy = 0.12; // kickoff
-      this.ballPhysics.y = 0.9;
-      playHitSound(this.isFlipped ? "rubber" : "rubber");
-
-      // Gör en liten gungning på racketen vid träff
-      this.targetRotation.x += 0.08;
     }
 
     flipRacket() {
@@ -1091,43 +1034,6 @@ window.PPRacket3D = (function () {
       this.layerGroups.fhSponge.position.z += (explodeDist * 0.9 - this.layerGroups.fhSponge.position.z) * lerpSpeed;
       this.layerGroups.bhSponge.position.z += (-explodeDist * 0.9 - this.layerGroups.bhSponge.position.z) * lerpSpeed;
       this.layerGroups.bhTopsheet.position.z += (-explodeDist * 1.8 - this.layerGroups.bhTopsheet.position.z) * lerpSpeed;
-
-      // Bollfysik (när studsen är aktiverad)
-      if (this.ballMesh && this.ballPhysics.active) {
-        this.ballPhysics.vy -= 0.006; // mjukare gravitation
-        this.ballPhysics.y += this.ballPhysics.vy;
-
-        // Lätt lateral drift
-        if (!this.ballPhysics.vx) this.ballPhysics.vx = (Math.random() - 0.5) * 0.01;
-        this.ballPhysics.vx *= 0.998; // luftmotstånd
-
-        // Träffpunkt på racketens yta (runt y = 0.5)
-        const hitY = 0.55;
-        if (this.ballPhysics.y <= hitY && this.ballPhysics.vy < 0) {
-          this.ballPhysics.y = hitY;
-          this.ballPhysics.vy = -this.ballPhysics.vy * 0.78;
-          this.ballPhysics.vx += (Math.random() - 0.5) * 0.008;
-          playHitSound("rubber");
-
-          // Gungning på racketen vid träff
-          this.targetRotation.x += 0.04;
-
-          if (Math.abs(this.ballPhysics.vy) < 0.015) {
-            this.ballPhysics.active = false;
-            this.ballPhysics.y = 2.5;
-            this.ballPhysics.vx = 0;
-          }
-        }
-        this.ballMesh.position.y = this.ballPhysics.y;
-        this.ballMesh.position.x = 0.2 + (this.ballPhysics.vx || 0) * time * 20 + Math.sin(time * 3) * 0.03;
-        this.ballMesh.rotation.x += 0.06;
-        this.ballMesh.rotation.z += 0.02;
-      } else if (this.ballMesh) {
-        // Lugn svävning ovanför
-        this.ballMesh.position.y = 1.9 + Math.sin(time * 2) * 0.1;
-        this.ballMesh.position.x = 0.35 + Math.cos(time * 1.5) * 0.06;
-        this.ballMesh.rotation.y = time * 0.5;
-      }
 
       this.renderer.render(this.scene, this.camera);
     }
