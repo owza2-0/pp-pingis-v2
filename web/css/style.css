@@ -1511,6 +1511,14 @@ input, select { font: inherit; color: inherit; }
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
 }
+.workshop__stats-note {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  letter-spacing: 0.02em;
+}
 .stat-box {
   display: flex;
   flex-direction: column;

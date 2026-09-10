@@ -959,12 +959,17 @@ function workshopView(params) {
   const allRubbers = PRODUCTS.filter(p => p.kind === "Gummiplattor");
   const allTapes = PRODUCTS.filter(p => p.cats.includes("Kantband") || p.name.toLowerCase().includes("kantband"));
 
-  const initialBladeId = params.get("blade") || HERO_ID;
+  const initialBladeId = params.get("blade");
   const initialRubberId = params.get("rubber");
 
-  let selectedBlade = BY_ID.get(initialBladeId) || allBlades[0];
-  let selectedFh = (initialRubberId && BY_ID.get(initialRubberId)) || allRubbers.find(r => r.name.includes("BlueStar A1")) || allRubbers[0];
-  let selectedBh = allRubbers.find(r => r.name.includes("BlueStar A2")) || allRubbers[1] || allRubbers[0];
+  // Defaultval föredrar produkter med riktiga specar så verkstaden öppnar
+  // med levande siffror i stället för fabricerade fallbacks.
+  const hasSpec = (item, key) => parseSpecs(item.desc).stats.some(s => s.key.toLowerCase() === key.toLowerCase());
+  const firstWithSpec = (list, key) => list.find(p => hasSpec(p, key)) || list[0];
+
+  let selectedBlade = (initialBladeId && BY_ID.get(initialBladeId)) || allBlades.find(b => b.name === "Donic stomme Waldner Senso V1") || firstWithSpec(allBlades, "Fart");
+  let selectedFh = (initialRubberId && BY_ID.get(initialRubberId)) || allRubbers.find(r => r.name === "Donic gummi Acuda S1") || firstWithSpec(allRubbers, "Skruv");
+  let selectedBh = allRubbers.find(r => r.name === "Donic gummi Acuda S2") || firstWithSpec(allRubbers, "Skruv");
   let selectedTape = allTapes[0] || { id: "tape-0", name: "PP-Pingis Kantband 12mm", price: 0 };
 
   let currentStep = 1;
@@ -991,36 +996,38 @@ function workshopView(params) {
     const fStats = parseSpecs(selectedFh.desc).stats;
     const bhStats = parseSpecs(selectedBh.desc).stats;
 
-    const getStat = (list, key, fallback) => {
+    // pct eller null — ingen fabricerad fallback när en del saknar spec.
+    const getPct = (list, key) => {
       const s = list.find(x => x.key.toLowerCase() === key.toLowerCase());
-      return s ? s.pct : fallback;
+      return s ? s.pct : null;
     };
 
-    const bSpeed = getStat(bStats, "Fart", 85);
-    const fSpeed = getStat(fStats, "Fart", 92);
-    const bhSpeed = getStat(bhStats, "Fart", 88);
+    // Viktat medelvärde, renormaliserat över de delar som faktiskt rapporterar.
+    const weighted = (pcts, weights) => {
+      let num = 0, den = 0;
+      pcts.forEach((pct, i) => {
+        if (pct != null) { num += pct * weights[i]; den += weights[i]; }
+      });
+      return den > 0 ? Math.round(num / den) : null;
+    };
 
-    const bCtrl = getStat(bStats, "Kontroll", 75);
-    const fCtrl = getStat(fStats, "Kontroll", 65);
-    const bhCtrl = getStat(bhStats, "Kontroll", 70);
+    const speed = weighted([getPct(bStats, "Fart"), getPct(fStats, "Fart"), getPct(bhStats, "Fart")], [0.48, 0.32, 0.20]);
+    const spin = weighted([getPct(fStats, "Skruv"), getPct(bhStats, "Skruv")], [0.55, 0.45]);
+    const control = weighted([getPct(bStats, "Kontroll"), getPct(fStats, "Kontroll"), getPct(bhStats, "Kontroll")], [0.55, 0.225, 0.225]);
 
-    const fSpin = getStat(fStats, "Skruv", 95);
-    const bhSpin = getStat(bhStats, "Skruv", 92);
-
-    const totalSpeed = Math.round(bSpeed * 0.48 + fSpeed * 0.32 + bhSpeed * 0.2);
-    const totalSpin = Math.round(fSpin * 0.55 + bhSpin * 0.45);
-    const totalControl = Math.round(bCtrl * 0.55 + (fCtrl + bhCtrl) * 0.225);
-
-    let bWeight = 85;
+    // Vikt: bara stommens kända vikt (gummi saknar viktspec i underlaget).
+    let bladeWeight = null;
     const wMatch = selectedBlade.desc.match(/vikt[:\s]+(?:ca\.?\s*)?(\d+)/i);
-    if (wMatch) bWeight = parseInt(wMatch[1], 10);
-    const totalWeight = bWeight + 92 + 3;
+    if (wMatch) bladeWeight = parseInt(wMatch[1], 10);
 
+    const mk = (pct) => (pct != null ? { pct, val: (pct / 10).toFixed(1) } : null);
     return {
-      speed: { pct: totalSpeed, val: (totalSpeed / 10).toFixed(1) },
-      spin: { pct: totalSpin, val: (totalSpin / 10).toFixed(1) },
-      control: { pct: totalControl, val: (totalControl / 10).toFixed(1) },
-      weight: { val: `${totalWeight} g`, pct: Math.min(100, Math.round((totalWeight / 220) * 100)) }
+      speed: mk(speed),
+      spin: mk(spin),
+      control: mk(control),
+      weight: bladeWeight != null
+        ? { val: bladeWeight, pct: Math.min(100, Math.max(0, Math.round(((bladeWeight - 60) / 35) * 100))) }
+        : null
     };
   }
 
@@ -1114,29 +1121,29 @@ function workshopView(params) {
     const stats = calcComboStats();
     const el = $("#wsStatsCard");
     if (!el) return;
+
+    const box = (label, stat, suffix) => {
+      const val = stat ? `${stat.val}${suffix}` : "–";
+      const pct = stat ? stat.pct : 0;
+      return `
+        <div class="stat-box">
+          <div class="stat-box__label"><span>${label}</span><b>${val}</b></div>
+          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" data-target="${pct}" style="width:0%"></div></div>
+        </div>`;
+    };
+
     el.innerHTML = `
       <div class="workshop__stats-head">
         <h4>Beräknade Spelegenskaper</h4>
-        <span class="mono-label" style="color:var(--accent);display:inline-flex;align-items:center;gap:6px"><i style="width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);display:inline-block;animation:pulseDot 2s infinite"></i>Pro-Kombination</span>
+        <span class="mono-label" style="color:var(--accent);display:inline-flex;align-items:center;gap:6px"><i style="width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);display:inline-block;animation:pulseDot 2s infinite"></i>Live — uppdateras vid byte</span>
       </div>
       <div class="workshop__stats-grid">
-        <div class="stat-box">
-          <div class="stat-box__label"><span>Fart</span><b>${stats.speed.val}/10</b></div>
-          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" data-target="${stats.speed.pct}" style="width:0%"></div></div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-box__label"><span>Skruv</span><b>${stats.spin.val}/10</b></div>
-          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" data-target="${stats.spin.pct}" style="width:0%"></div></div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-box__label"><span>Kontroll</span><b>${stats.control.val}/10</b></div>
-          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" data-target="${stats.control.pct}" style="width:0%"></div></div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-box__label"><span>Vikt ca</span><b>${stats.weight.val}</b></div>
-          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" data-target="${stats.weight.pct}" style="width:0%"></div></div>
-        </div>
+        ${box("Fart", stats.speed, "/10")}
+        ${box("Skruv", stats.spin, "/10")}
+        ${box("Kontroll", stats.control, "/10")}
+        ${box("Stomme vikt", stats.weight, " g")}
       </div>
+      <p class="workshop__stats-note">Baserat på tillverkarnas specar för valda delar. Delar utan spec räknas inte in.</p>
     `;
 
     // Animera barfyllningar med kort fördröjning
