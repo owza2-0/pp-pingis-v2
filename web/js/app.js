@@ -991,46 +991,6 @@ function workshopView(params) {
     { id: "black", name: "Svart", hex: "#16171a", sponge: "#1b74f0" }
   ];
 
-  function calcComboStats() {
-    const bStats = parseSpecs(selectedBlade.desc).stats;
-    const fStats = parseSpecs(selectedFh.desc).stats;
-    const bhStats = parseSpecs(selectedBh.desc).stats;
-
-    // pct eller null — ingen fabricerad fallback när en del saknar spec.
-    const getPct = (list, key) => {
-      const s = list.find(x => x.key.toLowerCase() === key.toLowerCase());
-      return s ? s.pct : null;
-    };
-
-    // Viktat medelvärde, renormaliserat över de delar som faktiskt rapporterar.
-    const weighted = (pcts, weights) => {
-      let num = 0, den = 0;
-      pcts.forEach((pct, i) => {
-        if (pct != null) { num += pct * weights[i]; den += weights[i]; }
-      });
-      return den > 0 ? Math.round(num / den) : null;
-    };
-
-    const speed = weighted([getPct(bStats, "Fart"), getPct(fStats, "Fart"), getPct(bhStats, "Fart")], [0.48, 0.32, 0.20]);
-    const spin = weighted([getPct(fStats, "Skruv"), getPct(bhStats, "Skruv")], [0.55, 0.45]);
-    const control = weighted([getPct(bStats, "Kontroll"), getPct(fStats, "Kontroll"), getPct(bhStats, "Kontroll")], [0.55, 0.225, 0.225]);
-
-    // Vikt: bara stommens kända vikt (gummi saknar viktspec i underlaget).
-    let bladeWeight = null;
-    const wMatch = selectedBlade.desc.match(/vikt[:\s]+(?:ca\.?\s*)?(\d+)/i);
-    if (wMatch) bladeWeight = parseInt(wMatch[1], 10);
-
-    const mk = (pct) => (pct != null ? { pct, val: (pct / 10).toFixed(1) } : null);
-    return {
-      speed: mk(speed),
-      spin: mk(spin),
-      control: mk(control),
-      weight: bladeWeight != null
-        ? { val: bladeWeight, pct: Math.min(100, Math.max(0, Math.round(((bladeWeight - 60) / 35) * 100))) }
-        : null
-    };
-  }
-
   function getBrands(items) {
     const set = new Set();
     items.forEach(i => { if (i.brand) set.add(i.brand); });
@@ -1118,42 +1078,42 @@ function workshopView(params) {
   }
 
   function renderStats() {
-    const stats = calcComboStats();
     const el = $("#wsStatsCard");
     if (!el) return;
 
-    const box = (label, stat, suffix) => {
-      const val = stat ? `${stat.val}${suffix}` : "–";
-      const pct = stat ? stat.pct : 0;
+    // Tillverkarens råa specvärden per vald del — inga beräknade blandningar.
+    const specText = (product) => {
+      const { stats, badges } = parseSpecs(product.desc);
+      const parts = [
+        ...stats.map(s => `${s.key} ${s.val}`),
+        ...badges.map(b => `${b.key} ${b.val}`)
+      ];
+      return parts.length ? parts.join(" · ") : null;
+    };
+
+    const row = (label, product) => {
+      const txt = specText(product);
       return `
-        <div class="stat-box">
-          <div class="stat-box__label"><span>${label}</span><b>${val}</b></div>
-          <div class="stat-box__bar-bg"><div class="stat-box__bar-fill" data-target="${pct}" style="width:0%"></div></div>
+        <div class="ws-spec-row">
+          <div class="ws-spec-row__top">
+            <span class="ws-spec-row__label">${label}</span>
+            <span class="ws-spec-row__name">${esc(product.name)}</span>
+          </div>
+          <div class="ws-spec-row__vals ${txt ? "" : "is-empty"}">${txt || "Specar saknas"}</div>
         </div>`;
     };
 
     el.innerHTML = `
       <div class="workshop__stats-head">
-        <h4>Beräknade Spelegenskaper</h4>
-        <span class="mono-label" style="color:var(--accent);display:inline-flex;align-items:center;gap:6px"><i style="width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);display:inline-block;animation:pulseDot 2s infinite"></i>Live — uppdateras vid byte</span>
+        <h4>Tillverkarens specar</h4>
+        <span class="mono-label" style="color:var(--accent);display:inline-flex;align-items:center;gap:6px"><i style="width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);display:inline-block;animation:pulseDot 2s infinite"></i>Faktiska värden</span>
       </div>
-      <div class="workshop__stats-grid">
-        ${box("Fart", stats.speed, "/10")}
-        ${box("Skruv", stats.spin, "/10")}
-        ${box("Kontroll", stats.control, "/10")}
-        ${box("Stomme vikt", stats.weight, " g")}
+      <div class="ws-spec-list">
+        ${row("Stomme", selectedBlade)}
+        ${row("Forehand", selectedFh)}
+        ${row("Backhand", selectedBh)}
       </div>
-      <p class="workshop__stats-note">Baserat på tillverkarnas specar för valda delar. Delar utan spec räknas inte in.</p>
     `;
-
-    // Animera barfyllningar med kort fördröjning
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        el.querySelectorAll(".stat-box__bar-fill").forEach(bar => {
-          bar.style.width = bar.dataset.target + "%";
-        });
-      }, 60);
-    });
   }
 
   function setStep(newStep) {
