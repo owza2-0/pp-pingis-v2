@@ -1035,19 +1035,19 @@ function workshopView(params) {
         <div class="workshop__stepper" role="tablist">
           <button class="step-tab ${currentStep === 1 ? 'is-active' : ''}" data-step="1">
             <span class="step-tab__num">STEG 1</span>
-            <span class="step-tab__title">🪵 Stomme</span>
+            <span class="step-tab__title">Stomme</span>
           </button>
           <button class="step-tab ${currentStep === 2 ? 'is-active' : ''}" data-step="2">
             <span class="step-tab__num">STEG 2</span>
-            <span class="step-tab__title">🔴 Forehand</span>
+            <span class="step-tab__title">Forehand</span>
           </button>
           <button class="step-tab ${currentStep === 3 ? 'is-active' : ''}" data-step="3">
             <span class="step-tab__num">STEG 3</span>
-            <span class="step-tab__title">⚫ Backhand</span>
+            <span class="step-tab__title">Backhand</span>
           </button>
           <button class="step-tab ${currentStep === 4 ? 'is-active' : ''}" data-step="4">
             <span class="step-tab__num">STEG 4</span>
-            <span class="step-tab__title">🔧 Montering</span>
+            <span class="step-tab__title">Montering</span>
           </button>
         </div>
 
@@ -1119,7 +1119,9 @@ function workshopView(params) {
   function setStep(newStep) {
     currentStep = newStep;
     $$(".step-tab").forEach(tab => {
-      tab.classList.toggle("is-active", parseInt(tab.dataset.step, 10) === currentStep);
+      const s = parseInt(tab.dataset.step, 10);
+      tab.classList.toggle("is-active", s === currentStep);
+      tab.classList.toggle("is-done", s < currentStep);
     });
 
     // Auto-vrid 3D-racketen om man går till backhand

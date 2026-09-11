@@ -2250,3 +2250,61 @@ input, select { font: inherit; color: inherit; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   html { scroll-behavior: auto; }
 }
+
+/* ============================================================
+   REDESIGN v2 — tokens, djup & polering
+   ============================================================ */
+:root {
+  --radius-s: 10px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --space: clamp(16px, 3vw, 32px);
+  --shadow-soft: 0 12px 40px rgba(0,0,0,.35);
+  --shadow-lift: 0 20px 60px rgba(0,0,0,.5), 0 4px 16px rgba(255,74,28,.08);
+  --ease-spring: cubic-bezier(.34,1.4,.5,1);
+}
+
+/* mjukare filmkorn */
+.grain { opacity: .032; }
+
+/* ---------- knappar: tydlig primär, lugn sekundär ---------- */
+.btn { border-radius: 999px; transition: transform .25s var(--ease-out), box-shadow .25s, background .25s, color .25s; }
+.btn--accent { box-shadow: 0 6px 24px rgba(255,74,28,.28); }
+.btn--accent:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(255,74,28,.4); }
+.btn--accent:active { transform: translateY(0) scale(.98); }
+.btn--ghost:hover { transform: translateY(-2px); }
+
+/* ---------- hero: accentglöd bakom 3D-scenen ---------- */
+.hero__stage::before {
+  content: ""; position: absolute; inset: -12%; z-index: 0; pointer-events: none;
+  background: radial-gradient(58% 58% at 50% 42%, rgba(255,74,28,.13), transparent 70%);
+  filter: blur(10px);
+}
+.hero__ring { z-index: 1; }
+
+/* ---------- produktkort: lyft + mjuk skugga i stället för rotation ---------- */
+.pcard { transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out); will-change: transform; }
+.pcard:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
+.pcard:hover .pcard__imgwrap img { transform: scale(1.06); }
+
+/* ---------- verkstadsstepper: synligt progress-tillstånd ---------- */
+.step-tab.is-done { color: var(--ink-dim); }
+.step-tab.is-done .step-tab__num {
+  color: #fff; background: var(--accent); border-radius: 999px;
+  padding: 1px 8px; box-shadow: 0 0 12px rgba(255,74,28,.45);
+}
+.step-tab.is-done .step-tab__title { opacity: .75; }
+.step-tab.is-active .step-tab__num { background: none; box-shadow: none; padding: 0; }
+
+/* ---------- generell luft & enhetliga hörn ---------- */
+.section { padding-block: clamp(48px, 7vw, 96px); }
+.cattile, .usp, .brandchip { border-radius: var(--radius); }
+.workshop__step-content, .workshop__stepper { border-radius: var(--radius-lg); }
+
+/* ---------- footer: subtil avskiljare ---------- */
+.footer { border-top: 1px solid var(--line); background: linear-gradient(180deg, transparent, rgba(255,74,28,.03)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pcard, .btn { transition: none; }
+  .grain { animation: none; }
+}
