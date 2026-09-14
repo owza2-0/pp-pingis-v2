@@ -144,11 +144,6 @@ input, select { font: inherit; color: inherit; }
   gap: 6px;
   color: var(--ink-bright) !important;
 }
-.nav__sparkle {
-  color: var(--accent);
-  font-size: 11px;
-  animation: pulseDot 2s ease-in-out infinite;
-}
 .nav__badge-3d {
   font-family: var(--font-mono);
   font-size: 9px;
@@ -299,7 +294,17 @@ input, select { font: inherit; color: inherit; }
 .btn--ghost:active {
   transform: scale(0.965) translateY(0);
 }
-.btn--full { width: 100%; justify-content: center; }
+/* Fullbredds-CTA: låt långa etiketter radbrytas. Med nowrap fick knappen en
+   intrinsisk min-content-bredd som sprängde förälderns grid-kolumn (steg 4 i
+   Racketverkstaden blev 510 px bred på en 393 px-skärm och klipptes av). */
+.btn--full {
+  width: 100%;
+  justify-content: center;
+  white-space: normal;
+  text-align: center;
+  text-wrap: balance;
+  min-width: 0;
+}
 .btn[disabled] { opacity: 0.35; pointer-events: none; }
 
 /* ---------- hero ---------- */
@@ -367,8 +372,11 @@ input, select { font: inherit; color: inherit; }
 }
 .hero__canvas3d {
   position: absolute; inset: -4%; width: 108%; height: 108%; z-index: 2;
-  cursor: grab; touch-action: none;
+  cursor: grab;
+  /* Sidan scrollar tills gesten börjar på själva racketen — se racket3d.js */
+  touch-action: pan-y;
 }
+.hero__canvas3d.is-touch-armed { touch-action: none; }
 .hero__canvas3d:active { cursor: grabbing; }
 .hero__product {
   width: 78%; height: auto; position: relative; z-index: 2;
@@ -1345,6 +1353,16 @@ input, select { font: inherit; color: inherit; }
   gap: 36px;
   align-items: start;
 }
+/* Grid- och flexbarn har min-width: auto som default; ett enda långt ord eller
+   en obrytbar etikett räckte för att hela kolumnen växte utanför skärmen. */
+.workshop__grid > *,
+.workshop__step-content,
+.workshop__summary-card,
+.workshop__stats-card { min-width: 0; }
+.sum-row > *,
+.ws-spec-row > *,
+.ws-spec-row__name,
+.wcard__name { min-width: 0; overflow-wrap: break-word; }
 .workshop__stage-wrap {
   position: sticky;
   top: 90px;
@@ -1394,6 +1412,12 @@ input, select { font: inherit; color: inherit; }
   width: 100%;
   height: 100%;
   cursor: grab;
+  /* pan-y: låt sidan scrolla. Rotation aktiveras först när gesten träffar
+     racketen (racket3d.js sätter .is-touch-armed och avbryter scrollen). */
+  touch-action: pan-y;
+  outline: none;
+}
+.workshop__viewport-canvas.is-touch-armed {
   touch-action: none;
 }
 .workshop__viewport-canvas:active {
@@ -1452,14 +1476,17 @@ input, select { font: inherit; color: inherit; }
   left: 18px;
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ink-faint);
+  /* ink-faint (0.5) gav ~4:1 kontrast på 11 px versaler; ink-dim lyfter till
+     läsbar nivå utan att statusdotten tappar sin roll. */
+  color: var(--ink-dim);
   display: flex;
   align-items: center;
   gap: 8px;
   pointer-events: none;
   z-index: 5;
+  max-width: calc(100% - 36px);
 }
 .workshop__viewport-hint i {
   width: 7px;
@@ -1718,6 +1745,8 @@ input, select { font: inherit; color: inherit; }
   max-height: 480px;
   overflow-y: auto;
   padding-right: 6px;
+  /* Rulla inte vidare ut i sidan när innerlistan tar slut */
+  overscroll-behavior: contain;
 }
 @keyframes selectedPulse {
   0%,100% { box-shadow: 0 0 0 1px var(--accent), 0 8px 24px rgba(255, 74, 28, 0.12); }
@@ -2048,6 +2077,18 @@ input, select { font: inherit; color: inherit; }
 .workshop__step-content.is-entering { opacity: 0; transform: translateY(8px); }
 .workshop__step-content { transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out); }
 
+/* Mobil och platta: 3D-vyn + spec-kortet knuffade ner stegflikarna (mätt till
+   top 999 px, alltså helt under första skärmen) — och stegflikarna är den enda
+   tvåvägsnavigationen i verkstaden. Lägg spec-kortet sist så att vy, flikar och
+   steginnehåll kommer först. */
+@media (max-width: 900px) {
+  .workshop__grid { display: flex; flex-direction: column; }
+  .workshop__stage-wrap { display: contents; }
+  .workshop__viewport { order: 1; }
+  .workshop__controls { order: 2; }
+  .workshop__stats-card { order: 3; }
+}
+
 /* iPad Landscape (901px - 1150px) */
 @media (min-width: 901px) and (max-width: 1150px) {
   .workshop__grid {
@@ -2076,6 +2117,9 @@ input, select { font: inherit; color: inherit; }
     margin: 0 auto;
     width: 100%;
   }
+  /* .workshop__stage-wrap är display: contents i det här läget — centrera
+     innehållet den hade hand om i stället. */
+  .workshop__viewport { max-width: 560px; margin-inline: auto; }
   .workshop__viewport {
     aspect-ratio: 1 / 1;
     max-height: 480px;
@@ -2091,7 +2135,7 @@ input, select { font: inherit; color: inherit; }
   }
   .workshop__stepper {
     position: sticky;
-    top: 60px;
+    top: calc(var(--nav-h) + 8px);
     z-index: 20;
     background: rgba(14, 15, 18, 0.85);
     backdrop-filter: blur(16px);
@@ -2104,15 +2148,18 @@ input, select { font: inherit; color: inherit; }
 @media (max-width: 640px) {
   .workshop {
     padding-top: calc(var(--nav-h) + 16px);
-    padding-bottom: 80px;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
   }
   .workshop__header {
     margin-bottom: 24px;
     text-align: center;
   }
   .workshop__title {
-    font-size: clamp(32px, 9vw, 42px);
-    letter-spacing: -0.02em;
+    /* "Racketverkstad" mätte 387 px vid 9vw i en 353 px-ruta och klipptes av
+       skärmkanten. 7.8vw håller hela ordet innanför rutan ned till 320 px. */
+    font-size: clamp(28px, 7.8vw, 36px);
+    letter-spacing: -0.025em;
+    text-wrap: balance;
   }
   .workshop__lead {
     font-size: 15px;
@@ -2127,15 +2174,17 @@ input, select { font: inherit; color: inherit; }
     top: 0;
     width: 100%;
   }
+  .workshop__viewport { max-width: 420px; margin-inline: auto; }
   .workshop__viewport {
     aspect-ratio: 1 / 1;
     max-height: none;
     border-radius: 24px;
   }
   .workshop__viewport-hint {
-    font-size: 10px;
+    font-size: 11px;
     top: 14px;
     left: 16px;
+    letter-spacing: 0.06em;
   }
   .workshop__3d-tools {
     bottom: 14px;
@@ -2156,7 +2205,7 @@ input, select { font: inherit; color: inherit; }
   }
   .workshop__stepper {
     position: sticky;
-    top: 56px;
+    top: calc(var(--nav-h) + 8px);
     z-index: 20;
     background: rgba(14, 15, 18, 0.85);
     backdrop-filter: blur(16px);
@@ -2186,6 +2235,15 @@ input, select { font: inherit; color: inherit; }
     font-size: 18px;
     letter-spacing: -0.01em;
   }
+  /* Rubrik + statusetikett trängdes i samma rad och etiketten hamnade ensam,
+     högerställd på egen rad (mätt: 94 px hög rad med etiketten utanför h3:ans
+     rad). Stapla dem avsiktligt i stället. */
+  .step-sec__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding-bottom: 12px;
+  }
   .step-sec__head p {
     font-size: 13px;
     line-height: 1.4;
@@ -2193,7 +2251,14 @@ input, select { font: inherit; color: inherit; }
   .workshop__cards-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-    max-height: 440px;
+    /* Listan har 35–96 val; en egen, tydligt avgränsad scrollruta på mobil
+       håller kvar "Nästa"-knappen nära innehållet i stället för att sidan
+       blir flera tusen pixlar lång. contain hindrar scrollen från att kedja
+       vidare ut i sidan. */
+    max-height: min(58vh, 520px);
+    overflow-y: auto;
+    padding-right: 4px;
+    overscroll-behavior: contain;
   }
   .wcard {
     padding: 12px;
@@ -2244,6 +2309,20 @@ input, select { font: inherit; color: inherit; }
     padding: 16px 20px;
     font-size: 15px;
   }
+  /* Stegbyte ska landa under den sticky navbaren + stegbaren, inte bakom dem */
+  .workshop__step-content { scroll-margin-top: calc(var(--nav-h) + 84px); }
+  /* Touch-mål: minst 44 px höga kontroller på mobil (WCAG 2.5.8 / Apple HIG) */
+  .step-tab,
+  .wchip,
+  .swatch-btn,
+  .thick-btn,
+  .btn-tool,
+  .group-tab,
+  .filter-pill,
+  .chip { min-height: 44px; }
+  .nav__actions button { width: 44px; height: 44px; }
+  .step-tab { justify-content: center; }
+  .wchip, .swatch-btn { display: inline-flex; align-items: center; justify-content: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {

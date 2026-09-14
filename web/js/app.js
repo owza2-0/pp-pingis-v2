@@ -75,7 +75,7 @@ function renderCart() {
       <a class="citem__img" href="#/produkt/${p.id}"><img src="${img(p.imgs[0])}" alt="${esc(p.name)}" loading="lazy"></a>
       <div>
         <div class="citem__name">${esc(p.name)}</div>
-        ${i.note ? `<div style="font-family:var(--font-mono);font-size:11px;color:var(--accent);margin:2px 0 4px;line-height:1.3;">✦ ${esc(i.note)}</div>` : ""}
+        ${i.note ? `<div style="font-family:var(--font-mono);font-size:11px;color:var(--accent);margin:2px 0 4px;line-height:1.3;">${esc(i.note)}</div>` : ""}
         <div class="citem__price">${kr(p.price)} / st</div>
         <div class="citem__row">
           <span class="citem__qty">
@@ -136,7 +136,7 @@ function renderCart() {
 function formatOrderText() {
   const lines = cart.map(i => {
     const p = BY_ID.get(i.id);
-    const note = i.note ? `\n    ✦ Specialanpassning: ${i.note}` : "";
+    const note = i.note ? `\n    Specialanpassning: ${i.note}` : "";
     return p ? `${i.qty} × ${p.name} — ${kr(p.price * i.qty)} (art.nr ${p.id})${note}` : "";
   }).filter(Boolean);
   return [
@@ -447,7 +447,7 @@ function homeView() {
         <p class="hero__sub">Stommar, gummi och racketar från världens bästa märken — handplockade av folk som själva står vid bordet. Allt i lager, allt på riktigt.</p>
         <div class="hero__ctas">
           <a class="btn btn--accent" href="#/butik">Shoppa allt ${arrowSvg}</a>
-          <a class="btn btn--ghost" href="#/bygg-racket"><span style="color:var(--accent)">✦</span> Bygg racket i 3D</a>
+          <a class="btn btn--ghost" href="#/bygg-racket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> Bygg racket i 3D</a>
         </div>
         <div class="hero__meta">
           <div><b>${PRODUCTS.length}+</b><span>Produkter</span></div>
@@ -829,11 +829,11 @@ function productView(id) {
         </div>
         ${p.kind === "Stommar" ? `
         <a href="#/bygg-racket?blade=${p.id}" class="btn btn--ghost" style="width:100%;justify-content:center;margin-top:10px;margin-bottom:14px;gap:8px;font-size:13px;">
-          <span style="color:var(--accent)">✦</span> Bygg komplett racket med denna stomme i 3D
+          Bygg komplett racket med denna stomme i 3D
         </a>` : ""}
         ${p.kind === "Gummiplattor" ? `
         <a href="#/bygg-racket?rubber=${p.id}" class="btn btn--ghost" style="width:100%;justify-content:center;margin-top:10px;margin-bottom:14px;gap:8px;font-size:13px;">
-          <span style="color:var(--accent)">✦</span> Montera detta gummi i 3D-Racketverkstaden
+          Montera detta gummi i 3D-Racketverkstaden
         </a>` : ""}
         <div class="mono-label" style="margin-bottom:8px">Art.nr ${p.id} · Fri frakt över 1 249 kr</div>
         <dl class="pdp__specs">
@@ -955,6 +955,16 @@ function workshopView(params) {
     workshop3DInstance = null;
   }
 
+  // Touch-enheter får en instruktion som stämmer med gatingen i racket3d.js:
+  // gesten måste börja på racketen för att rotera, annars scrollar sidan.
+  const hasTouch = navigator.maxTouchPoints > 0 || window.matchMedia("(pointer: coarse)").matches;
+  const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+  const hintIdleCopy = hasTouch && hasFinePointer
+    ? "Dra — eller tryck på racketen"
+    : hasTouch
+      ? "Tryck på racketen för att rotera"
+      : "Dra för att rotera · 360°";
+
   const allBlades = PRODUCTS.filter(p => p.kind === "Stommar");
   const allRubbers = PRODUCTS.filter(p => p.kind === "Gummiplattor");
   const allTapes = PRODUCTS.filter(p => p.cats.includes("Kantband") || p.name.toLowerCase().includes("kantband"));
@@ -1013,7 +1023,7 @@ function workshopView(params) {
       <!-- 3D Studio Viewport -->
       <div class="workshop__stage-wrap">
         <div class="workshop__viewport">
-          <div class="workshop__viewport-hint"><i></i><span>3D Studio · 360° vy</span></div>
+          <div class="workshop__viewport-hint"><i></i><span id="wsHintText">${hintIdleCopy}</span></div>
           <div class="workshop__viewport-canvas" id="workshopCanvas" title="Dra för att rotera racket i 3D"></div>
           <div class="workshop__3d-tools">
             <button class="btn-tool" id="wsFlipBtn" type="button" title="Vänd racket">
@@ -1032,26 +1042,26 @@ function workshopView(params) {
 
       <!-- Configurator Controls -->
       <div class="workshop__controls">
-        <div class="workshop__stepper" role="tablist">
-          <button class="step-tab ${currentStep === 1 ? 'is-active' : ''}" data-step="1">
+        <div class="workshop__stepper" role="tablist" aria-label="Byggsteg">
+          <button class="step-tab ${currentStep === 1 ? 'is-active' : ''}" data-step="1" id="wsTab1" role="tab" aria-controls="wsStepContent" aria-selected="${currentStep === 1}" tabindex="${currentStep === 1 ? 0 : -1}">
             <span class="step-tab__num">STEG 1</span>
             <span class="step-tab__title">Stomme</span>
           </button>
-          <button class="step-tab ${currentStep === 2 ? 'is-active' : ''}" data-step="2">
+          <button class="step-tab ${currentStep === 2 ? 'is-active' : ''}" data-step="2" id="wsTab2" role="tab" aria-controls="wsStepContent" aria-selected="${currentStep === 2}" tabindex="${currentStep === 2 ? 0 : -1}">
             <span class="step-tab__num">STEG 2</span>
             <span class="step-tab__title">Forehand</span>
           </button>
-          <button class="step-tab ${currentStep === 3 ? 'is-active' : ''}" data-step="3">
+          <button class="step-tab ${currentStep === 3 ? 'is-active' : ''}" data-step="3" id="wsTab3" role="tab" aria-controls="wsStepContent" aria-selected="${currentStep === 3}" tabindex="${currentStep === 3 ? 0 : -1}">
             <span class="step-tab__num">STEG 3</span>
             <span class="step-tab__title">Backhand</span>
           </button>
-          <button class="step-tab ${currentStep === 4 ? 'is-active' : ''}" data-step="4">
+          <button class="step-tab ${currentStep === 4 ? 'is-active' : ''}" data-step="4" id="wsTab4" role="tab" aria-controls="wsStepContent" aria-selected="${currentStep === 4}" tabindex="${currentStep === 4 ? 0 : -1}">
             <span class="step-tab__num">STEG 4</span>
             <span class="step-tab__title">Montering</span>
           </button>
         </div>
 
-        <div class="workshop__step-content" id="wsStepContent"></div>
+        <div class="workshop__step-content" id="wsStepContent" role="tabpanel" aria-labelledby="wsTab${currentStep}" tabindex="-1"></div>
       </div>
     </div>
   </div>`;
@@ -1060,13 +1070,18 @@ function workshopView(params) {
   const container = $("#workshopCanvas");
   if (container && window.THREE && window.PPRacket3D) {
     const curFhColor = RUBBER_COLORS.find(c => c.id === fhColor) || RUBBER_COLORS[0];
+    const hintText = $("#wsHintText");
+
     workshop3DInstance = new PPRacket3D.RacketViewer({
       container,
       mode: "studio",
       bladeData: { name: selectedBlade.name },
       fhData: { name: selectedFh.name, color: fhColor, colorHex: curFhColor.hex, spongeColor: curFhColor.sponge },
       bhData: { name: selectedBh.name, color: "black", colorHex: "#16171a", spongeColor: "#1b74f0" },
-      edgeTapeData: { name: selectedTape.name || "PP-PINGIS" }
+      edgeTapeData: { name: selectedTape.name || "PP-PINGIS" },
+      onInteractionStateChange: (armed) => {
+        if (hintText) hintText.textContent = armed ? "Roterar · släpp för att scrolla" : hintIdleCopy;
+      }
     });
 
     $("#wsFlipBtn")?.addEventListener("click", () => workshop3DInstance?.flipRacket());
@@ -1106,7 +1121,7 @@ function workshopView(params) {
     el.innerHTML = `
       <div class="workshop__stats-head">
         <h4>Tillverkarens specar</h4>
-        <span class="mono-label" style="color:var(--accent);display:inline-flex;align-items:center;gap:6px"><i style="width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);display:inline-block;animation:pulseDot 2s infinite"></i>Faktiska värden</span>
+        <span class="mono-label" style="color:var(--accent);display:inline-flex;align-items:center;gap:6px"><i style="width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block"></i>Faktiska värden</span>
       </div>
       <div class="ws-spec-list">
         ${row("Stomme", selectedBlade)}
@@ -1120,8 +1135,11 @@ function workshopView(params) {
     currentStep = newStep;
     $$(".step-tab").forEach(tab => {
       const s = parseInt(tab.dataset.step, 10);
-      tab.classList.toggle("is-active", s === currentStep);
+      const isActive = s === currentStep;
+      tab.classList.toggle("is-active", isActive);
       tab.classList.toggle("is-done", s < currentStep);
+      tab.setAttribute("aria-selected", isActive ? "true" : "false");
+      tab.tabIndex = isActive ? 0 : -1;
     });
 
     // Auto-vrid 3D-racketen om man går till backhand
@@ -1134,6 +1152,7 @@ function workshopView(params) {
     // Animerad steg-transition
     const content = $("#wsStepContent");
     if (content) {
+      content.setAttribute("aria-labelledby", `wsTab${currentStep}`);
       content.classList.add("is-fading");
       setTimeout(() => {
         renderStepContent();
@@ -1144,10 +1163,28 @@ function workshopView(params) {
             content.classList.remove("is-entering");
           });
         });
+        revealStep();
       }, 150);
     } else {
       renderStepContent();
     }
+  }
+
+  // På smala skärmar ligger den sticky navbaren + stegbaren över innehållet.
+  // Efter ett stegbyte ser vi till att stegpanelen hamnar synlig under dem i
+  // stället för att öppna halvvägs bakom huvudet.
+  function revealStep() {
+    if (!window.matchMedia("(max-width: 900px)").matches) return;
+    const el = $("#wsStepContent");
+    if (!el) return;
+    const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+    const top = el.getBoundingClientRect().top;
+    const inView = top >= margin - 8 && top <= window.innerHeight * 0.6;
+    if (inView) return;
+    el.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "start"
+    });
   }
 
   function renderStepContent() {
@@ -1549,7 +1586,7 @@ function workshopView(params) {
             <div class="sum-total">
               <div>
                 <span>Totalt pris</span>
-                <div class="mono-label" style="color:var(--ok);font-size:11px;margin-top:2px;">✦ Fri frakt ingår</div>
+                <div class="mono-label" style="color:var(--ok);font-size:11px;margin-top:2px;">Fri frakt ingår</div>
               </div>
               <span class="price">${kr(totalPrice)}</span>
             </div>
@@ -1598,6 +1635,24 @@ function workshopView(params) {
     tab.addEventListener("click", () => {
       const s = parseInt(tab.dataset.step, 10);
       setStep(s);
+    });
+
+    // Roving tabindex: piltangenter flyttar mellan stegen som i en flikrad
+    tab.addEventListener("keydown", (e) => {
+      const keys = { ArrowRight: 1, ArrowLeft: -1 };
+      let target = null;
+      if (keys[e.key]) {
+        const next = Math.min(4, Math.max(1, currentStep + keys[e.key]));
+        target = $(`#wsTab${next}`);
+      } else if (e.key === "Home") {
+        target = $("#wsTab1");
+      } else if (e.key === "End") {
+        target = $("#wsTab4");
+      }
+      if (!target) return;
+      e.preventDefault();
+      setStep(parseInt(target.dataset.step, 10));
+      target.focus();
     });
   });
 

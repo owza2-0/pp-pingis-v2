@@ -855,7 +855,13 @@ window.PPRacket3D = (function () {
       this.layerGroups.edgeTape.add(this.edgeTapeMesh);
     }
 
-    // Interaktioner: mus/touch drag för 360° rotation
+    // Interaktioner: mus/touch-drag för 360° rotation.
+    //
+    // Touch-regeln: en gest som börjar PÅ racketen roterar (och då avbryter vi
+    // webbläsarens scroll med preventDefault), medan en gest som börjar utanför
+    // racketen lämnas orörd så att sidan scrollar normalt. Utan den här
+    // avgränsningen låg hela canvasen som en scrollfälla på mobilen eftersom
+    // CSS hade touch-action: none på hela ytan.
     initInteractions() {
       let isDragging = false;
       let prevX = 0;
@@ -866,6 +872,47 @@ window.PPRacket3D = (function () {
       this.targetRotation = { x: 0.15, y: -0.35 };
       this.currentRotation = { x: 0.15, y: -0.35 };
       this.floatPhase = 0;
+      this.isTouchArmed = false;
+
+      const raycaster = new THREE.Raycaster();
+      const pointer = new THREE.Vector2();
+
+      // Träffar pekaren någon synlig del av racketen? Förfädernas visibility
+      // räknas med, annars hade dolda lager (t.ex. oapplicerat gummi) fångat
+      // gester i tomma luften.
+      const isVisible = (obj) => {
+        let node = obj;
+        while (node) {
+          if (node.visible === false) return false;
+          node = node.parent;
+        }
+        return true;
+      };
+
+      const hitsRacket = (clientX, clientY) => {
+        const rect = this.container.getBoundingClientRect();
+        if (!rect.width || !rect.height) return false;
+        pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -(((clientY - rect.top) / rect.height) * 2 - 1);
+        raycaster.setFromCamera(pointer, this.camera);
+
+        const targets = [];
+        this.racketRoot.traverse((obj) => {
+          if (obj.isMesh && isVisible(obj)) targets.push(obj);
+        });
+        if (!targets.length) return false;
+        return raycaster.intersectObjects(targets, false).length > 0;
+      };
+
+      const setArmed = (armed) => {
+        if (this.isTouchArmed === armed) return;
+        this.isTouchArmed = armed;
+        el.classList.toggle("is-touch-armed", armed);
+        this.container.classList.toggle("is-interactive", armed);
+        if (typeof this.onInteractionStateChange === "function") {
+          this.onInteractionStateChange(armed);
+        }
+      };
 
       const onDown = (clientX, clientY) => {
         isDragging = true;
@@ -911,6 +958,7 @@ window.PPRacket3D = (function () {
 
       const onUp = () => {
         isDragging = false;
+        setArmed(false);
       };
 
       const el = this.renderer.domElement;
@@ -919,27 +967,32 @@ window.PPRacket3D = (function () {
       window.addEventListener("mousemove", (e) => onMove(e.clientX, e.clientY));
       window.addEventListener("mouseup", onUp);
 
+      // Icke-passiv: vi måste kunna avbryta scrollen för den gest som börjar
+      // på racketen. Missar pekaren racketen gör vi ingenting alls.
       el.addEventListener(
         "touchstart",
         (e) => {
-          if (e.touches.length === 1) {
-            onDown(e.touches[0].clientX, e.touches[0].clientY);
-          }
+          if (e.touches.length !== 1) return;
+          const touch = e.touches[0];
+          if (!hitsRacket(touch.clientX, touch.clientY)) return;
+          e.preventDefault();
+          setArmed(true);
+          onDown(touch.clientX, touch.clientY);
         },
-        { passive: true }
+        { passive: false }
       );
 
       window.addEventListener(
         "touchmove",
         (e) => {
-          if (e.touches.length === 1) {
-            onMove(e.touches[0].clientX, e.touches[0].clientY);
-          }
+          if (!this.isTouchArmed || e.touches.length !== 1) return;
+          onMove(e.touches[0].clientX, e.touches[0].clientY);
         },
         { passive: true }
       );
 
       window.addEventListener("touchend", onUp);
+      window.addEventListener("touchcancel", onUp);
     }
 
     flipRacket() {
