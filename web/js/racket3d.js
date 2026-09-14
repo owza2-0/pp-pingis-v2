@@ -6,52 +6,8 @@
 window.PPRacket3D = (function () {
   "use strict";
 
-  // Ljudeffekter via Web Audio API (noll externa ljudfiler)
-  let audioCtx = null;
-  function playHitSound(type = "rubber") {
-    try {
-      if (!audioCtx) {
-        const AudioCtor = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtor) return;
-        audioCtx = new AudioCtor();
-      }
-      if (audioCtx.state === "suspended") audioCtx.resume();
-
-      const t = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      const filter = audioCtx.createBiquadFilter();
-
-      if (type === "wood") {
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(820, t);
-        osc.frequency.exponentialRampToValueAtTime(320, t + 0.05);
-        filter.type = "bandpass";
-        filter.frequency.value = 900;
-        filter.Q.value = 4;
-        gain.gain.setValueAtTime(0.35, t);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
-      } else {
-        // "pock" från gummisvamp
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(560, t);
-        osc.frequency.exponentialRampToValueAtTime(180, t + 0.09);
-        filter.type = "lowpass";
-        filter.frequency.value = 750;
-        gain.gain.setValueAtTime(0.4, t);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
-      }
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start(t);
-      osc.stop(t + 0.15);
-    } catch (e) {
-      // Ignorera ljudfel om användaren inte interagerat med sidan
-    }
-  }
+  // Inget ljud: hela ljudmotorn är borttagen (ägarbeslut 2026-09-14). Ingen
+  // AudioContext skapas någonstans i appen.
 
   // Hjälpfunktion för att rita träådring på canvas
   function createWoodTexture(opts = {}) {
@@ -601,9 +557,13 @@ window.PPRacket3D = (function () {
 
       // Huvudgrupp för racket (för rotation och flyt)
       this.racketRoot = new THREE.Group();
-      // Centrera sweetspot något runt mittpunkten
-      this.racketRoot.position.set(0, -0.35, 0);
-      this.racketRoot.scale.set(0.88, 0.88, 0.88);
+      // Hero-läget behåller sin godkända inramning; studio räknar fram sin
+      // egen med frameRacket() så att racketen ligger centrerad med luft runt
+      // sig (touch-ytan ska vara racketen, inte hela rutan).
+      this.baseScale = 0.88;
+      this.basePositionY = -0.35;
+      this.racketRoot.position.set(0, this.basePositionY, 0);
+      this.racketRoot.scale.setScalar(this.baseScale);
       this.scene.add(this.racketRoot);
 
       // Grupper för de separerbara skikten (för sprängskiss)
@@ -640,6 +600,45 @@ window.PPRacket3D = (function () {
       }
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(w, h);
+      this.frameRacket();
+    }
+
+    // Ramar in racketen i studio-vyn: centrerar den på kamerans blickpunkt och
+    // skalar den så att den fyller en del av höjden (padding) i stället för
+    // hela. Då finns det synlig tom yta runt racketen, vilket både gör att
+    // inget klipps av panelkanten och att det blir uppenbart att det är
+    // racketen man tar tag i — inte panelen.
+    frameRacket(padding = 0.74) {
+      if (this.disposed || this.mode !== "studio" || !this.racketRoot) return;
+
+      const rotX = this.racketRoot.rotation.x;
+      const rotY = this.racketRoot.rotation.y;
+      const rotZ = this.racketRoot.rotation.z;
+      this.racketRoot.rotation.set(0, 0, 0);
+      this.racketRoot.updateMatrixWorld(true);
+
+      const box = new THREE.Box3().setFromObject(this.racketRoot);
+      const size = new THREE.Vector3();
+      const center = new THREE.Vector3();
+      box.getSize(size);
+      box.getCenter(center);
+
+      this.racketRoot.rotation.set(rotX, rotY, rotZ);
+
+      if (!size.y) return;
+
+      const dist = this.camera.position.z;
+      const fovRad = (this.camera.fov * Math.PI) / 180;
+      const visibleHeight = 2 * dist * Math.tan(fovRad / 2);
+      const scaleFactor = (visibleHeight * padding) / size.y;
+
+      const newScale = this.racketRoot.scale.y * scaleFactor;
+      const localCenterY = (center.y - this.racketRoot.position.y) / this.racketRoot.scale.y;
+
+      this.baseScale = newScale;
+      this.basePositionY = this.camera.position.y - localCenterY * newScale;
+      this.racketRoot.scale.setScalar(newScale);
+      this.racketRoot.position.y = this.basePositionY;
     }
 
     initLighting() {
@@ -967,6 +966,26 @@ window.PPRacket3D = (function () {
       window.addEventListener("mousemove", (e) => onMove(e.clientX, e.clientY));
       window.addEventListener("mouseup", onUp);
 
+      // Muspekaren visar bara "grab" när den är över racketen (samma träff-test
+      // som styr touchen), så det syns var man kan ta tag.
+      let hoverRaf = 0;
+      el.addEventListener("mousemove", (e) => {
+        if (hoverRaf) return;
+        const { clientX, clientY } = e;
+        hoverRaf = requestAnimationFrame(() => {
+          hoverRaf = 0;
+          const over = hitsRacket(clientX, clientY);
+          if (over !== this.isPointerOverRacket) {
+            this.isPointerOverRacket = over;
+            el.classList.toggle("is-over-racket", over);
+          }
+        });
+      });
+      el.addEventListener("mouseleave", () => {
+        this.isPointerOverRacket = false;
+        el.classList.remove("is-over-racket");
+      });
+
       // Icke-passiv: vi måste kunna avbryta scrollen för den gest som börjar
       // på racketen. Missar pekaren racketen gör vi ingenting alls.
       el.addEventListener(
@@ -998,41 +1017,89 @@ window.PPRacket3D = (function () {
     flipRacket() {
       this.isFlipped = !this.isFlipped;
       this.targetRotation.y += Math.PI;
-      playHitSound("wood");
     }
 
     toggleExplodedView() {
       this.isExploded = !this.isExploded;
-      playHitSound("wood");
       return this.isExploded;
     }
 
-    // Applicera gummi med roll-on animation
-    applyRubberAnimation(side = "fh") {
-      const targetGroup = side === "fh" ? this.layerGroups.fhTopsheet : this.layerGroups.bhTopsheet;
-      const spongeGroup = side === "fh" ? this.layerGroups.fhSponge : this.layerGroups.bhSponge;
+    // Lägger på ett gummilager med mjuk påläggning: den nya ytan tonar in och
+    // växer från handtaget och uppåt i stället för att poppa in, och svampens
+    // färg glider över i den nya. Den gamla ytan ligger kvar under tills den
+    // nya täcker den, så det uppstår aldrig ett hål eller en blixt i bytet.
+    animateRubberChange(side, { texture = null, spongeColor = null, duration = 340 } = {}) {
+      const isFh = side === "fh";
+      const mesh = isFh ? this.fhRubberMesh : this.bhRubberMesh;
+      const mat = isFh ? this.fhRubberMat : this.bhRubberMat;
+      const spongeMat = isFh ? this.fhSpongeMat : this.bhSpongeMat;
+      const group = isFh ? this.layerGroups.fhTopsheet : this.layerGroups.bhTopsheet;
+      if (!mesh || !mat || !group) return;
 
-      targetGroup.scale.set(1.4, 0.05, 1);
-      spongeGroup.scale.set(1.4, 0.05, 1);
+      // Snabba färgbyten: släng en pågående påläggning i stället för att stapla
+      if (mesh.userData.ghost) {
+        group.remove(mesh.userData.ghost);
+        mesh.userData.ghost.material.dispose();
+        mesh.userData.ghost = null;
+      }
 
-      playHitSound("rubber");
+      const ghostMat = mat.clone();
+      if (texture) {
+        ghostMat.map = texture;
+        ghostMat.needsUpdate = true;
+      }
+      ghostMat.transparent = true;
+      ghostMat.opacity = 0;
+      ghostMat.depthWrite = false;
 
-      let progress = 0;
-      const animateApply = () => {
-        progress += 0.06;
-        if (progress >= 1) {
-          targetGroup.scale.set(1, 1, 1);
-          spongeGroup.scale.set(1, 1, 1);
-          playHitSound("wood");
-        } else {
-          const s = 1.4 - 0.4 * progress;
-          const sy = 0.05 + 0.95 * progress;
-          targetGroup.scale.set(s, sy, 1);
-          spongeGroup.scale.set(s, sy, 1);
-          requestAnimationFrame(animateApply);
+      const ghost = new THREE.Mesh(mesh.geometry, ghostMat);
+      ghost.position.copy(mesh.position);
+      ghost.rotation.copy(mesh.rotation);
+      ghost.renderOrder = mesh.renderOrder + 1;
+      group.add(ghost);
+      mesh.userData.ghost = ghost;
+
+      const spongeFrom = spongeMat && spongeColor ? spongeMat.color.clone() : null;
+      const spongeTo = spongeColor ? new THREE.Color(spongeColor) : null;
+      const started = performance.now();
+      const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+      const step = () => {
+        if (this.disposed || mesh.userData.ghost !== ghost) return;
+        const t = Math.min(1, (performance.now() - started) / duration);
+        const e = easeOutCubic(t);
+
+        ghostMat.opacity = e;
+        // Geometrins origo ligger vid halsen: skalan växer därifrån och uppåt
+        ghost.scale.set(1, 0.06 + 0.94 * e, 1);
+        ghost.position.z = mesh.position.z + (1 - e) * 0.01;
+
+        if (spongeFrom && spongeTo) spongeMat.color.copy(spongeFrom).lerp(spongeTo, e);
+
+        if (t < 1) {
+          requestAnimationFrame(step);
+          return;
         }
+
+        // Klart: skriv över den permanenta ytan och ta bort mellanskiktet
+        if (texture) {
+          mat.map = texture;
+          mat.needsUpdate = true;
+        }
+        group.remove(ghost);
+        ghostMat.dispose();
+        mesh.userData.ghost = null;
       };
-      animateApply();
+      requestAnimationFrame(step);
+    }
+
+    // Publik ingång från "Rulla på gummi": spela upp påläggningen igen med det
+    // gummi som redan sitter på.
+    applyRubberAnimation(side = "fh") {
+      const isFh = side === "fh";
+      const mat = isFh ? this.fhRubberMat : this.bhRubberMat;
+      const spongeColor = isFh ? this.fhData.spongeColor : this.bhData.spongeColor;
+      this.animateRubberChange(side, { texture: mat ? mat.map : null, spongeColor });
     }
 
     updateBlade(bladeData) {
@@ -1046,40 +1113,24 @@ window.PPRacket3D = (function () {
         this.bladeMesh.material[0].map = newTex;
         this.bladeMesh.material[0].needsUpdate = true;
       }
-      playHitSound("wood");
     }
 
     updateForehand(rubberData) {
       this.fhData = rubberData;
       const isRed = rubberData.color !== "black";
       const newTex = createRubberTexture(rubberData.name, isRed, rubberData.colorHex);
-      if (this.fhRubberMat) {
-        this.fhRubberMat.map = newTex;
-        this.fhRubberMat.needsUpdate = true;
-      }
-      if (this.fhSpongeMat && rubberData.spongeColor) {
-        this.fhSpongeMat.color.set(rubberData.spongeColor);
-      }
-      this.applyRubberAnimation("fh");
+      this.animateRubberChange("fh", { texture: newTex, spongeColor: rubberData.spongeColor });
     }
 
     updateBackhand(rubberData) {
       this.bhData = rubberData;
       const newTex = createRubberTexture(rubberData.name, false, rubberData.colorHex || "#17181c");
-      if (this.bhRubberMat) {
-        this.bhRubberMat.map = newTex;
-        this.bhRubberMat.needsUpdate = true;
-      }
-      if (this.bhSpongeMat && rubberData.spongeColor) {
-        this.bhSpongeMat.color.set(rubberData.spongeColor);
-      }
-      this.applyRubberAnimation("bh");
+      this.animateRubberChange("bh", { texture: newTex, spongeColor: rubberData.spongeColor });
     }
 
     updateEdgeTape(tapeData) {
       this.edgeTapeData = tapeData;
       this.buildEdgeTape();
-      playHitSound("wood");
     }
 
     animate() {
@@ -1096,7 +1147,7 @@ window.PPRacket3D = (function () {
         this.introProgress = Math.min(1, this.introProgress + delta * 1.3);
         // Smooth easeOutCubic
         const t = 1 - Math.pow(1 - this.introProgress, 3);
-        const scale = 0.88 + 0.12 * t;
+        const scale = this.baseScale * (0.94 + 0.06 * t);
         this.racketRoot.scale.set(scale, scale, scale);
         // Fade via material opacity would be complex; use renderer opacity instead
         this.renderer.domElement.style.opacity = t;
@@ -1166,6 +1217,5 @@ window.PPRacket3D = (function () {
 
   return {
     RacketViewer,
-    playHitSound,
   };
 })();

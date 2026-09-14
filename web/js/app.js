@@ -1024,6 +1024,7 @@ function workshopView(params) {
       <div class="workshop__stage-wrap">
         <div class="workshop__viewport">
           <div class="workshop__viewport-hint"><i></i><span id="wsHintText">${hintIdleCopy}</span></div>
+          <span class="workshop__beta">BETA – TEST</span>
           <div class="workshop__viewport-canvas" id="workshopCanvas" title="Dra för att rotera racket i 3D"></div>
           <div class="workshop__3d-tools">
             <button class="btn-tool" id="wsFlipBtn" type="button" title="Vänd racket">
@@ -1187,6 +1188,24 @@ function workshopView(params) {
     });
   }
 
+  // Stegnavigering i botten av varje steg: bakåt bredvid framåt, så att det
+  // alltid går att ångra sig utan att först scrolla upp till flikarna.
+  function stepNav({ backTo = null, backLabel = "Tillbaka", nextId = null, nextLabel = "" } = {}) {
+    const back = backTo
+      ? `<button class="workshop__back-btn" type="button" data-back-to="${backTo}">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+           <span>${backLabel}</span>
+         </button>`
+      : "";
+    const next = nextId
+      ? `<button class="workshop__next-btn" id="${nextId}" type="button">
+           <span>${nextLabel}</span>
+           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+         </button>`
+      : "";
+    return `<div class="workshop__step-nav${nextId ? "" : " workshop__step-nav--back-only"}">${back}${next}</div>`;
+  }
+
   function renderStepContent() {
     const content = $("#wsStepContent");
     if (!content) return;
@@ -1238,10 +1257,7 @@ function workshopView(params) {
           }).join("")}
         </div>
 
-        <button class="workshop__next-btn" id="toFhBtn" type="button">
-          <span>Nästa steg: Välj Forehand-gummi</span>
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
+        ${stepNav({ nextId: "toFhBtn", nextLabel: "Nästa steg: Välj Forehand-gummi" })}
       `;
 
       content.querySelectorAll("[data-bfilter]").forEach(btn => {
@@ -1340,10 +1356,7 @@ function workshopView(params) {
           }).join("")}
         </div>
 
-        <button class="workshop__next-btn" id="toBhBtn" type="button">
-          <span>Nästa steg: Välj Backhand-gummi</span>
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
+        ${stepNav({ backTo: 1, backLabel: "Tillbaka: Stomme", nextId: "toBhBtn", nextLabel: "Nästa steg: Välj Backhand-gummi" })}
       `;
 
       content.querySelectorAll("[data-fh-color]").forEach(btn => {
@@ -1469,10 +1482,7 @@ function workshopView(params) {
           }).join("")}
         </div>
 
-        <button class="workshop__next-btn" id="toAssemblyBtn" type="button">
-          <span>Nästa steg: Kantband & Montering</span>
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
+        ${stepNav({ backTo: 2, backLabel: "Tillbaka: Forehand", nextId: "toAssemblyBtn", nextLabel: "Nästa steg: Kantband & Montering" })}
       `;
 
       content.querySelectorAll("[data-bh-thick]").forEach(btn => {
@@ -1596,6 +1606,8 @@ function workshopView(params) {
             Lägg specialbyggt racket i varukorgen ${bagSvg}
           </button>
         </div>
+
+        ${stepNav({ backTo: 3, backLabel: "Tillbaka: Backhand" })}
       `;
 
       content.querySelectorAll("[data-grip]").forEach(btn => {
@@ -1654,6 +1666,13 @@ function workshopView(params) {
       setStep(parseInt(target.dataset.step, 10));
       target.focus();
     });
+  });
+
+  // Bakåtknapparna renderas om per steg — delegera klicket i stället för att
+  // koppla en lyssnare varje gång innehållet byts.
+  $("#wsStepContent")?.addEventListener("click", (e) => {
+    const back = e.target.closest("[data-back-to]");
+    if (back) setStep(parseInt(back.dataset.backTo, 10));
   });
 
   renderStats();

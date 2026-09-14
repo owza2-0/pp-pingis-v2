@@ -4,6 +4,10 @@
 
 Blockerare: **det finns ingen källbild (mock, Figma eller skiss) för mobilayouten i repot.** QA:n har därför kunnat jämföra mobilrenderingen mot repots egen designkontrakt (designtokens i `web/css/style.css`, README:s uttalade responsivitetskrav) och mot den levererade desktoprenderingen av samma komponenter — men inte mot en avsedd mobildesign, eftersom någon sådan inte existerar. Inga kvarstående P0/P1/P2-fynd finns; blockeraren gäller det saknade jämförelseobjektet, inte ett misstänkt fel. Se "Open Questions".
 
+**Två pass samma dag.** Pass 1 (mobil: scrollfällan i 3D-ytan, sista steget, rubriken, touch-mål, stegflikarna) och pass 2 (ägarens fyra nya punkter: bort med ljudet, enkel bakåtväg i stegen, proffsigare gummi-animation, touch-ytan centrerad på racketen — plus ett litet "BETA – TEST"-märke i 3D-byggaren). Båda passen är verifierade med mätningar; se Jämförelsehistorik.
+
+**Sajten är en mock-up av en befintlig sida** (ägarens besked 2026-09-14). Frågan om varukorgens tomma läge är därmed avskriven — den byggs inte ut.
+
 ---
 
 ## Artefakter
@@ -40,13 +44,49 @@ Mobil steg 1 mot desktop steg 1 (bilderna ovan): samma komponentordning i deskto
 
 Fokus behövdes för tre ytor, eftersom helhetsvyn inte avgör dem:
 
-1. **Racketverkstadens 3D-panel** (elementbild av canvasen, överlagrad UI dold): racketens pixelutsträckning mätt till raderna 16–350 av 352 px på mobil och 32–689 av 690 px på desktop — 95 % av panelhöjden i båda fallen.
+1. **Racketverkstadens 3D-panel** (elementbild av canvasen, överlagrad UI dold). Före pass 2: racketen fyllde 95 % av panelhöjden och nuddade nederkanten (raderna 16–350 av 352 px på mobil, 32–689 av 690 px på desktop). Efter pass 2: 74 % fyllnad med 6 % marginal upptill och 12 % nedtill, centrerad inom 12 px.
 2. **Sista stegets sammanställning**: andelen av skärmbredden som panelen tar, samt om innehållet klipps (`scrollHeight` mot `clientHeight`).
 3. **Steghuvudet** (rubrik + statusetikett): radbrytning och inbördes placering.
 
-## Fynd
+## Fynd — pass 2 (ägarens fyra punkter)
 
-### Åtgärdade i detta pass
+### Åtgärdade
+
+**[P1] Ljudet borttaget helt**
+Location: `web/js/racket3d.js` (ljudmotorn: `audioCtx` + `playHitSound` + 7 anrop) och exporten `PPRacket3D.playHitSound`.
+Evidence: varje vändning, sprängskiss, bladbyte, kantband, gummi-byte och påläggning spelade en syntetiserad ton. Ägaren: "ta bort ljudet … när man vänder på racket och när man byter färg".
+Impact: överraskande ljud i en demosida som ska visas för en vän.
+Fix: hela ljudmotorn borttagen — ingen `AudioContext` skapas någonstans; anropen och exporten är borta.
+Verifierat: instrumenterad räknare i webbläsaren gav **0 skapade AudioContext och 0 oscillatorer** efter att ha vänt racketen, slagit på/av lager, bytt gummi, bytt färg och bytt steg. `typeof window.PPRacket3D.playHitSound === "undefined"`.
+
+**[P2] Det gick inte att gå tillbaka i stegen**
+Location: `web/js/app.js` (`stepNav()`, delegerad klickhantering på `#wsStepContent`), `web/css/style.css` (`.workshop__step-nav`, `.workshop__back-btn`).
+Evidence: enda tvåvägsnavigationen var stegflikarna högst upp i panelen — det fanns ingen bakåtknapp i innehållet, så efter ett val långt ned i en lista fanns ingen synlig väg tillbaka.
+Impact: ägaren: "det går typ inte å gå tbx nu". Ett stegväljare utan bakåtväg tvingar fram omladdning.
+Fix: bakåtknapp i varje steg 2–4 ("Tillbaka: Stomme" / "Forehand" / "Backhand") bredvid den befintliga "Nästa"-knappen, med samma återanvända glasstil som sekundär åtgärd. På mobil staplas de (Nästa överst, Tillbaka under), båda ≥44 px. Klicket delegeras från stegpanelen, så ingen lyssnare kopplas om per rendering.
+Verifierat: bakåt går **4 → 3 → 2 → 1** via knapptryck; steg 2:s rad mäter `Tillbaka: Stomme` 44 px och `Nästa steg: …` 48 px; steg 4 har bakåtknapp och behåller köp-CTA:n. Visuellt verifierad hierarki (primär orange / sekundär mörk).
+
+**[P2] Gummibytet ploppade in i stället för att läggas på**
+Location: `web/js/racket3d.js` (`animateRubberChange`, `updateForehand`, `updateBackhand`, `applyRubberAnimation`).
+Evidence: texturen byttes **direkt** på materialet (`fhRubberMat.map = newTex`) och den gamla animationen var en squash-stretch (`scale.set(1.4, 0.05, 1)` → `1,1,1`) i fasta steg per frame. Ägaren: "ser ut som ett browser-spel från 90-talet som bara ploppar in".
+Fix: ny påläggning — ett tillfälligt mellanskikt med den nya texturen tonar in samtidigt som det växer från handtaget och uppåt (geometrins origo ligger vid halsen), med `easeOutCubic` över 340 ms, och svampens färg glider över i den nya. Den gamla ytan ligger kvar under tills den nya täcker, så det blir aldrig ett hål eller en blixt. Den permanenta texturen skrivs först när animationen är klar, och ett snabbt färgbyte kastar en pågående påläggning i stället för att stapla.
+Verifierat: i en instrumenterad temp-kopia med förlängd varaktighet mättes opaciteten till 0 → 0,20 → 0,43 → 0,63 → 0,74 → 0,85 → 0,92 → 0,96 → 0,99 → 1 (mjuk, avtagande kurva), skalningen 0,25 → 1 (utrullning), permanent textur oförändrad under hela förloppet och bytt först vid slutet, svampfärg `1b74f0 → ff6600`. I den riktiga appen: färgbytet landar (kanal-medelvärde `(173,50,46) → (61,111,157)`, max Δ 112).
+
+**[P2] Touch-ytan var hela rutan i stället för racketen**
+Location: `web/js/racket3d.js` (`frameRacket()`, `onResize()`, `baseScale`/`basePositionY`) och `web/css/style.css` (pekarstyrning, `.is-interactive`).
+Evidence: racketen fyllde **95 % av panelens höjd** och nuddade nederkanten — mätt till raderna 16–350 av 352 px på mobil och 32–689 av 690 px på desktop (samma i baslinjen, alltså ärvt, inte från pass 1). Med racketen så stor *är* "träff överallt i mitten" samma sak som "träff på racketen", vilket ägaren upplevde som att touchen låg över hela rutan: "gör touch-rutan där man flyttar runt på racket med centrerat på racket".
+Impact: irritation vid navigering och ingen visuell ledtråd om var man får ta tag.
+Fix: studio-vyn räknar nu fram sin egen inramning ur racketens bounding box: den skalas till 74 % av den synliga höjden och centreras på kamerans blickpunkt (hero-läget behåller sin godkända inramning). Dessutom visar muspekaren `grab` **bara** när den är över racketen (samma raycast som styr touchen), och panelen får en accentkant medan gesten håller racketen.
+Verifierat: toppmarginal 6 %, bottenmarginal 12 %, centrumavvikelse 12 px; träff-test i fem punkter — mitten tar tag (`armed: true`), topp-/bottenmarginal och sidkanter tar **inte** tag. Skärmbilder: `mobil2/racket-framed.png`.
+
+**[P3, önskad av ägaren] "BETA – TEST"-märke i 3D-byggaren**
+Location: `web/js/app.js` (`.workshop__beta` i panelmarkupen), `web/css/style.css`.
+Fix: litet piller uppe till höger i 3D-panelen — mono 10 px versaler, `--ink-dim`, glasbakgrund och tunn ram, `pointer-events: none` och utanför layoutflödet. Hint-texten till vänster har fått minskad maxbredd så de aldrig kan krocka.
+Verifierat: 99×25 px, inom panelen, ingen överlappning med hinten, pekaren går **rakt igenom** (`elementFromPoint` → `canvas`), stegflikarna kvar i första skärmen och 0 px horisontell overflow. Syns i både mobil (393) och desktop (1440).
+
+## Fynd — pass 1 (mobilen)
+
+### Åtgärdade
 
 **[P1] Racketverkstadens sista steg sprängde skärmbredden och klipptes av**
 Location: `#wsAddToCartBtn` i steg 4, `web/css/style.css` (`.btn--full`), grid-kolumnen i `.workshop__grid`.
@@ -125,6 +165,11 @@ Fix: glyferna borttagna, PDP-knappen fick den befintliga kubikonen i stället, d
 | 4 | Rubriken klippt 14 px utanför skärmen | mindre `clamp` + balanserad radbrytning | mätning: högerkant 361 ≤ 393 |
 | 5 | Steghuvudet radbröts fel | staplad kolumn | `final/m-ws-step4.png`: rubrik överst, etikett vänsterställd under |
 | 6 | Touch-mål 35–40 px | 44 px på mobil | `targets.py`: inga under 44 px |
+| 7 | Ljud i varje interaktion (pass 2) | hela ljudmotorn borttagen | `verify_owner_asks.py`: 0 AudioContext, 0 oscillatorer, `playHitSound` borta ur API:t |
+| 8 | Ingen bakåtväg i stegen (pass 2) | bakåtknapp i steg 2–4 + delegerat klick | klicksekvens 4 → 3 → 2 → 1; `Tillbaka: Stomme` 44 px, `Nästa` 48 px; visuellt primär/sekundär-hierarki bekräftad |
+| 9 | Gummibyte "ploppade in" (pass 2) | mjuk påläggning: övertoning + utrullning, `easeOutCubic` 340 ms | instrumenterad ramp 0 → 0,20 → 0,43 → 0,63 → 0,74 → 0,85 → 0,92 → 0,96 → 0,99 → 1, skalning 0,25 → 1, textur bytt först vid slutet; färgbytet landar `(173,50,46) → (61,111,157)` |
+| 10 | Touch-ytan = hela rutan (pass 2) | inramning: racketen 74 % av panelhöjden, centrerad; pekare `grab` bara över racketen | toppmarginal 6 %, bottenmarginal 12 %, centrum 12 px; träff i mitten = ja, marginaler/kanter = nej |
+| 11 | BETA-märke önskat (pass 2) | litet piller uppe till höger i panelen, `pointer-events: none` | 99×25 px, ingen överlappning, pekaren går igenom till `canvas`, 0 px overflow, syns på mobil och desktop |
 
 Regressioner som jag själv införde och rättade under passet: borttagen inre scrollruta (gav 16 180 px lång sida → återinförd, avgränsad) och en kvarvarande variabelreferens (`coarsePointer is not defined`, som slog ut 3D-initieringen — fångades av att två acceptanskriterier föll och rättades).
 
@@ -138,21 +183,26 @@ Regressioner som jag själv införde och rättade under passet: borttagen inre s
 6. ~~44 px touch-mål~~ klar
 7. ~~Avgränsad inre scrollista på mobil~~ klar
 8. ~~Borttagna dekorglyfer + död CSS~~ klar
-9. **Öppet (kräver beslut):** radbrytning/marginal för racketen i panelen — se Open Questions
-10. **Öppet (kräver beslut):** CTA i varukorgens tomma läge
-11. **Blockerare för "passed":** ingen mobil källbild finns — se nedan
+9. ~~Bort med ljudet (hela ljudmotorn)~~ klar
+10. ~~Bakåtknapp i varje steg~~ klar
+11. ~~Mjuk gummi-påläggning i stället för plopp~~ klar
+12. ~~Touch-ytan centrerad på racketen, med luft runt~~ klar
+13. ~~"BETA – TEST"-märke i 3D-byggaren~~ klar
+14. **Blockerare för "passed":** ingen mobil källbild finns — se nedan
 
 ## Open Questions
 
-- **Saknad källbild.** Ska mobilayouten bedömas mot en mock? Utan en sådan kan den här QA:n inte intyga designtrohet, bara frånvaro av mätbara fel (overflow, klippning, touch-mål, scroll-fällor). Två vägar: (a) en mobilmock tas fram och QA:n körs om mot den, eller (b) ägaren godkänner den desktop-härledda layouten som avsedd design och blockeraren stryks.
-- **Racketen i panelen:** 95 % fyllnad och nederkant i linje med panelkanten, likadant på desktop. Ska det vara så, eller ska mobilen få marginal?
-- **Varukorgens tomma läge:** ska det få en primär åtgärd ("Visa alla produkter")?
-- **Repo-status:** ändringarna i `web/` är **inte committade**. Detta pass har inte rört git i projektrepot (vaultregeln säger att repon inte committas åt). Säg till om de ska committas och pushas.
+- **Saknad källbild.** Ska mobilayouten bedömas mot en mock? Utan en sådan kan den här QA:n inte intyga designtrohet, bara frånvaro av mätbara fel (overflow, klippning, touch-mål, scroll-fällor, ljud). Två vägar: (a) en mobilmock tas fram och QA:n körs om mot den, eller (b) ägaren godkänner den desktop-härledda layouten som avsedd design och blockeraren stryks.
+- **Hero-racketten har kvar sin gamla inramning** (fyller panelen, nuddar nederkanten). Studio-vyn fick ny inramning i pass 2, men hero-vyn lämnades medvetet orörd eftersom ägaren godkänt startsidans utseende. Ska hero följa samma inramning?
+- **Varukorgens tomma läge:** avskriven — sajten är en mock-up av en befintlig sida (ägarbesked 2026-09-14).
+- **Repo-status:** pass 2 committas och pushas efter ägarens besked så att ändringarna kan ses live efter re-deploy.
 
 ## Residual test gaps
 
-- Ingen riktig mobil enhet; iOS Safari och Android Chrome är inte provade (bara Chromium med touch-emulering). `matchMedia("(pointer: coarse)")` beter sig olika där, och det påverkar bara vilken hint-text som visas, inte gatingen.
-- Ingen fysisk multitouch-provning (två fingrar samtidigt på 3D-ytan samtidigt som sidan scrollas).
+- **Headless-Chromium här kör `requestAnimationFrame` i ~3 fps** (mätt: 3 frames/s). En 340 ms-animation ryms därför i praktiken i en enda frame, vilket gjorde att de första pixelmätningarna såg ut som ett plopp. Animationens ramp verifierades därför i en instrumenterad temp-kopia med förlängd varaktighet (samma kodväg, bara `duration` ändrad). På riktig hårdvara (60 fps) motsvarar 340 ms ~20 frames. Slutsatsen "mjuk påläggning" vilar alltså på den instrumenterade mätningen, inte på en pixelfilm i full frame rate.
+- Ingen riktig mobil enhet; iOS Safari och Android Chrome är inte provade. `matchMedia("(pointer: coarse)")` styr bara vilken hint-text som visas, inte gatingen.
+- Ljudets frånvaro är verifierad i Chromium; ingen kontroll av att en eventuell annan ljudkälla (t.ex. skärmläsare) påverkas.
+- Ingen fysisk multitouch-provning (två fingrar samtidigt på 3D-ytan medan sidan scrollas).
 - Kontrastvärden är beräknade ur tokens, inte mätta med kontrastverktyg mot renderade pixlar.
 - Ingen prestandamätning (WebGL på låg mobilspec).
-- Varukorgen provades bara i tomt läge; med varor är flödet oförändrat men obevisat i detta pass.
+- Varukorgen provades bara i tomt läge.

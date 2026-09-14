@@ -372,11 +372,12 @@ input, select { font: inherit; color: inherit; }
 }
 .hero__canvas3d {
   position: absolute; inset: -4%; width: 108%; height: 108%; z-index: 2;
-  cursor: grab;
+  cursor: default;
   /* Sidan scrollar tills gesten börjar på själva racketen — se racket3d.js */
   touch-action: pan-y;
 }
-.hero__canvas3d.is-touch-armed { touch-action: none; }
+.hero__canvas3d.is-over-racket { cursor: grab; }
+.hero__canvas3d.is-touch-armed { touch-action: none; cursor: grab; }
 .hero__canvas3d:active { cursor: grabbing; }
 .hero__product {
   width: 78%; height: auto; position: relative; z-index: 2;
@@ -1411,17 +1412,51 @@ input, select { font: inherit; color: inherit; }
   inset: 0;
   width: 100%;
   height: 100%;
-  cursor: grab;
+  /* Standard: vanlig pekare. "grab" visas bara över själva racketen. */
+  cursor: default;
   /* pan-y: låt sidan scrolla. Rotation aktiveras först när gesten träffar
      racketen (racket3d.js sätter .is-touch-armed och avbryter scrollen). */
   touch-action: pan-y;
   outline: none;
 }
+.workshop__viewport-canvas.is-over-racket {
+  cursor: grab;
+}
 .workshop__viewport-canvas.is-touch-armed {
+  /* Gesten har redan fångats (preventDefault i touchstart); lås panningen
+     under resten av gesten också. */
+  cursor: grab;
   touch-action: none;
 }
-.workshop__viewport-canvas:active {
+.workshop__viewport-canvas.is-touch-armed:active,
+.workshop__viewport-canvas.is-over-racket:active {
   cursor: grabbing;
+}
+/* Panelmarkering medan racketen hålls: tydligt att gesten tar */
+.workshop__viewport.is-interactive {
+  border-color: rgba(255, 74, 28, 0.42);
+}
+/* Liten beta-markering i 3D-panelens hörn: ligger utanför layoutflödet och
+   fångar inga pekare, så den syns utan att vara i vägen för racketen. */
+.workshop__beta {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 6;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  background: rgba(14, 15, 18, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 9px;
+  white-space: nowrap;
 }
 .workshop__3d-tools {
   position: absolute;
@@ -1486,7 +1521,8 @@ input, select { font: inherit; color: inherit; }
   gap: 8px;
   pointer-events: none;
   z-index: 5;
-  max-width: calc(100% - 36px);
+  /* Håll undan för BETA-märket uppe till höger */
+  max-width: calc(100% - 132px);
 }
 .workshop__viewport-hint i {
   width: 7px;
@@ -2073,6 +2109,42 @@ input, select { font: inherit; color: inherit; }
   transform: translateY(-1px);
 }
 
+/* Stegnavigering: bakåt bredvid framåt, så att det alltid går att ångra sig
+   utan att scrolla upp till flikarna. */
+.workshop__step-nav {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+.workshop__step-nav .workshop__next-btn { flex: 1 1 auto; }
+.workshop__step-nav--back-only { justify-content: flex-start; }
+.workshop__back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 650;
+  white-space: nowrap;
+  color: var(--ink);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-specular), 0 4px 16px rgba(0, 0, 0, 0.22);
+  transition: all 0.22s var(--ease-apple);
+  cursor: pointer;
+}
+.workshop__back-btn:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-1px);
+}
+.workshop__back-btn:active { transform: scale(0.97); }
+.workshop__back-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
 .workshop__step-content.is-fading { opacity: 0; transform: translateY(8px); transition: opacity 0.15s, transform 0.15s; }
 .workshop__step-content.is-entering { opacity: 0; transform: translateY(8px); }
 .workshop__step-content { transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out); }
@@ -2309,6 +2381,10 @@ input, select { font: inherit; color: inherit; }
     padding: 16px 20px;
     font-size: 15px;
   }
+  /* Två knappar sida vid sida blir trångt på en telefon: stapla med "Nästa"
+     överst (närmast innehållet) och "Tillbaka" under. */
+  .workshop__step-nav { flex-direction: column-reverse; }
+  .workshop__back-btn { min-height: 44px; padding: 12px 16px; }
   /* Stegbyte ska landa under den sticky navbaren + stegbaren, inte bakom dem */
   .workshop__step-content { scroll-margin-top: calc(var(--nav-h) + 84px); }
   /* Touch-mål: minst 44 px höga kontroller på mobil (WCAG 2.5.8 / Apple HIG) */
