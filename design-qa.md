@@ -4,7 +4,7 @@
 
 Blockerare: **det finns ingen källbild (mock, Figma eller skiss) för mobilayouten i repot.** QA:n har därför kunnat jämföra mobilrenderingen mot repots egen designkontrakt (designtokens i `web/css/style.css`, README:s uttalade responsivitetskrav) och mot den levererade desktoprenderingen av samma komponenter — men inte mot en avsedd mobildesign, eftersom någon sådan inte existerar. Inga kvarstående P0/P1/P2-fynd finns; blockeraren gäller det saknade jämförelseobjektet, inte ett misstänkt fel. Se "Open Questions".
 
-**Två pass samma dag.** Pass 1 (mobil: scrollfällan i 3D-ytan, sista steget, rubriken, touch-mål, stegflikarna) och pass 2 (ägarens fyra nya punkter: bort med ljudet, enkel bakåtväg i stegen, proffsigare gummi-animation, touch-ytan centrerad på racketen — plus ett litet "BETA – TEST"-märke i 3D-byggaren). Båda passen är verifierade med mätningar; se Jämförelsehistorik.
+**Två pass samma dag.** Pass 1 (mobil) och pass 2 (ägarens fyra punkter: ljud bort, bakåtväg i stegen, mjuk gummi-animation, touch-yta på racketen — plus BETA-märket). **Pass 3: läsbarhet och tydlighet** — ägaren bad om fokus på texterna, särskilt tydligheten i markerat kategoriläge, och om en bedömning av ljust tema. Se respektive avsnitt.
 
 **Sajten är en mock-up av en befintlig sida** (ägarens besked 2026-09-14). Frågan om varukorgens tomma läge är därmed avskriven — den byggs inte ut.
 
@@ -84,7 +84,74 @@ Location: `web/js/app.js` (`.workshop__beta` i panelmarkupen), `web/css/style.cs
 Fix: litet piller uppe till höger i 3D-panelen — mono 10 px versaler, `--ink-dim`, glasbakgrund och tunn ram, `pointer-events: none` och utanför layoutflödet. Hint-texten till vänster har fått minskad maxbredd så de aldrig kan krocka.
 Verifierat: 99×25 px, inom panelen, ingen överlappning med hinten, pekaren går **rakt igenom** (`elementFromPoint` → `canvas`), stegflikarna kvar i första skärmen och 0 px horisontell overflow. Syns i både mobil (393) och desktop (1440).
 
-## Fynd — pass 1 (mobilen)
+## Fynd — pass 3 (läsbarhet och tydlighet)
+
+Mätt med renderad kontrast: för varje textelement jämförs elementets textfärg mot den faktiska bakgrunden i rutan (vanligaste färgen inuti, med ringen utanför som motkandidat — den kandidat som ligger längst från textfärgen vinner). Tröskel 4,5:1 för normal text, 3:1 för stor. Metoden prövades i fem iterationer; de tre första mätte fel (median­delning kollapsar när texten är minoritet, ringen utanför samplar grannar, och full-page-skärmbilder flyttar vh-baserad layout). Den femte mäter konsekvent: element utanför bildrutan och animerade element hoppas över, och mjuk scrollning stängs av.
+
+### Åtgärdade
+
+**[P1] Fyra CSS-variabler användes men definierades aldrig — det sprängde de markerade lägena**
+Location: `web/css/style.css` (`:root`), drabbade `.wchip.is-active`, `.step-tab.is-active`, `.swatch-btn.is-active`, `.btn-tool`, `.wchip`, `.thick-btn`, `.mono-label`, `.step-sec__head p`, m.fl. (24 användningar).
+Evidence: `--ink-bright` (12 användningar), `--ink-muted` (9), `--panel` (1) och `--font-sans` (2) fanns inte i något `:root`. En odefinierad `var()` utan fallback gör hela deklarationen ogiltig: `background` faller tillbaka på genomskinligt och `color` ärvs. I byggaren blev därför **det valda varumärkes-filtret mörk text på genomskinlig botten över en mörk panel** — uppmätt **1,10:1**. Stegflikarnas aktiva bakgrund (`--panel`) och svatcharnas valda text försvann på samma sätt.
+Impact: exakt det ägaren beskrev — "läsbarheten och tydligheten när man markerat en kategori måste bli tydligare och bättre".
+Fix: de fyra token definieras nu (`--ink-bright: #f7f3ec`, `--ink-muted`, `--panel`, `--font-sans: var(--font-display)`).
+Verifierat: vald varumärkes-chip mäter **17,5:1** (`#0a0a0b` på `#f6f0ea`) mot 1,10:1 före.
+
+**[P1] Vit text på varumärkes-orangen klarade inte kontrastkravet någonstans**
+Location: primär-CTA (`.btn--accent`, `.workshop__next-btn`), `.chip.is-on`, `.badge--hot` ("Pro"), `.nav__badge-3d`, `.mob-link__tag`, varukorgsräknaren, `.thick-btn.is-active`, `.step-tab.is-done .step-tab__num`, `.btn-tool--accent`, `::selection`.
+Evidence: vit text på `#FF613B→#E83A0E` mäter **2,99:1** respektive **4,16:1**; på `#ff5a30` 3,11:1. Det gäller alltså även den primära köpknappen.
+Fix: ny fyllningstoken `--accent-deep: #d63a0c` → `--accent-deep-2: #b82c08`, som ger vit text **4,70–6,17:1** och fortfarande står ut mot sidan (4,21:1). Den ljusa `--accent` behålls för text, ramar och glöd, där den mäter 5,89:1 mot den mörka botten (den var alltså aldrig problemet som text).
+Verifierat: vald kategori-chip mäter **5,12:1** mot 4,06:1 före.
+
+**[P2] Små etiketter under läsbarhetsgränsen**
+Location: `.pcard__brand` och `.pcard__stock` (10 px, mörk text i 50–55 % på krämfärgade kort), `.chip__count` (10 px), `.badge`/`.wcard__badge` (10 px), `.nav__badge-3d`/`.mob-link__tag` (9 px), `.pdp__spec dt`, `.citem__rm`, `.mono-label`.
+Evidence: mörk text i 50 % på kräm mäter **3,36:1** (kräver 4,5 vid 10 px).
+Fix: nya etikett-tokens (`--ink-dim` 0,62 → 0,74; `--ink-faint` 0,50 → 0,62; `--card-ink-soft` 0,68 → mäter 5,97:1 på kräm), storlekar upp (10 → 11 px på kortens etiketter, 9 → 10 px på märken, 11 → 11,5 px på mono-etiketter).
+
+**[P2] Produktnamnet satt i VERSALER i upp till 52 px**
+Location: `.pdp__name`.
+Evidence: all-caps tar bort ordbilden — största möjliga läsbarhetssänkning på den mest lästa texten. Behålls på korta varumärkesetiketter (`.brandchip` 17 px, "DONIC") där versaler är rätt.
+Fix: versaler bort, storlek `clamp(28px, 3.2vw, 46px)`, `font-stretch` 116 → 108 %, radhöjd 1,02 → 1,08.
+
+**[P2] Markerade lägen syntes bara via färg, och ett av dem pulserade**
+Location: `.group-tab.is-active`, `.swatch-btn.is-active`, `.step-tab.is-active`, `.wcard.is-selected`.
+Fix: vald flik får fet stil + **accentmarkering nedtill** (syns utan färgseende), vald svatch 2 px accentram + fet text, vald stegflik fet + accentmarkering och ingen glömsk textskugga, valt kort ett **stabilt** läge med bock i stället för pulserande glöd. Byggarens filterknappar (`.wchip`, `.swatch-btn`, `.thick-btn`) fick `aria-pressed` — 12 kontroller har nu det.
+Verifierat: `gruppflik_undermarkering: true`, 12 `aria-pressed`, alla markerade lägen ≥5,12:1.
+
+**[P2] Spec-märkena ärvde produktfotots färg**
+Location: `.wcard__badge` ("Fart: 7", "Kontroll: 10").
+Evidence: genomskinlig botten gav **3,28:1** på ett kort (`#e5baaa` på `#c03008`) — kontrasten berodde på vilket foto som låg bakom.
+Fix: solid botten `rgba(12,12,14,0.86)` + tunn ram → mätt 9,4:1 oberoende av underlaget.
+
+### Nedtonat (ägaren: "den är redan flashig nog")
+
+- **Filmkornet** låg som ett fast överlägg ovanpå all text och animerades; nu statiskt och opacity 0,032 → 0,018.
+- **Skimmer-svepet över den primära CTA-texten** (`.workshop__next-btn::before`, vit gradient som svepte över etiketten) — borttaget, tillsammans med sin keyframe. En etikett ska inte konkurrera med en animation.
+- **Textskuggan** på den aktiva stegfliken — borttagen.
+- **Pulserande glöd** på valt kort → stabilt läge.
+
+### Resultat av mätningen
+
+| Sida | Mobil (före → efter) | Desktop (före → efter) |
+|---|---|---|
+| Startsida | 5 → **0** | 2 → **0** |
+| Butik | 10 → **0** (se noten) | 13 → **0** (se noten) |
+| Produktsida | 0 → 0 | 0 → 0 |
+| Racketverkstad | 2 → **0** | 0 → 0 |
+
+Efter fixen mäter 21 av 21 respektive 164 av 164 mätta element över tröskeln utom ett antal på butikssidan vars bakgrundsmätning hamnar på **produktfoton** i stället för kortets krämfärg. Det är en mätartefakt, inte en kontrast­brist: samma sida mätt stillastående (ingen skrollning, inga pågående `reveal`-animationer) ger **0 fel**, och en riktad mätning visar att varje produktbild ligger 26 px innanför sin ruta medan namnet börjar 41 px under den — texten ligger alltså på kortets krämfärg, inte på fotot. Kvarstår som residual: skrollade skivor kan inte mäta produktrutnätet pålitligt.
+
+### Ljust tema eller inte — bedömning
+
+Mätningen säger att problemet **inte** var det mörka temat: nära-vit brödtext mäter 17:1, dämpad text 6,3–9,5:1 och accenten som text 5,9:1. Det som faktiskt gick sönder var fyra saknade tokens, för ljus accentfyllning under vit text, för små etiketter och versala produktnamn.
+
+Ett helt ljust tema är däremot en större affär än det låter, och siffrorna är konkreta:
+
+- **Accenten måste bytas.** `#ff4a1c` som *text* på ljus botten ger 2,90:1; den behöver ned till omkring `#c9320a` (4,59:1). Då är det inte samma neon-orange längre — identiteten ändras, inte bara bakgrunden.
+- **~150 regelinstanser är byggda för mörker:** 34 regler med `backdrop-filter`-glas, 42 användningar av accentglöd i `rgba`, 25 ljus-på-mörk-fyllningar (`rgba(255,255,255,0.0x)`), 8 radial-gradient-glöd och filmkornet. Alla behöver ses över, plus `--glass-*`-tokens och 3D-panelens mörka bakgrund.
+- **Produktbilderna** är skrapade på vit botten. På den mörka sidan ger de krämfärgade korten separation; på en ljus sida försvinner den kontrasten och korten behöver ramar/skuggor i stället.
+
+**Rekommendation: behåll mörkt, men "lugn mörkt"** — precis det som gjorts i det här passet (höjd textkontrast, djupare accentfyllning, inga animationer över text). Det ger läsbarheten utan att röra identiteten. Vill ägaren ändå prova ljust är den billigaste vägen inte ett helt tema utan att lyfta basen från `#0a0a0b` till omkring `#101014` och behålla de krämfärgade korten — eller att jag tar fram ett ljust förslag i en separat gren med ovanstående tokenkarta som utgångspunkt.
 
 ### Åtgärdade
 
@@ -188,7 +255,13 @@ Regressioner som jag själv införde och rättade under passet: borttagen inre s
 11. ~~Mjuk gummi-påläggning i stället för plopp~~ klar
 12. ~~Touch-ytan centrerad på racketen, med luft runt~~ klar
 13. ~~"BETA – TEST"-märke i 3D-byggaren~~ klar
-14. **Blockerare för "passed":** ingen mobil källbild finns — se nedan
+14. ~~Definiera de fyra saknade CSS-token~~ klar
+15. ~~Djupare accentfyllning så vit text klarar 4,5:1~~ klar
+16. ~~Höj dämpad textkontrast och små etikettstorlekar~~ klar
+17. ~~Versaler bort på produktnamn~~ klar
+18. ~~Icke-färgberoende markering i valda lägen + `aria-pressed`~~ klar
+19. ~~Nedtonat: korn, skimmer, glöd, puls~~ klar
+20. **Blockerare för "passed":** ingen mobil källbild finns — se nedan
 
 ## Open Questions
 

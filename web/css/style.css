@@ -8,9 +8,23 @@
   --surface: #161618;
   --line: rgba(244, 241, 234, 0.1);
   --ink: #f4f1ea;
-  --ink-dim: rgba(244, 241, 234, 0.62);
-  --ink-faint: rgba(244, 241, 234, 0.5);
+  /* --ink-bright, --ink-muted, --panel och --font-sans användes på 24 ställen
+     men definierades aldrig: deklarationerna blev ogiltiga och föll tillbaka på
+     genomskinligt/ärvt. Värst drabbade det markerade lägen (t.ex. vald
+     varumärkes-chip blev mörk text på mörk botten, 1,10:1). Nu definierade. */
+  --ink-bright: #f7f3ec;
+  --ink-dim: rgba(244, 241, 234, 0.74);
+  --ink-muted: rgba(244, 241, 234, 0.72);
+  --ink-faint: rgba(244, 241, 234, 0.62);
+  --panel: rgba(255, 255, 255, 0.07);
+  --font-sans: var(--font-display);
   --accent: #ff4a1c;
+  /* Fyllning som bär vit text: 4,70:1 (ljus ände) till 6,17:1 (mörk ände).
+     Den ljusa accenten ovan ger bara 3,4:1 med vit text och behålls för text,
+     ramar och glöd — där den mäter 5,9:1 mot den mörka botten. */
+  --accent-deep: #d63a0c;
+  --accent-deep-2: #b82c08;
+  --card-ink-soft: rgba(20, 20, 18, 0.68);
   --accent-soft: rgba(255, 74, 28, 0.14);
   --card: #f4f1ea;
   --card-ink: #141412;
@@ -39,7 +53,7 @@ body {
   display: flex;
   flex-direction: column;
 }
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent-deep); color: #fff; }
 
 img { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
@@ -66,7 +80,7 @@ input, select { font: inherit; color: inherit; }
 
 /* film grain */
 .grain {
-  position: fixed; inset: -50%; z-index: 2000; pointer-events: none; opacity: 0.05;
+  position: fixed; inset: -50%; z-index: 2000; pointer-events: none; opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
   animation: grain 8s steps(10) infinite;
 }
@@ -79,8 +93,8 @@ input, select { font: inherit; color: inherit; }
 /* ---------- typographic helpers ---------- */
 .mono-label {
   font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
@@ -146,11 +160,11 @@ input, select { font: inherit; color: inherit; }
 }
 .nav__badge-3d {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   padding: 1px 5px;
   border-radius: 4px;
-  background: var(--accent);
+  background: var(--accent-deep);
   color: #fff;
   letter-spacing: 0.06em;
   transform: translateY(-1px);
@@ -170,8 +184,8 @@ input, select { font: inherit; color: inherit; }
 }
 .mob-link__tag {
   font-family: var(--font-mono);
-  font-size: 9px;
-  background: var(--accent);
+  font-size: 10px;
+  background: var(--accent-deep);
   color: #fff;
   padding: 2px 6px;
   border-radius: 4px;
@@ -202,7 +216,7 @@ input, select { font: inherit; color: inherit; }
 .nav__cartcount {
   position: absolute; top: 2px; right: 0;
   min-width: 18px; height: 18px; padding: 0 5px;
-  background: var(--accent); color: #fff; border-radius: 9px;
+  background: var(--accent-deep); color: #fff; border-radius: 9px;
   font-size: 11px; font-weight: 700; display: grid; place-items: center;
   font-family: var(--font-mono);
 }
@@ -260,14 +274,14 @@ input, select { font: inherit; color: inherit; }
 .btn:hover svg { transform: translateX(4px); }
 
 .btn--accent {
-  background: linear-gradient(180deg, #FF613B 0%, #E83A0E 100%);
+  background: linear-gradient(180deg, var(--accent-deep) 0%, var(--accent-deep-2) 100%);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.26);
   box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.45), 0 8px 24px rgba(255, 74, 28, 0.38);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 .btn--accent:hover {
-  background: linear-gradient(180deg, #FF724E 0%, #FF4516 100%);
+  background: linear-gradient(180deg, #e0460f 0%, #c2300a 100%);
   border-color: rgba(255, 255, 255, 0.42);
   box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.55), 0 12px 32px rgba(255, 74, 28, 0.48);
   transform: translateY(-2px);
@@ -559,11 +573,11 @@ input, select { font: inherit; color: inherit; }
 .pcard:hover .pcard__imgwrap img { transform: scale(1.07) rotate(-1.5deg); }
 .pcard__badges { position: absolute; top: 14px; left: 14px; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
 .badge {
-  font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em;
   text-transform: uppercase; padding: 5px 10px; border-radius: 6px;
 }
 .badge--out { background: #141412; color: #f4f1ea; }
-.badge--hot { background: var(--accent); color: #fff; }
+.badge--hot { background: var(--accent-deep); color: #fff; }
 .pcard__quick {
   position: absolute; right: 14px; bottom: 14px; z-index: 2;
   width: 46px; height: 46px; border-radius: 50%;
@@ -588,11 +602,11 @@ input, select { font: inherit; color: inherit; }
   transform: scale(0.94);
 }
 .pcard__body { padding: 18px 20px 22px; border-top: 1px solid rgba(20, 20, 18, 0.08); }
-.pcard__brand { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(20, 20, 18, 0.5); }
+.pcard__brand { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--card-ink-soft); }
 .pcard__name { font-weight: 700; font-size: 15.5px; line-height: 1.25; margin: 6px 0 12px; min-height: 2.5em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .pcard__foot { display: flex; align-items: center; justify-content: space-between; }
 .pcard__price { font-family: var(--font-mono); font-weight: 700; font-size: 16px; }
-.pcard__stock { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; color: rgba(20,20,18,0.55); }
+.pcard__stock { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; color: var(--card-ink-soft); }
 .pcard__stock i { width: 7px; height: 7px; border-radius: 50%; background: #1da857; }
 .pcard__stock--out i { background: #c22e08; }
 
@@ -706,9 +720,11 @@ input, select { font: inherit; color: inherit; }
   transform: scale(0.96);
 }
 .group-tab.is-active {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.18);
   color: #fff;
-  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.28), 0 3px 12px rgba(0, 0, 0, 0.35);
+  font-weight: 800;
+  /* Accentmarkering nedtill: valt läge syns även utan färgseende */
+  box-shadow: inset 0 -2px 0 0 var(--accent), inset 0 1px 1px 0 rgba(255, 255, 255, 0.28), 0 3px 12px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -755,21 +771,22 @@ input, select { font: inherit; color: inherit; }
   transform: scale(0.95);
 }
 .chip.is-on {
-  background: linear-gradient(180deg, #FF613B 0%, #E83A0E 100%);
+  background: linear-gradient(180deg, var(--accent-deep) 0%, var(--accent-deep-2) 100%);
   border-color: rgba(255, 255, 255, 0.32);
   color: #fff;
+  font-weight: 700;
   box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.45), 0 4px 16px rgba(255, 74, 28, 0.38);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 .chip__count {
   font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  opacity: 0.55;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.7;
   margin-left: 2px;
 }
 .chip.is-on .chip__count {
-  opacity: 0.9;
+  opacity: 1;
   color: #fff;
 }
 .chip--toggle {
@@ -869,7 +886,7 @@ input, select { font: inherit; color: inherit; }
 .pdp__thumb.is-on { border-color: var(--accent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 10px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 74, 28, 0.25), 0 0 22px rgba(255, 74, 28, 0.2); }
 
 .pdp__brand { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
-.pdp__name { font-size: clamp(30px, 3.4vw, 52px); font-weight: 850; font-stretch: 116%; letter-spacing: -0.015em; line-height: 1.02; text-transform: uppercase; margin: 12px 0 20px; }
+.pdp__name { font-size: clamp(28px, 3.2vw, 46px); font-weight: 800; font-stretch: 108%; letter-spacing: -0.012em; line-height: 1.08; margin: 12px 0 20px; }
 .pdp__pricerow { display: flex; align-items: baseline; gap: 16px; margin-bottom: 8px; }
 .pdp__price { font-family: var(--font-mono); font-size: 32px; font-weight: 700; }
 .pdp__vat { font-size: 12px; color: var(--ink-faint); font-family: var(--font-mono); }
@@ -951,7 +968,7 @@ input, select { font: inherit; color: inherit; }
 .qty output { min-width: 34px; text-align: center; font-family: var(--font-mono); font-weight: 700; }
 .pdp__specs { margin-top: 40px; border-top: 1px solid var(--line); }
 .pdp__spec { display: flex; justify-content: space-between; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
-.pdp__spec dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); padding-top: 2px; }
+.pdp__spec dt { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); padding-top: 2px; }
 .pdp__spec dd { text-align: right; color: var(--ink-dim); }
 
 .related { padding-bottom: 120px; }
@@ -1079,7 +1096,7 @@ input, select { font: inherit; color: inherit; }
 .citem__qty button:hover { color: var(--ink); }
 .citem__qty button:active { transform: scale(0.88); }
 .citem__qty output { min-width: 24px; text-align: center; font-family: var(--font-mono); font-size: 12.5px; }
-.citem__rm { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid transparent; }
+.citem__rm { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid transparent; }
 .citem__rm:hover { color: var(--accent); border-color: var(--accent); }
 .citem__total { font-family: var(--font-mono); font-weight: 700; font-size: 14px; }
 .cart__foot { padding: 22px 28px 28px; border-top: 1px solid var(--line); }
@@ -1499,7 +1516,7 @@ input, select { font: inherit; color: inherit; }
   color: var(--accent) !important;
 }
 .btn-tool--accent {
-  background: var(--accent);
+  background: var(--accent-deep);
   color: #fff !important;
 }
 .btn-tool--accent:hover {
@@ -1697,10 +1714,10 @@ input, select { font: inherit; color: inherit; }
 }
 .step-tab.is-active {
   background: var(--panel);
-  border-color: rgba(255, 74, 28, 0.4);
+  border-color: rgba(255, 74, 28, 0.55);
   color: var(--ink-bright);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 74, 28, 0.1);
-  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 -2px 0 0 var(--accent);
 }
 .step-tab__num {
   font-family: var(--font-mono);
@@ -1818,8 +1835,10 @@ input, select { font: inherit; color: inherit; }
 }
 .wcard.is-selected {
   border-color: var(--accent);
-  background: rgba(255, 74, 28, 0.06);
-  animation: selectedPulse 2.5s ease-in-out infinite;
+  background: rgba(255, 74, 28, 0.08);
+  /* Stabilt markerat läge i stället för pulserande glöd: lättare att läsa av
+     och lugnare. Valet syns även via bocken (icke-färgberoende ledtråd). */
+  box-shadow: 0 0 0 1px var(--accent), 0 8px 24px rgba(255, 74, 28, 0.14);
 }
 .wcard__imgwrap {
   width: 100%;
@@ -1873,11 +1892,14 @@ input, select { font: inherit; color: inherit; }
 }
 .wcard__badge {
   font-family: var(--font-mono);
-  font-size: 10px;
-  background: rgba(255, 255, 255, 0.06);
+  font-size: 10.5px;
+  /* Solid botten i stället för genomskinlig: annars ärvs produktfotots färg och
+     kontrasten varierar per produkt (mätt 3,3:1 på ett kort, 9:1 på ett annat). */
+  background: rgba(12, 12, 14, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 4px;
   padding: 2px 5px;
-  color: var(--ink-muted);
+  color: var(--ink-dim);
 }
 .wcard__check {
   position: absolute;
@@ -1886,7 +1908,7 @@ input, select { font: inherit; color: inherit; }
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent-deep);
   color: #fff;
   display: grid;
   place-items: center;
@@ -1951,9 +1973,11 @@ input, select { font: inherit; color: inherit; }
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
 }
 .swatch-btn.is-active {
-  border-color: var(--accent);
-  background: rgba(255, 74, 28, 0.12);
+  border: 2px solid var(--accent);
+  padding: 5px 11px;                 /* kompenserar den tjockare ramen */
+  background: rgba(255, 74, 28, 0.16);
   color: var(--ink-bright);
+  font-weight: 700;
 }
 .thickness-group {
   display: flex;
@@ -1972,9 +1996,10 @@ input, select { font: inherit; color: inherit; }
   transition: all 0.2s;
 }
 .thick-btn.is-active {
-  border-color: var(--accent);
-  background: var(--accent);
+  border-color: var(--accent-deep);
+  background: var(--accent-deep);
   color: #fff;
+  font-weight: 700;
 }
 .btn-apply-rubber {
   width: 100%;
@@ -2071,15 +2096,11 @@ input, select { font: inherit; color: inherit; }
   color: var(--ink-muted);
   line-height: 1.4;
 }
-@keyframes shimmer {
-  0% { left: -100%; }
-  50%, 100% { left: 150%; }
-}
 .workshop__next-btn {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #ff5a30, #e83a0e);
+  background: linear-gradient(135deg, var(--accent-deep), var(--accent-deep-2));
   color: #fff;
   border-radius: 12px;
   padding: 14px 20px;
@@ -2092,17 +2113,6 @@ input, select { font: inherit; color: inherit; }
   overflow: hidden;
   position: relative;
   box-shadow: 0 8px 24px rgba(255, 74, 28, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-}
-.workshop__next-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-  animation: shimmer 3s ease-in-out infinite;
-  pointer-events: none;
 }
 .workshop__next-btn:hover {
   filter: brightness(1.1);
@@ -2420,7 +2430,7 @@ input, select { font: inherit; color: inherit; }
 }
 
 /* mjukare filmkorn */
-.grain { opacity: .032; }
+.grain { opacity: .018; animation: none; }   /* statiskt korn: rör sig inte bakom texten */
 
 /* ---------- knappar: tydlig primär, lugn sekundär ---------- */
 .btn { border-radius: 999px; transition: transform .25s var(--ease-out), box-shadow .25s, background .25s, color .25s; }
@@ -2445,7 +2455,7 @@ input, select { font: inherit; color: inherit; }
 /* ---------- verkstadsstepper: synligt progress-tillstånd ---------- */
 .step-tab.is-done { color: var(--ink-dim); }
 .step-tab.is-done .step-tab__num {
-  color: #fff; background: var(--accent); border-radius: 999px;
+  color: #fff; background: var(--accent-deep); border-radius: 999px;
   padding: 1px 8px; box-shadow: 0 0 12px rgba(255,74,28,.45);
 }
 .step-tab.is-done .step-tab__title { opacity: .75; }

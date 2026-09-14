@@ -1224,7 +1224,7 @@ function workshopView(params) {
 
         <div class="workshop__subfilter">
           ${bladeBrands.map(b => `
-            <button class="wchip ${bladeFilterBrand === b ? 'is-active' : ''}" data-bfilter="${b}">
+            <button class="wchip ${bladeFilterBrand === b ? 'is-active' : ''}" data-bfilter="${b}" aria-pressed="${bladeFilterBrand === b}">
               ${b === "all" ? "Alla märken" : b}
             </button>
           `).join("")}
@@ -1299,7 +1299,7 @@ function workshopView(params) {
             <span class="option-label">Gummifärg (ITTF-godkänd):</span>
             <div class="swatches">
               ${RUBBER_COLORS.map(c => `
-                <button class="swatch-btn ${fhColor === c.id ? 'is-active' : ''}" data-fh-color="${c.id}" type="button">
+                <button class="swatch-btn ${fhColor === c.id ? 'is-active' : ''}" data-fh-color="${c.id}" type="button" aria-pressed="${fhColor === c.id}">
                   <i style="background:${c.hex}"></i>
                   <span>${c.name.split(" ")[0]}</span>
                 </button>
@@ -1310,8 +1310,8 @@ function workshopView(params) {
           <div class="option-row">
             <span class="option-label">Svamptjocklek:</span>
             <div class="thickness-group">
-              <button class="thick-btn ${fhThickness.startsWith('2.0') ? 'is-active' : ''}" data-fh-thick="2.0 mm" type="button">2.0 mm (Mer kontroll)</button>
-              <button class="thick-btn ${fhThickness.startsWith('Max') ? 'is-active' : ''}" data-fh-thick="Max (2.2 mm)" type="button">Max (Maximal fart)</button>
+              <button class="thick-btn ${fhThickness.startsWith('2.0') ? 'is-active' : ''}" data-fh-thick="2.0 mm" type="button" aria-pressed="${fhThickness.startsWith('2.0')}">2.0 mm (Mer kontroll)</button>
+              <button class="thick-btn ${fhThickness.startsWith('Max') ? 'is-active' : ''}" data-fh-thick="Max (2.2 mm)" type="button" aria-pressed="${fhThickness.startsWith('Max')}">Max (Maximal fart)</button>
             </div>
           </div>
 
@@ -1323,7 +1323,7 @@ function workshopView(params) {
 
         <div class="workshop__subfilter">
           ${rubberBrands.map(b => `
-            <button class="wchip ${fhFilterBrand === b ? 'is-active' : ''}" data-fhb="${b}">
+            <button class="wchip ${fhFilterBrand === b ? 'is-active' : ''}" data-fhb="${b}" aria-pressed="${fhFilterBrand === b}">
               ${b === "all" ? "Alla märken" : b}
             </button>
           `).join("")}
@@ -1436,8 +1436,8 @@ function workshopView(params) {
           <div class="option-row">
             <span class="option-label">Svamptjocklek:</span>
             <div class="thickness-group">
-              <button class="thick-btn ${bhThickness.startsWith('2.0') ? 'is-active' : ''}" data-bh-thick="2.0 mm" type="button">2.0 mm (Optimal kontroll)</button>
-              <button class="thick-btn ${bhThickness.startsWith('Max') ? 'is-active' : ''}" data-bh-thick="Max (2.2 mm)" type="button">Max (Maximal fart)</button>
+              <button class="thick-btn ${bhThickness.startsWith('2.0') ? 'is-active' : ''}" data-bh-thick="2.0 mm" type="button" aria-pressed="${bhThickness.startsWith('2.0')}">2.0 mm (Optimal kontroll)</button>
+              <button class="thick-btn ${bhThickness.startsWith('Max') ? 'is-active' : ''}" data-bh-thick="Max (2.2 mm)" type="button" aria-pressed="${bhThickness.startsWith('Max')}">Max (Maximal fart)</button>
             </div>
           </div>
 
@@ -1449,7 +1449,7 @@ function workshopView(params) {
 
         <div class="workshop__subfilter">
           ${rubberBrands.map(b => `
-            <button class="wchip ${bhFilterBrand === b ? 'is-active' : ''}" data-bhb="${b}">
+            <button class="wchip ${bhFilterBrand === b ? 'is-active' : ''}" data-bhb="${b}" aria-pressed="${bhFilterBrand === b}">
               ${b === "all" ? "Alla märken" : b}
             </button>
           `).join("")}
@@ -1543,7 +1543,7 @@ function workshopView(params) {
             <span class="option-label">Greppform på handtag:</span>
             <div class="swatches">
               ${["Konkav (Flared)", "Rak (Straight)", "Anatomisk"].map(g => `
-                <button class="swatch-btn ${gripType === g ? 'is-active' : ''}" data-grip="${g}" type="button">
+                <button class="swatch-btn ${gripType === g ? 'is-active' : ''}" data-grip="${g}" type="button" aria-pressed="${gripType === g}">
                   <span>${g}</span>
                 </button>
               `).join("")}
