@@ -137,7 +137,7 @@ function formatOrderText() {
   const lines = cart.map(i => {
     const p = BY_ID.get(i.id);
     const note = i.note ? `\n    Specialanpassning: ${i.note}` : "";
-    return p ? `${i.qty} × ${p.name} — ${kr(p.price * i.qty)} (art.nr ${p.id})${note}` : "";
+    return p ? `${i.qty} × ${p.name}: ${kr(p.price * i.qty)} (art.nr ${p.id})${note}` : "";
   }).filter(Boolean);
   return [
     "Beställning till PP-Pingis (info@pp-pingis.se):",
@@ -183,7 +183,7 @@ function fallbackCopy(text) {
 function checkout() {
   const lines = cart.map(i => {
     const p = BY_ID.get(i.id);
-    return p ? `${i.qty} × ${p.name} — ${kr(p.price * i.qty)} (art.nr ${p.id})` : "";
+    return p ? `${i.qty} × ${p.name}: ${kr(p.price * i.qty)} (art.nr ${p.id})` : "";
   }).filter(Boolean);
   const body = [
     "Hej PP-Pingis!",
@@ -444,9 +444,9 @@ function homeView() {
           <span class="row"><span>Spinn.</span></span>
           <span class="row"><span><em>Speed.</em></span></span>
         </h1>
-        <p class="hero__sub">Stommar, gummi och racketar från världens bästa märken — handplockade av folk som själva står vid bordet. Allt i lager, allt på riktigt.</p>
+        <p class="hero__sub">Stommar, gummi och racketar från världens bästa märken, handplockade av folk som själva står vid bordet. Allt i lager, allt på riktigt.</p>
         <div class="hero__ctas">
-          <a class="btn btn--accent" href="#/butik">Shoppa allt ${arrowSvg}</a>
+          <a class="btn btn--accent" href="#/butik">Öppna butiken ${arrowSvg}</a>
           <a class="btn btn--ghost" href="#/bygg-racket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> Bygg racket i 3D</a>
         </div>
         <div class="hero__meta">
@@ -505,7 +505,7 @@ function homeView() {
     <div class="usps wrap reveal" style="padding-inline:0; max-width:1560px;">
       <div class="usp">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg>
-        <div><h3>Fri frakt över 1 249 kr</h3><p>PostNord eller Instabox — spårbart hela vägen till dörren.</p></div>
+        <div><h3>Fri frakt över 1 249 kr</h3><p>PostNord eller Instabox. Spårbart hela vägen till dörren.</p></div>
       </div>
       <div class="usp">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4.5 13.5H11L9.5 22 19 9.5h-6.5z"/></svg>
@@ -513,7 +513,7 @@ function homeView() {
       </div>
       <div class="usp">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7.5-4.6-9.3-9.2C1.4 8.6 3.4 5.5 6.6 5.5c2 0 3.7 1.2 4.4 2.9.7-1.7 2.4-2.9 4.4-2.9 3.2 0 5.2 3.1 3.9 6.3C19.5 16.4 12 21 12 21Z"/></svg>
-        <div><h3>Riktig pingiskunskap</h3><p>Ring 070-031 66 55 — här svarar någon som vet vad tjock svamp gör.</p></div>
+        <div><h3>Riktig pingiskunskap</h3><p>Ring 070-031 66 55. Här svarar någon som vet vad tjock svamp gör.</p></div>
       </div>
     </div>
 
@@ -753,7 +753,7 @@ function productView(id) {
   if (!p) { location.hash = "#/butik"; return; }
   const related = PRODUCTS.filter(x => x.id !== id && (x.kind === p.kind || x.brand === p.brand))
     .sort((a, b) => Number(b.stock) - Number(a.stock) || b.price - a.price).slice(0, 4);
-  document.title = `${p.name} — PP PINGIS`;
+  document.title = `${p.name} · PP PINGIS`;
   const { cleanDesc, stats, badges } = parseSpecs(p.desc);
   const parentGroup = CATEGORY_GROUPS.find(g => g.kinds.includes(p.kind));
   const groupCrumb = parentGroup ? `<a href="#/butik?group=${parentGroup.id}">${esc(parentGroup.name)}</a> / ` : "";
@@ -783,7 +783,7 @@ function productView(id) {
           <span class="pdp__price">${kr(p.price)}</span>
           <span class="pdp__vat">inkl. moms</span>
         </div>
-        <div class="pdp__stock ${p.stock ? "" : "pdp__stock--out"}"><i></i>${p.stock ? "I lager — skickas inom 24 h" : "Tillfälligt slut"}</div>
+        <div class="pdp__stock ${p.stock ? "" : "pdp__stock--out"}"><i></i>${p.stock ? "I lager. Skickas inom 24 h" : "Tillfälligt slut"}</div>
         ${cleanDesc ? `<p class="pdp__desc">${esc(cleanDesc)}</p>` : ""}
 
         ${stats.length || badges.length ? `
@@ -960,7 +960,7 @@ function workshopView(params) {
   const hasTouch = navigator.maxTouchPoints > 0 || window.matchMedia("(pointer: coarse)").matches;
   const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
   const hintIdleCopy = hasTouch && hasFinePointer
-    ? "Dra — eller tryck på racketen"
+    ? "Dra, eller tryck på racketen"
     : hasTouch
       ? "Tryck på racketen för att rotera"
       : "Dra för att rotera · 360°";
@@ -1016,7 +1016,7 @@ function workshopView(params) {
         <a href="#/">Hem</a> / <a href="#/butik?group=rackets">Stommar &amp; Gummi</a> / <span style="color:var(--ink-dim)">Racketverkstad 3D</span>
       </nav>
       <h1 class="workshop__title display">PP-Pingis <em>Racketverkstad</em></h1>
-      <p class="workshop__lead">Skräddarsy ditt bordtennisracket i 3D. Välj stomme och applicera gummiplattor med valfri färg och svamptjocklek. Vi bjuder på professionell montering, limning med VOC-fritt tävlingslim och kantband!</p>
+      <p class="workshop__lead">Välj stomme, gummi och svamptjocklek. Vi limmar med VOC-fritt tävlingslim och sätter kantband.</p>
     </div>
 
     <div class="workshop__grid">
@@ -1603,7 +1603,7 @@ function workshopView(params) {
           </div>
 
           <button class="btn btn--accent btn--full" id="wsAddToCartBtn" type="button" style="padding:16px;font-size:15px;font-weight:800;justify-content:center;">
-            Lägg specialbyggt racket i varukorgen ${bagSvg}
+            Lägg specialbygget i varukorgen ${bagSvg}
           </button>
         </div>
 
@@ -1688,7 +1688,7 @@ function route() {
 
   $$("[data-nav]").forEach(a => a.classList.remove("is-active"));
   $$("[data-mob-nav]").forEach(a => a.classList.remove("is-active"));
-  document.title = "PP PINGIS — Bordtennis på allvar";
+  document.title = "PP PINGIS · Bordtennis på allvar";
 
   if (path !== "/" && path !== "") {
     if (hero3DInstance) {
@@ -1714,7 +1714,7 @@ function route() {
   } else if (path === "/bygg-racket") {
     $("[data-nav='workshop']")?.classList.add("is-active");
     $("[data-mob-nav='workshop']")?.classList.add("is-active");
-    document.title = "PP PINGIS — Racketverkstad (Bygg eget racket i 3D)";
+    document.title = "PP PINGIS · Racketverkstad";
     workshopView(params);
     window.scrollTo({ top: 0, behavior: "instant" });
   } else if (path === "/butik") {

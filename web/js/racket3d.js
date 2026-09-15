@@ -104,7 +104,7 @@ window.PPRacket3D = (function () {
     const tex = new THREE.CanvasTexture(canvas);
     tex.wrapS = THREE.RepeatWrapping;
     tex.wrapT = THREE.RepeatWrapping;
-    return tex;
+    return colorTexture(tex);
   }
 
   // Hjälpfunktion för att mörkna en hex-färg
@@ -114,6 +114,85 @@ window.PPRacket3D = (function () {
     let g = Math.max(0, parseInt(hex.substr(2, 2), 16) - amount);
     let b = Math.max(0, parseInt(hex.substr(4, 2), 16) - amount);
     return "#" + [r, g, b].map(c => c.toString(16).padStart(2, "0")).join("");
+  }
+
+  // r128: färger på canvas-texturer måste märkas sRGB, annars blir lacken grå.
+  function colorTexture(tex) {
+    if (tex.encoding !== undefined && THREE.sRGBEncoding !== undefined) {
+      tex.encoding = THREE.sRGBEncoding;
+    }
+    tex.anisotropy = 8;
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  // Studiomiljö från en 2D-gradient (ingen extra fil). PMREM ger riktiga
+  // speglingar i clearcoat, vilket är det som får gummi och trälack att läsas
+  // som material i stället för plast.
+  function makeStudioEnv(renderer) {
+    const c = document.createElement("canvas");
+    c.width = 512;
+    c.height = 256;
+    const ctx = c.getContext("2d");
+    const sky = ctx.createLinearGradient(0, 0, 0, 256);
+    sky.addColorStop(0, "#d9d3c8");
+    sky.addColorStop(0.38, "#8c8680");
+    sky.addColorStop(0.5, "#3a3633");
+    sky.addColorStop(1, "#141312");
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, 512, 256);
+
+    const windowGlow = ctx.createRadialGradient(150, 64, 8, 150, 64, 110);
+    windowGlow.addColorStop(0, "rgba(255, 214, 170, 0.9)");
+    windowGlow.addColorStop(1, "rgba(255, 214, 170, 0)");
+    ctx.fillStyle = windowGlow;
+    ctx.fillRect(0, 0, 512, 140);
+
+    const fill = ctx.createRadialGradient(400, 200, 10, 400, 200, 90);
+    fill.addColorStop(0, "rgba(180, 200, 220, 0.28)");
+    fill.addColorStop(1, "rgba(180, 200, 220, 0)");
+    ctx.fillStyle = fill;
+    ctx.fillRect(256, 128, 256, 128);
+
+    const tex = new THREE.CanvasTexture(c);
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    colorTexture(tex);
+
+    if (!THREE.PMREMGenerator) return tex;
+    try {
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      if (pmrem.compileEquirectangularShader) pmrem.compileEquirectangularShader();
+      const env = pmrem.fromEquirectangular(tex).texture;
+      tex.dispose();
+      pmrem.dispose();
+      return env;
+    } catch (err) {
+      return tex;
+    }
+  }
+
+  function createContactShadow() {
+    const c = document.createElement("canvas");
+    c.width = 256;
+    c.height = 256;
+    const ctx = c.getContext("2d");
+    const g = ctx.createRadialGradient(128, 128, 18, 128, 128, 118);
+    g.addColorStop(0, "rgba(0,0,0,0.42)");
+    g.addColorStop(0.45, "rgba(0,0,0,0.18)");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 256, 256);
+    const tex = new THREE.CanvasTexture(c);
+    const mat = new THREE.MeshBasicMaterial({
+      map: tex,
+      transparent: true,
+      depthWrite: false,
+    });
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 2.2), mat);
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.set(0, -1.42, 0.04);
+    mesh.renderOrder = -1;
+    return mesh;
   }
 
   // Skapa kanttextur som simulerar plywood-fanerlager (5 lager trä/karbon)
@@ -141,7 +220,7 @@ window.PPRacket3D = (function () {
     tex.wrapS = THREE.RepeatWrapping;
     tex.wrapT = THREE.RepeatWrapping;
     tex.repeat.set(12, 1);
-    return tex;
+    return colorTexture(tex);
   }
 
   // Skapa gummimaterial med ITTF-stämpel i nederkant
@@ -207,30 +286,32 @@ window.PPRacket3D = (function () {
     ctx.fillText("MADE IN GERMANY · TENSOR BIOS TECHNOLOGY", 512, stampY + 14);
 
     const tex = new THREE.CanvasTexture(canvas);
-    return tex;
+    return colorTexture(tex);
   }
 
   // Skapa en högkvalitativ bump map för ytgummits nabbstruktur
   function createRubberBumpMap() {
     const canvas = document.createElement("canvas");
-    canvas.width = 512;
-    canvas.height = 512;
+    canvas.width = 1024;
+    canvas.height = 1024;
     const ctx = canvas.getContext("2d");
-    
-    // Basnivå (neutral grå för bump)
-    ctx.fillStyle = "#808080";
-    ctx.fillRect(0, 0, 512, 512);
 
-    // Tätt nabb-mönster (pimples-in som buktar ut ytterst subtilt under ljus)
-    ctx.fillStyle = "#9c9c9c"; // Subtil ljusskillnad för svag upphöjning
-    const spacing = 12;
-    const radius = 3.5;
-    for (let y = 0; y < 512; y += spacing) {
-      for (let x = 0; x < 512; x += spacing) {
-        // Förskjut varannan rad för ett naturligt hexmönster
-        const offsetX = (Math.floor(y / spacing) % 2 === 0) ? 0 : spacing / 2;
+    ctx.fillStyle = "#7a7a7a";
+    ctx.fillRect(0, 0, 1024, 1024);
+
+    const spacing = 11;
+    for (let y = 0; y < 1024; y += spacing) {
+      const row = Math.floor(y / spacing);
+      const offsetX = row % 2 === 0 ? 0 : spacing / 2;
+      for (let x = 0; x < 1024; x += spacing) {
+        const cx = x + offsetX;
+        const bump = ctx.createRadialGradient(cx, y, 0.4, cx, y, 4.2);
+        bump.addColorStop(0, "#b4b4b4");
+        bump.addColorStop(0.55, "#8e8e8e");
+        bump.addColorStop(1, "#747474");
+        ctx.fillStyle = bump;
         ctx.beginPath();
-        ctx.arc(x + offsetX, y, radius, 0, Math.PI * 2);
+        ctx.arc(cx, y, 4.2, 0, Math.PI * 2);
         ctx.fill();
       }
     }
@@ -238,8 +319,7 @@ window.PPRacket3D = (function () {
     const tex = new THREE.CanvasTexture(canvas);
     tex.wrapS = THREE.RepeatWrapping;
     tex.wrapT = THREE.RepeatWrapping;
-    // Repetera så nabbarna blir små och realistiska över hela ytan
-    tex.repeat.set(4, 4);
+    tex.repeat.set(3, 3);
     return tex;
   }
 
@@ -290,146 +370,110 @@ window.PPRacket3D = (function () {
     ctx.globalAlpha = 0.85;
     ctx.font = "bold 28px Archivo, system-ui, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(brandName.toUpperCase() + "  ✦  " + brandName.toUpperCase(), 512, 74);
+    ctx.fillText(brandName.toUpperCase() + "  ·  " + brandName.toUpperCase(), 512, 74);
 
-    // Subtil textskugga
     ctx.globalAlpha = 0.15;
     ctx.fillStyle = "#ff4a1c";
-    ctx.fillText(brandName.toUpperCase() + "  ✦  " + brandName.toUpperCase(), 512, 75);
+    ctx.fillText(brandName.toUpperCase() + "  ·  " + brandName.toUpperCase(), 512, 75);
 
     const tex = new THREE.CanvasTexture(canvas);
     tex.wrapS = THREE.RepeatWrapping;
     tex.wrapT = THREE.ClampToEdgeWrapping;
     tex.repeat.set(3, 1);
-    return tex;
+    return colorTexture(tex);
   }
 
-  // Skapar bordtennisracketens huvudform (Shape)
+  // ITTF-lik pärform: rundare huvud, tydlig midja mot halsen.
   function createBladeShape() {
     const shape = new THREE.Shape();
-    // Startar vid halsen vänster
-    shape.moveTo(-0.45, 0.0);
-    // Vänster midja upp mot bredaste punkten
-    shape.bezierCurveTo(-0.7, 0.35, -0.92, 0.85, -0.88, 1.35);
-    // Toppen vänster till mitt
-    shape.bezierCurveTo(-0.84, 1.82, -0.5, 2.15, 0.0, 2.18);
-    // Toppen mitt till höger
-    shape.bezierCurveTo(0.5, 2.15, 0.84, 1.82, 0.88, 1.35);
-    // Höger midja ner till halsen
-    shape.bezierCurveTo(0.92, 0.85, 0.7, 0.35, 0.45, 0.0);
-    // Hals
-    shape.lineTo(0.42, -0.2);
-    shape.bezierCurveTo(0.38, -0.3, 0.3, -0.35, 0.25, -0.36);
-    shape.lineTo(-0.25, -0.36);
-    shape.bezierCurveTo(-0.3, -0.35, -0.38, -0.3, -0.42, -0.2);
-    shape.lineTo(-0.45, 0.0);
-
+    shape.moveTo(-0.40, 0.0);
+    shape.bezierCurveTo(-0.78, 0.22, -1.02, 0.68, -1.00, 1.16);
+    shape.bezierCurveTo(-0.98, 1.58, -0.58, 2.00, 0.0, 2.06);
+    shape.bezierCurveTo(0.58, 2.00, 0.98, 1.58, 1.00, 1.16);
+    shape.bezierCurveTo(1.02, 0.68, 0.78, 0.22, 0.40, 0.0);
+    shape.lineTo(0.36, -0.16);
+    shape.bezierCurveTo(0.32, -0.28, 0.24, -0.34, 0.18, -0.36);
+    shape.lineTo(-0.18, -0.36);
+    shape.bezierCurveTo(-0.24, -0.34, -0.32, -0.28, -0.36, -0.16);
+    shape.lineTo(-0.40, 0.0);
     return shape;
   }
 
-  // Skapar gummiform (samma som huvudform fast avskuren rakt ovanför handtaget)
   function createRubberShape() {
     const shape = new THREE.Shape();
-    shape.moveTo(-0.46, 0.05);
-    shape.bezierCurveTo(-0.71, 0.36, -0.93, 0.86, -0.89, 1.36);
-    shape.bezierCurveTo(-0.85, 1.83, -0.5, 2.16, 0.0, 2.19);
-    shape.bezierCurveTo(0.5, 2.16, 0.85, 1.83, 0.89, 1.36);
-    shape.bezierCurveTo(0.93, 0.86, 0.71, 0.36, 0.46, 0.05);
-    // Rak kant vid basen av gummit
-    shape.lineTo(0.44, 0.05);
-    shape.bezierCurveTo(0.2, 0.08, -0.2, 0.08, -0.44, 0.05);
-    shape.lineTo(-0.46, 0.05);
+    shape.moveTo(-0.42, 0.06);
+    shape.bezierCurveTo(-0.80, 0.26, -1.03, 0.70, -1.01, 1.17);
+    shape.bezierCurveTo(-0.99, 1.59, -0.58, 2.01, 0.0, 2.07);
+    shape.bezierCurveTo(0.58, 2.01, 0.99, 1.59, 1.01, 1.17);
+    shape.bezierCurveTo(1.03, 0.70, 0.80, 0.26, 0.42, 0.06);
+    shape.bezierCurveTo(0.18, 0.10, -0.18, 0.10, -0.42, 0.06);
     return shape;
   }
 
-  // Skapar konkavt handtag (flared)
-  function createHandleHalf(isFront = true) {
+  // Flared FL-handtag som lathe (ovala tvärsnittet via scale), inte en platt
+  // extrusion. Rundare grepp är det som gör racketen läsbar som 3D-produkt.
+  function createHandle() {
     const group = new THREE.Group();
 
-    // Handtagets profil
-    const handleShape = new THREE.Shape();
-    handleShape.moveTo(-0.24, 0.02);
-    handleShape.bezierCurveTo(-0.22, -0.35, -0.21, -0.7, -0.28, -1.25);
-    handleShape.lineTo(0.28, -1.25);
-    handleShape.bezierCurveTo(0.21, -0.7, 0.22, -0.35, 0.24, 0.02);
-    handleShape.lineTo(-0.24, 0.02);
+    const profile = [
+      new THREE.Vector2(0.175, 0.02),
+      new THREE.Vector2(0.168, -0.16),
+      new THREE.Vector2(0.162, -0.48),
+      new THREE.Vector2(0.170, -0.82),
+      new THREE.Vector2(0.215, -1.08),
+      new THREE.Vector2(0.255, -1.24),
+      new THREE.Vector2(0.160, -1.30),
+      new THREE.Vector2(0.04, -1.315),
+    ];
+    const geom = new THREE.LatheGeometry(profile, 64);
+    geom.scale(0.72, 1, 1);
 
-    const extrudeSettings = {
-      steps: 1,
-      depth: 0.11,
-      bevelEnabled: true,
-      bevelThickness: 0.038,
-      bevelSize: 0.038,
-      bevelSegments: 6,
-    };
-
-    const geom = new THREE.ExtrudeGeometry(handleShape, extrudeSettings);
-    // Centrera handtagshalvan i z
-    geom.translate(0, 0, isFront ? 0.045 : -0.19);
-
-    // Handtagstextur med trä-ådring + accentränder
     const canvas = document.createElement("canvas");
     canvas.width = 512;
     canvas.height = 1024;
     const ctx = canvas.getContext("2d");
 
-    // Bas: mörkt trä
-    const baseGrad = ctx.createLinearGradient(0, 0, 256, 0);
-    baseGrad.addColorStop(0, "#1e2229");
-    baseGrad.addColorStop(0.5, "#252830");
-    baseGrad.addColorStop(1, "#1e2229");
+    const baseGrad = ctx.createLinearGradient(0, 0, 512, 0);
+    baseGrad.addColorStop(0, "#6b4a28");
+    baseGrad.addColorStop(0.18, "#c4a06a");
+    baseGrad.addColorStop(0.5, "#e2c08a");
+    baseGrad.addColorStop(0.82, "#c4a06a");
+    baseGrad.addColorStop(1, "#6b4a28");
     ctx.fillStyle = baseGrad;
     ctx.fillRect(0, 0, 512, 1024);
 
-    // Subtil ådring i mörkt trä
-    ctx.strokeStyle = "#3a3d48";
-    ctx.lineWidth = 0.8;
-    ctx.globalAlpha = 0.2;
-    for (let i = -50; i < 1100; i += 4 + Math.random() * 3) {
+    ctx.strokeStyle = "#8a6236";
+    ctx.lineWidth = 1.1;
+    ctx.globalAlpha = 0.22;
+    for (let i = -40; i < 1100; i += 5) {
       ctx.beginPath();
       let y = i;
       ctx.moveTo(0, y);
-      for (let x = 0; x <= 512; x += 20) {
-        y += Math.sin((x + i) * 0.015) * 1.5 + (Math.random() - 0.5) * 0.8;
+      for (let x = 0; x <= 512; x += 18) {
+        y += Math.sin((x + i) * 0.02) * 1.4;
         ctx.lineTo(x, y);
       }
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
 
-    // Orange accentrand
+    ctx.fillStyle = "#1a1c22";
+    ctx.fillRect(232, 0, 18, 1024);
     ctx.fillStyle = "#ff4a1c";
-    ctx.fillRect(192, 0, 20, 1024);
-    // Ljus träinlägg
+    ctx.fillRect(250, 0, 6, 1024);
     ctx.fillStyle = "#f4f1ea";
-    ctx.fillRect(218, 0, 12, 1024);
-    // Varm trä-accent med ådring
-    const woodAccentGrad = ctx.createLinearGradient(234, 0, 268, 0);
-    woodAccentGrad.addColorStop(0, "#c8a06a");
-    woodAccentGrad.addColorStop(0.5, "#d9b382");
-    woodAccentGrad.addColorStop(1, "#c8a06a");
-    ctx.fillStyle = woodAccentGrad;
-    ctx.fillRect(234, 0, 34, 1024);
+    ctx.fillRect(256, 0, 8, 1024);
 
-    // Subtil ådring i träaccenten
-    ctx.strokeStyle = "#9e7d4d";
-    ctx.lineWidth = 0.5;
-    ctx.globalAlpha = 0.15;
-    for (let i = 0; i < 1024; i += 6) {
-      ctx.beginPath();
-      ctx.moveTo(234, i);
-      ctx.lineTo(268, i + Math.sin(i * 0.05) * 2);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-
-    const handleTex = new THREE.CanvasTexture(canvas);
+    const handleTex = colorTexture(new THREE.CanvasTexture(canvas));
+    handleTex.wrapS = THREE.RepeatWrapping;
+    handleTex.wrapT = THREE.ClampToEdgeWrapping;
     const handleMat = new THREE.MeshPhysicalMaterial({
       map: handleTex,
-      roughness: 0.45,
-      metalness: 0.06,
-      clearcoat: 0.28,
-      clearcoatRoughness: 0.4,
+      roughness: 0.38,
+      metalness: 0.04,
+      clearcoat: 0.32,
+      clearcoatRoughness: 0.35,
+      envMapIntensity: 0.85,
     });
 
     const mesh = new THREE.Mesh(geom, handleMat);
@@ -437,55 +481,44 @@ window.PPRacket3D = (function () {
     mesh.receiveShadow = true;
     group.add(mesh);
 
-    // Infälld kristallins (badge) med logotyp nära basen
-    const lensGeom = new THREE.CylinderGeometry(0.09, 0.09, 0.028, 32);
+    const lensGeom = new THREE.CylinderGeometry(0.08, 0.08, 0.024, 32);
     lensGeom.rotateX(Math.PI / 2);
 
     const lensCanvas = document.createElement("canvas");
     lensCanvas.width = 256;
     lensCanvas.height = 256;
     const lctx = lensCanvas.getContext("2d");
-
-    // Polerad mörk bakgrund med radiell gradient
-    const lensGrad = lctx.createRadialGradient(128, 128, 20, 128, 128, 120);
-    lensGrad.addColorStop(0, "#1a1c22");
+    const lensGrad = lctx.createRadialGradient(128, 128, 16, 128, 128, 120);
+    lensGrad.addColorStop(0, "#2a1c14");
     lensGrad.addColorStop(1, "#0c0d10");
     lctx.fillStyle = lensGrad;
     lctx.fillRect(0, 0, 256, 256);
-
-    // Yttre ring
     lctx.strokeStyle = "#ff4a1c";
     lctx.lineWidth = 3;
     lctx.beginPath();
     lctx.arc(128, 128, 100, 0, Math.PI * 2);
     lctx.stroke();
-
-    // Inre dekorring
-    lctx.strokeStyle = "rgba(255, 74, 28, 0.3)";
-    lctx.lineWidth = 1;
-    lctx.beginPath();
-    lctx.arc(128, 128, 88, 0, Math.PI * 2);
-    lctx.stroke();
-
-    // Brand text
-    lctx.font = "bold 32px Archivo, system-ui, sans-serif";
+    lctx.font = "bold 34px Archivo, system-ui, sans-serif";
     lctx.textAlign = "center";
     lctx.fillStyle = "#ffffff";
-    lctx.fillText("DONIC", 128, 120);
-    lctx.font = "16px 'Space Mono', ui-monospace, monospace";
+    lctx.fillText("PP", 128, 122);
+    lctx.font = "15px 'Space Mono', ui-monospace, monospace";
     lctx.fillStyle = "#ff4a1c";
-    lctx.fillText("OFF 89", 128, 148);
+    lctx.fillText("PINGIS", 128, 148);
 
-    const lensTex = new THREE.CanvasTexture(lensCanvas);
+    const lensTex = colorTexture(new THREE.CanvasTexture(lensCanvas));
     const lensMat = new THREE.MeshStandardMaterial({
       map: lensTex,
-      roughness: 0.12,
-      metalness: 0.75,
+      roughness: 0.18,
+      metalness: 0.55,
     });
 
-    const lensMesh = new THREE.Mesh(lensGeom, lensMat);
-    lensMesh.position.set(0, -0.92, isFront ? 0.185 : -0.185);
-    group.add(lensMesh);
+    const z = 0.198;
+    [-1, 1].forEach((side) => {
+      const lensMesh = new THREE.Mesh(lensGeom, lensMat);
+      lensMesh.position.set(0, -0.94, side * z);
+      group.add(lensMesh);
+    });
 
     return group;
   }
@@ -534,6 +567,9 @@ window.PPRacket3D = (function () {
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       this.renderer.shadowMap.enabled = true;
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      if (this.renderer.physicallyCorrectLights !== undefined) {
+        this.renderer.physicallyCorrectLights = true;
+      }
 
       // HDR-kvalitet: tone mapping & korrekt färgrymd
       if (THREE.ACESFilmicToneMapping !== undefined) {
@@ -642,44 +678,41 @@ window.PPRacket3D = (function () {
     }
 
     initLighting() {
-      // Naturlig himmel/mark-belysning (ersätter platt ambient)
-      const hemiLight = new THREE.HemisphereLight(0xf0ece4, 0x1a1820, 0.7);
+      this.envMap = makeStudioEnv(this.renderer);
+      this.scene.environment = this.envMap;
+
+      const hemiLight = new THREE.HemisphereLight(0xf0ece4, 0x1a1820, 0.55);
       hemiLight.position.set(0, 8, 0);
       this.scene.add(hemiLight);
 
-      // Mjuk fyllnads-ambient för skuggsidan
-      const ambientFill = new THREE.AmbientLight(0xe8e4dc, 0.25);
+      const ambientFill = new THREE.AmbientLight(0xe8e4dc, 0.16);
       this.scene.add(ambientFill);
 
-      // Huvudljus framifrån/ovan (varm vit, studio key light)
-      this.keyLight = new THREE.DirectionalLight(0xfff8ef, 1.6);
+      this.keyLight = new THREE.DirectionalLight(0xfff8ef, 1.35);
       this.keyLight.position.set(2.5, 4.5, 4);
       this.keyLight.castShadow = true;
-      this.keyLight.shadow.mapSize.width = 2048;
-      this.keyLight.shadow.mapSize.height = 2048;
+      const shadowRes = window.matchMedia("(pointer: coarse)").matches ? 1024 : 2048;
+      this.keyLight.shadow.mapSize.width = shadowRes;
+      this.keyLight.shadow.mapSize.height = shadowRes;
       this.keyLight.shadow.camera.near = 0.5;
       this.keyLight.shadow.camera.far = 12;
       this.keyLight.shadow.bias = -0.0004;
       this.keyLight.shadow.normalBias = 0.02;
       this.scene.add(this.keyLight);
 
-      // Motljus / Rim-ljus med PP Pingis orange signaturton
-      const rimLight = new THREE.DirectionalLight(0xff4a1c, 1.5);
+      const rimLight = new THREE.DirectionalLight(0xff4a1c, 0.85);
       rimLight.position.set(-3.5, 2, -3.5);
       this.scene.add(rimLight);
 
-      // Sekundärt rimljus, kylig ton för kontrast
-      const coolRim = new THREE.DirectionalLight(0x5080c0, 0.5);
+      const coolRim = new THREE.DirectionalLight(0x6a88b0, 0.45);
       coolRim.position.set(3, -1, -2);
       this.scene.add(coolRim);
 
-      // Mjukt fyllnadsljus underifrån (eliminerar hårda skuggor under bladet)
-      const backFill = new THREE.DirectionalLight(0x8098b0, 0.55);
+      const backFill = new THREE.DirectionalLight(0x8098b0, 0.35);
       backFill.position.set(0, -2.5, -3.5);
       this.scene.add(backFill);
 
-      // Punktljus som följer musen i hero
-      this.pointerLight = new THREE.PointLight(0xff7744, 0.7, 6);
+      this.pointerLight = new THREE.PointLight(0xff7744, 0.45, 6);
       this.pointerLight.position.set(0, 0.5, 2.5);
       this.scene.add(this.pointerLight);
     }
@@ -688,14 +721,15 @@ window.PPRacket3D = (function () {
       // 1. Träblad (Stomme)
       const bladeShape = createBladeShape();
       const bladeGeom = new THREE.ExtrudeGeometry(bladeShape, {
-        depth: 0.065,
+        depth: 0.062,
         bevelEnabled: true,
-        bevelThickness: 0.01,
-        bevelSize: 0.01,
-        bevelSegments: 4,
+        bevelThickness: 0.012,
+        bevelSize: 0.012,
+        bevelSegments: 6,
+        curveSegments: 64,
       });
       // Centrera bladet runt z = 0
-      bladeGeom.translate(0, 0, -0.0325);
+      bladeGeom.translate(0, 0, -0.031);
 
       const woodFaceTex = createWoodTexture({
         baseColor: "#e3bc89",
@@ -706,17 +740,19 @@ window.PPRacket3D = (function () {
 
       const woodFaceMat = new THREE.MeshPhysicalMaterial({
         map: woodFaceTex,
-        roughness: 0.35,
-        metalness: 0.05,
-        clearcoat: 0.22,
-        clearcoatRoughness: 0.45,
+        roughness: 0.28,
+        metalness: 0.03,
+        clearcoat: 0.45,
+        clearcoatRoughness: 0.28,
+        envMapIntensity: 1.05,
       });
       const woodEdgeMat = new THREE.MeshPhysicalMaterial({
         map: woodEdgeTex,
-        roughness: 0.55,
-        metalness: 0.03,
-        clearcoat: 0.1,
-        clearcoatRoughness: 0.6,
+        roughness: 0.48,
+        metalness: 0.04,
+        clearcoat: 0.18,
+        clearcoatRoughness: 0.5,
+        envMapIntensity: 0.7,
       });
 
       // Material för yta och kant
@@ -726,10 +762,8 @@ window.PPRacket3D = (function () {
       this.layerGroups.blade.add(this.bladeMesh);
 
       // Handtagshalvor (fram och bak)
-      this.handleFront = createHandleHalf(true);
-      this.handleBack = createHandleHalf(false);
-      this.layerGroups.blade.add(this.handleFront);
-      this.layerGroups.blade.add(this.handleBack);
+      this.handle = createHandle();
+      this.layerGroups.blade.add(this.handle);
 
       // 2. Forehand & Backhand Svamplager (Sponge)
       const rubberShape = createRubberShape();
@@ -753,6 +787,7 @@ window.PPRacket3D = (function () {
       const spongeGeom = new THREE.ExtrudeGeometry(rubberShape, {
         depth: 0.024,
         bevelEnabled: false,
+        curveSegments: 64,
       });
 
       // FH Sponge (ofta blå hos Donic BlueStar/Acuda, eller orange/kräm)
@@ -781,11 +816,12 @@ window.PPRacket3D = (function () {
 
       // 3. Forehand & Backhand Ytgummi (Topsheet)
       const topsheetGeom = new THREE.ExtrudeGeometry(rubberShape, {
-        depth: 0.016,
+        depth: 0.014,
         bevelEnabled: true,
-        bevelThickness: 0.006,
-        bevelSize: 0.006,
-        bevelSegments: 3,
+        bevelThickness: 0.005,
+        bevelSize: 0.005,
+        bevelSegments: 4,
+        curveSegments: 64,
       });
 
       // Skapa en delad bumpMap för ytgummits nabbstruktur
@@ -796,11 +832,12 @@ window.PPRacket3D = (function () {
       this.fhRubberMat = new THREE.MeshPhysicalMaterial({
         map: fhTex,
         bumpMap: rubberBumpMap,
-        bumpScale: 0.005,
-        roughness: 0.42,
-        metalness: 0.08,
-        clearcoat: 0.85,
-        clearcoatRoughness: 0.12,
+        bumpScale: 0.007,
+        roughness: 0.32,
+        metalness: 0.02,
+        clearcoat: 0.92,
+        clearcoatRoughness: 0.08,
+        envMapIntensity: 1.15,
       });
       this.fhRubberMesh = new THREE.Mesh(topsheetGeom, this.fhRubberMat);
       this.fhRubberMesh.position.set(0, 0, 0.057);
@@ -812,11 +849,12 @@ window.PPRacket3D = (function () {
       this.bhRubberMat = new THREE.MeshPhysicalMaterial({
         map: bhTex,
         bumpMap: rubberBumpMap,
-        bumpScale: 0.005,
-        roughness: 0.42,
-        metalness: 0.08,
-        clearcoat: 0.85,
-        clearcoatRoughness: 0.12,
+        bumpScale: 0.007,
+        roughness: 0.32,
+        metalness: 0.02,
+        clearcoat: 0.92,
+        clearcoatRoughness: 0.08,
+        envMapIntensity: 1.15,
       });
       this.bhRubberMesh = new THREE.Mesh(topsheetGeom.clone(), this.bhRubberMat);
       // Vänd mot baksidan
@@ -826,6 +864,7 @@ window.PPRacket3D = (function () {
 
       // 4. Kantband (skyddsband runt kanten)
       this.buildEdgeTape();
+      this.racketRoot.add(createContactShadow());
     }
 
     buildEdgeTape() {
@@ -840,12 +879,15 @@ window.PPRacket3D = (function () {
       );
 
       // Rektangulärt tvärsnitt för kantbandet (fler segment + tjockare radie)
-      const tapeGeom = new THREE.TubeGeometry(curve, 120, 0.014, 8, false);
+      const tapeGeom = new THREE.TubeGeometry(curve, 160, 0.016, 10, false);
       const tapeTex = createEdgeTapeTexture(this.edgeTapeData.name);
-      const tapeMat = new THREE.MeshStandardMaterial({
+      const tapeMat = new THREE.MeshPhysicalMaterial({
         map: tapeTex,
-        roughness: 0.4,
-        metalness: 0.12,
+        roughness: 0.34,
+        metalness: 0.08,
+        clearcoat: 0.4,
+        clearcoatRoughness: 0.35,
+        envMapIntensity: 0.8,
       });
 
       this.edgeTapeMesh = new THREE.Mesh(tapeGeom, tapeMat);
@@ -1165,15 +1207,13 @@ window.PPRacket3D = (function () {
       if (this.mode === "hero") {
         const floatY = Math.sin(time * 1.5) * 0.08;
         const floatRotZ = Math.sin(time * 0.9) * 0.05;
-
-        // Subtil "breathe" scale-puls (±0.5%)
         const breathe = 1.0 + Math.sin(time * 1.2) * 0.005;
-        this.racketRoot.position.y = -0.35 + floatY;
+        this.racketRoot.position.y = this.basePositionY + floatY;
         this.racketRoot.rotation.x = this.currentRotation.x;
         this.racketRoot.rotation.y = this.currentRotation.y;
         this.racketRoot.rotation.z = floatRotZ;
         if (this.introComplete) {
-          this.racketRoot.scale.set(breathe, breathe, breathe);
+          this.racketRoot.scale.setScalar(this.baseScale * breathe);
         }
       } else {
         this.racketRoot.rotation.x = this.currentRotation.x;
