@@ -91,8 +91,6 @@ window.PPRacket3D = (function () {
       ctx.globalAlpha = 0.06;
       ctx.font = "18px 'Space Mono', ui-monospace, monospace";
       ctx.fillStyle = "#3d2814";
-      ctx.fillText("5-PLY NATURAL WOOD + CARBON", 512, 440);
-      ctx.fillText("OFFENSIVE CLASS · MADE IN GERMANY", 512, 466);
 
       // Subtil skuggeffekt genom att rita texten igen med offset
       ctx.globalAlpha = 0.03;
@@ -270,20 +268,18 @@ window.PPRacket3D = (function () {
     ctx.fillRect(0, 0, 1024, 1024);
 
     // ITTF-stämpel och logotyp — professionell certifieringsstil
-    const stampY = 960;
+    const stampY = 880;
     ctx.globalAlpha = 0.55;
     ctx.strokeStyle = isRed ? "#ff9999" : "#555555";
     ctx.lineWidth = 1;
-    ctx.strokeRect(300, stampY - 30, 424, 50);
 
     ctx.fillStyle = isRed ? "#ffaaaa" : "#666666";
     ctx.font = "bold 16px 'Space Mono', ui-monospace, monospace";
     ctx.textAlign = "center";
-    ctx.fillText("ITTF 24-009 · " + (name || "DONIC BLUESTAR").toUpperCase(), 512, stampY - 4);
+    ctx.fillText((name || "DONIC BLUESTAR").toUpperCase(), 512, stampY - 4, 650);
 
     ctx.globalAlpha = 0.4;
     ctx.font = "12px 'Space Mono', ui-monospace, monospace";
-    ctx.fillText("MADE IN GERMANY · TENSOR BIOS TECHNOLOGY", 512, stampY + 14);
 
     const tex = new THREE.CanvasTexture(canvas);
     return colorTexture(tex);
@@ -388,14 +384,14 @@ window.PPRacket3D = (function () {
     const shape = new THREE.Shape();
     shape.moveTo(-0.40, 0.0);
     shape.bezierCurveTo(-0.78, 0.22, -1.02, 0.68, -1.00, 1.16);
-    shape.bezierCurveTo(-0.98, 1.58, -0.58, 2.00, 0.0, 2.06);
-    shape.bezierCurveTo(0.58, 2.00, 0.98, 1.58, 1.00, 1.16);
+    shape.bezierCurveTo(-0.98, 1.72, -0.55, 2.06, 0.0, 2.06);
+    shape.bezierCurveTo(0.55, 2.06, 0.98, 1.72, 1.00, 1.16);
     shape.bezierCurveTo(1.02, 0.68, 0.78, 0.22, 0.40, 0.0);
-    shape.lineTo(0.36, -0.16);
-    shape.bezierCurveTo(0.32, -0.28, 0.24, -0.34, 0.18, -0.36);
+    shape.bezierCurveTo(0.30, -0.04, 0.22, -0.12, 0.18, -0.20);
+    shape.lineTo(0.18, -0.36);
     shape.lineTo(-0.18, -0.36);
-    shape.bezierCurveTo(-0.24, -0.34, -0.32, -0.28, -0.36, -0.16);
-    shape.lineTo(-0.40, 0.0);
+    shape.lineTo(-0.18, -0.20);
+    shape.bezierCurveTo(-0.22, -0.12, -0.30, -0.04, -0.40, 0.0);
     return shape;
   }
 
@@ -403,11 +399,28 @@ window.PPRacket3D = (function () {
     const shape = new THREE.Shape();
     shape.moveTo(-0.42, 0.06);
     shape.bezierCurveTo(-0.80, 0.26, -1.03, 0.70, -1.01, 1.17);
-    shape.bezierCurveTo(-0.99, 1.59, -0.58, 2.01, 0.0, 2.07);
-    shape.bezierCurveTo(0.58, 2.01, 0.99, 1.59, 1.01, 1.17);
+    shape.bezierCurveTo(-0.99, 1.73, -0.55, 2.07, 0.0, 2.07);
+    shape.bezierCurveTo(0.55, 2.07, 0.99, 1.73, 1.01, 1.17);
     shape.bezierCurveTo(1.03, 0.70, 0.80, 0.26, 0.42, 0.06);
     shape.bezierCurveTo(0.18, 0.10, -0.18, 0.10, -0.42, 0.06);
     return shape;
+  }
+
+  // ExtrudeGeometry använder världskoordinater som UV: hela trycket ska
+  // rymmas en gång på bladet, med nederkanten närmast handtaget.
+  function mapBladeUVs(geometry) {
+    const pos = geometry.attributes.position;
+    const uv = geometry.attributes.uv;
+    for (const group of geometry.groups) {
+      for (let i = group.start; i < group.start + group.count; i++) {
+        if (group.materialIndex === 0) {
+          uv.setXY(i, (pos.getX(i) + 1.03) / 2.06, pos.getY(i) / 2.1);
+        } else {
+          uv.setY(i, (pos.getZ(i) + 0.043) / 0.086);
+        }
+      }
+    }
+    uv.needsUpdate = true;
   }
 
   // Flared FL-handtag som lathe (ovala tvärsnittet via scale), inte en platt
@@ -425,33 +438,31 @@ window.PPRacket3D = (function () {
       new THREE.Vector2(0.160, -1.30),
       new THREE.Vector2(0.04, -1.315),
     ];
-    const geom = new THREE.LatheGeometry(profile, 64);
-    geom.scale(0.72, 1, 1);
+    // Profilen måste gå nedifrån upp för utåtriktade normaler.
+    profile.unshift(new THREE.Vector2(0, 0.02));
+    profile.push(new THREE.Vector2(0, -1.315));
+    const smoothProfile = new THREE.SplineCurve(profile.slice().reverse()).getPoints(80);
+    const geom = new THREE.LatheGeometry(smoothProfile, 64);
+    geom.scale(1.35, 1, 0.68);
 
     const canvas = document.createElement("canvas");
     canvas.width = 512;
     canvas.height = 1024;
     const ctx = canvas.getContext("2d");
 
-    const baseGrad = ctx.createLinearGradient(0, 0, 512, 0);
-    baseGrad.addColorStop(0, "#6b4a28");
-    baseGrad.addColorStop(0.18, "#c4a06a");
-    baseGrad.addColorStop(0.5, "#e2c08a");
-    baseGrad.addColorStop(0.82, "#c4a06a");
-    baseGrad.addColorStop(1, "#6b4a28");
-    ctx.fillStyle = baseGrad;
+    ctx.fillStyle = "#c4a06a";
     ctx.fillRect(0, 0, 512, 1024);
 
     ctx.strokeStyle = "#8a6236";
     ctx.lineWidth = 1.1;
     ctx.globalAlpha = 0.22;
-    for (let i = -40; i < 1100; i += 5) {
+    for (let i = -40; i < 550; i += 5) {
       ctx.beginPath();
       let y = i;
-      ctx.moveTo(0, y);
-      for (let x = 0; x <= 512; x += 18) {
+      ctx.moveTo(y, 0);
+      for (let x = 0; x <= 1024; x += 18) {
         y += Math.sin((x + i) * 0.02) * 1.4;
-        ctx.lineTo(x, y);
+        ctx.lineTo(y, x);
       }
       ctx.stroke();
     }
@@ -513,7 +524,7 @@ window.PPRacket3D = (function () {
       metalness: 0.55,
     });
 
-    const z = 0.198;
+    const z = 0.135;
     [-1, 1].forEach((side) => {
       const lensMesh = new THREE.Mesh(lensGeom, lensMat);
       lensMesh.position.set(0, -0.94, side * z);
@@ -578,6 +589,8 @@ window.PPRacket3D = (function () {
       }
       if (THREE.SRGBColorSpace !== undefined) {
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+      } else {
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
       }
 
       this.container.appendChild(this.renderer.domElement);
@@ -730,6 +743,7 @@ window.PPRacket3D = (function () {
       });
       // Centrera bladet runt z = 0
       bladeGeom.translate(0, 0, -0.031);
+      mapBladeUVs(bladeGeom);
 
       const woodFaceTex = createWoodTexture({
         baseColor: "#e3bc89",
@@ -789,6 +803,7 @@ window.PPRacket3D = (function () {
         bevelEnabled: false,
         curveSegments: 64,
       });
+      mapBladeUVs(spongeGeom);
 
       // FH Sponge (ofta blå hos Donic BlueStar/Acuda, eller orange/kräm)
       const fhSpongeColor = this.fhData.spongeColor || (this.fhData.color === "blue" ? "#ff7020" : "#1b74f0");
@@ -823,6 +838,7 @@ window.PPRacket3D = (function () {
         bevelSegments: 4,
         curveSegments: 64,
       });
+      mapBladeUVs(topsheetGeom);
 
       // Skapa en delad bumpMap för ytgummits nabbstruktur
       const rubberBumpMap = createRubberBumpMap();
@@ -832,12 +848,12 @@ window.PPRacket3D = (function () {
       this.fhRubberMat = new THREE.MeshPhysicalMaterial({
         map: fhTex,
         bumpMap: rubberBumpMap,
-        bumpScale: 0.007,
-        roughness: 0.32,
-        metalness: 0.02,
-        clearcoat: 0.92,
-        clearcoatRoughness: 0.08,
-        envMapIntensity: 1.15,
+        bumpScale: 0.0007,
+        roughness: 0.64,
+        metalness: 0,
+        clearcoat: 0.12,
+        clearcoatRoughness: 0.5,
+        envMapIntensity: 0.65,
       });
       this.fhRubberMesh = new THREE.Mesh(topsheetGeom, this.fhRubberMat);
       this.fhRubberMesh.position.set(0, 0, 0.057);
@@ -849,16 +865,17 @@ window.PPRacket3D = (function () {
       this.bhRubberMat = new THREE.MeshPhysicalMaterial({
         map: bhTex,
         bumpMap: rubberBumpMap,
-        bumpScale: 0.007,
-        roughness: 0.32,
-        metalness: 0.02,
-        clearcoat: 0.92,
-        clearcoatRoughness: 0.08,
-        envMapIntensity: 1.15,
+        bumpScale: 0.0007,
+        roughness: 0.64,
+        metalness: 0,
+        clearcoat: 0.12,
+        clearcoatRoughness: 0.5,
+        envMapIntensity: 0.65,
       });
       this.bhRubberMesh = new THREE.Mesh(topsheetGeom.clone(), this.bhRubberMat);
       // Vänd mot baksidan
-      this.bhRubberMesh.position.set(0, 0, -0.078);
+      this.bhRubberMesh.rotation.y = Math.PI;
+      this.bhRubberMesh.position.set(0, 0, -0.057);
       this.bhRubberMesh.castShadow = true;
       this.layerGroups.bhTopsheet.add(this.bhRubberMesh);
 
@@ -878,20 +895,42 @@ window.PPRacket3D = (function () {
         rimPoints.map((p) => new THREE.Vector3(p.x, p.y, 0))
       );
 
-      // Rektangulärt tvärsnitt för kantbandet (fler segment + tjockare radie)
-      const tapeGeom = new THREE.TubeGeometry(curve, 160, 0.016, 10, false);
+      // Ett plant band täcker hela laminatets kant, utan slanglik rundning.
+      const samples = curve.getPoints(192);
+      const positions = [], uvs = [], indices = [];
+      samples.forEach((p, i) => {
+        const outward = new THREE.Vector3(p.x, p.y - 1.05, 0).normalize();
+        p.addScaledVector(outward, 0.018);
+        positions.push(p.x, p.y, -0.071, p.x, p.y, 0.071);
+        uvs.push(i / 192, 0, i / 192, 1);
+        if (i < 192) {
+          const a = i * 2;
+          indices.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+        }
+      });
+      const tapeGeom = new THREE.BufferGeometry();
+      tapeGeom.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+      tapeGeom.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+      tapeGeom.setIndex(indices);
+      tapeGeom.computeVertexNormals();
       const tapeTex = createEdgeTapeTexture(this.edgeTapeData.name);
       const tapeMat = new THREE.MeshPhysicalMaterial({
         map: tapeTex,
-        roughness: 0.34,
-        metalness: 0.08,
-        clearcoat: 0.4,
+        side: THREE.DoubleSide,
+        roughness: 0.82,
+        metalness: 0,
+        clearcoat: 0.05,
         clearcoatRoughness: 0.35,
         envMapIntensity: 0.8,
       });
 
       this.edgeTapeMesh = new THREE.Mesh(tapeGeom, tapeMat);
       this.edgeTapeMesh.castShadow = true;
+      this.layerGroups.edgeTape.children.forEach((mesh) => {
+        mesh.geometry.dispose();
+        mesh.material.map.dispose();
+        mesh.material.dispose();
+      });
       this.layerGroups.edgeTape.clear();
       this.layerGroups.edgeTape.add(this.edgeTapeMesh);
     }
@@ -967,6 +1006,7 @@ window.PPRacket3D = (function () {
         if (!isDragging) {
           // Subtil mus-parallax när man inte drar
           const rect = this.container.getBoundingClientRect();
+          if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) return;
           const normX = (clientX - rect.left) / rect.width - 0.5;
           const normY = (clientY - rect.top) / rect.height - 0.5;
 
@@ -1182,7 +1222,6 @@ window.PPRacket3D = (function () {
       if (!this.isVisible) return;
 
       const delta = this.clock.getDelta();
-      const time = this.clock.getElapsedTime();
 
       // Intro-animation: fade-in + scale-up (0 → 1 over ~0.8s)
       if (!this.introComplete) {
@@ -1203,17 +1242,14 @@ window.PPRacket3D = (function () {
       this.currentRotation.x += (this.targetRotation.x - this.currentRotation.x) * 0.06;
       this.currentRotation.y += (this.targetRotation.y - this.currentRotation.y) * 0.06;
 
-      // Svängande svävning (floaty) i Hero-läge
+      // Still produktpose; rörelse kommer från användarens rotation.
       if (this.mode === "hero") {
-        const floatY = Math.sin(time * 1.5) * 0.08;
-        const floatRotZ = Math.sin(time * 0.9) * 0.05;
-        const breathe = 1.0 + Math.sin(time * 1.2) * 0.005;
-        this.racketRoot.position.y = this.basePositionY + floatY;
+        this.racketRoot.position.y = this.basePositionY;
         this.racketRoot.rotation.x = this.currentRotation.x;
         this.racketRoot.rotation.y = this.currentRotation.y;
-        this.racketRoot.rotation.z = floatRotZ;
+        this.racketRoot.rotation.z = -0.14;
         if (this.introComplete) {
-          this.racketRoot.scale.setScalar(this.baseScale * breathe);
+          this.racketRoot.scale.setScalar(this.baseScale);
         }
       } else {
         this.racketRoot.rotation.x = this.currentRotation.x;
