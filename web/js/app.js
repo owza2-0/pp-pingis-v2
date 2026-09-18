@@ -1128,6 +1128,7 @@ function initHero3D() {
       edgeTapeData: { name: "DONIC · PP-PINGIS" }
     });
 
+    window.hero3DInstance = hero3DInstance;
     if (fallbackImg) fallbackImg.style.display = "none";
     if (panel) panel.classList.remove("hero__panel--2d");
 

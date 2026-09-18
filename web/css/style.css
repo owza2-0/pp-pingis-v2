@@ -441,10 +441,13 @@ input, select, textarea { font: inherit; color: inherit; }
   position: absolute; width: min(44vw, 560px); aspect-ratio: 1; border-radius: 50%;
   background: radial-gradient(circle, #f3ede2 0%, #ebe3d5 62%, rgba(235, 227, 213, 0) 74%);
   border: 1px solid var(--line-subtle);
+  z-index: 0;
+  pointer-events: none;
 }
 .hero__panel {
   position: relative; width: min(40vw, 520px); aspect-ratio: 1;
   display: grid; place-items: center;
+  z-index: 2;
   will-change: transform;
 }
 .hero__panel--2d {
@@ -2476,7 +2479,7 @@ input, select, textarea { font: inherit; color: inherit; }
   background: radial-gradient(58% 58% at 50% 42%, rgba(255,74,28,.13), transparent 70%);
   filter: blur(10px);
 }
-.hero__ring { z-index: 1; }
+.hero__ring { z-index: 0; pointer-events: none; }
 
 /* ---------- produktkort: lyft + mjuk skugga i stället för rotation ---------- */
 .pcard { transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out); will-change: transform; }
