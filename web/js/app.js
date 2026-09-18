@@ -21,6 +21,9 @@ const CART_KEY = "pp-cart-v1";
 let cart = [];
 try { cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]"); } catch { cart = []; }
 
+let cartCheckoutStep = "cart"; // "cart" | "checkout" | "confirmed"
+let lastCompletedOrder = null;
+
 const saveCart = () => localStorage.setItem(CART_KEY, JSON.stringify(cart));
 const cartCount = () => cart.reduce((n, i) => n + i.qty, 0);
 const cartTotal = () => cart.reduce((n, i) => n + i.qty * (BY_ID.get(i.id)?.price || 0), 0);
@@ -28,9 +31,13 @@ const cartTotal = () => cart.reduce((n, i) => n + i.qty * (BY_ID.get(i.id)?.pric
 function addToCart(id, qty = 1, note = "") {
   const row = cart.find(i => i.id === id && (i.note || "") === note);
   if (row) row.qty += qty; else cart.push({ id, qty, ...(note ? { note } : {}) });
-  saveCart(); renderCart();
+  saveCart();
+  if (cartCheckoutStep === "confirmed") {
+    cartCheckoutStep = "cart";
+  }
+  renderCart();
   const p = BY_ID.get(id);
-  toast(`${p ? p.name : "Produkten"} ligger i varukorgen`);
+  toast(`${p ? p.name : "Produkten"} har lagts i varukorgen`);
   bumpCartIcon();
 }
 
@@ -38,11 +45,16 @@ function setQtyByIndex(idx, qty) {
   if (!cart[idx]) return;
   cart[idx].qty = qty;
   if (cart[idx].qty <= 0) cart.splice(idx, 1);
-  saveCart(); renderCart();
+  saveCart();
+  if (cart.length === 0 && cartCheckoutStep === "checkout") {
+    cartCheckoutStep = "cart";
+  }
+  renderCart();
 }
 
 function bumpCartIcon() {
   const el = $("#cartToggle");
+  if (!el) return;
   el.animate(
     [{ transform: "scale(1)" }, { transform: "scale(1.25)" }, { transform: "scale(1)" }],
     { duration: 350, easing: "cubic-bezier(.22,1,.36,1)" }
@@ -52,20 +64,271 @@ function bumpCartIcon() {
 function renderCart() {
   const n = cartCount();
   const badge = $("#cartCount");
-  badge.hidden = n === 0;
-  badge.textContent = n;
-  $("#cartHeadCount").textContent = n ? `(${n})` : "";
+  if (badge) {
+    badge.hidden = n === 0;
+    badge.textContent = n;
+  }
+  const headCount = $("#cartHeadCount");
+  if (headCount) {
+    headCount.textContent = n ? `(${n})` : "";
+  }
 
   const items = $("#cartItems");
   const foot = $("#cartFoot");
   const ship = $("#cartShip");
+  if (!items || !foot || !ship) return;
+  items.scrollTop = 0;
 
+  // 1. ORDER BEKRÄFTAD (CONFIRMED)
+  if (cartCheckoutStep === "confirmed" && lastCompletedOrder) {
+    ship.innerHTML = "";
+    items.innerHTML = `
+      <div style="padding:28px 20px;text-align:center;">
+        <div style="width:64px;height:64px;border-radius:50%;background:#eaf6ee;color:#18793b;margin:0 auto 16px;display:grid;place-items:center;">
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3 style="font-size:22px;font-weight:800;color:var(--ink-bright);margin-bottom:6px;">Tack för din beställning!</h3>
+        <p style="font-size:15px;color:var(--ink-dim);line-height:1.5;margin-bottom:18px;">
+          Ditt ordernummer är <strong style="color:var(--ink-bright);font-size:16px;">#${esc(lastCompletedOrder.orderId)}</strong>
+        </p>
+
+        <div style="text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px;font-size:14px;line-height:1.6;">
+          <div style="font-weight:700;margin-bottom:4px;color:var(--ink-bright);">Leveransadress:</div>
+          <div><strong>${esc(lastCompletedOrder.name)}</strong></div>
+          <div>${esc(lastCompletedOrder.address)}</div>
+          <div>${esc(lastCompletedOrder.postal)} ${esc(lastCompletedOrder.city)}</div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-dim);">
+            Mobil för SMS-avisering: <strong>${esc(lastCompletedOrder.phone)}</strong><br>
+            E-post: <strong>${esc(lastCompletedOrder.email)}</strong><br>
+            Betalsätt: <strong>${esc(lastCompletedOrder.payment)}</strong>
+          </div>
+          ${lastCompletedOrder.notes ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:13px;"><em>Önskemål: ${esc(lastCompletedOrder.notes)}</em></div>` : ""}
+        </div>
+
+        <div style="text-align:left;background:#ffffff;border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:18px;font-size:13.5px;">
+          <div style="font-weight:700;margin-bottom:8px;color:var(--ink-bright);">Beställda artiklar:</div>
+          ${lastCompletedOrder.items.map(item => `
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;gap:10px;">
+              <span>${item.qty} × ${esc(item.name)}</span>
+              <b>${kr(item.total)}</b>
+            </div>
+            ${item.note ? `<div style="font-size:11.5px;color:var(--accent);margin-bottom:6px;padding-left:14px;font-weight:600;">${esc(item.note)}</div>` : ""}
+          `).join("")}
+          <div style="border-top:1.5px solid var(--line);margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:var(--ink-bright);">
+            <span>Totalt att betala</span>
+            <span>${kr(lastCompletedOrder.total)}</span>
+          </div>
+        </div>
+
+        <div style="background:#f5f3ec;border-radius:10px;padding:14px;font-size:13.5px;color:var(--ink);line-height:1.5;margin-bottom:20px;text-align:left;">
+          <strong>Vad händer nu?</strong><br>
+          Vi granskar ordern och packar den inom 24 timmar. Du får SMS-avisering med spårningslänk så fort paketet lämnar Garphyttan.
+        </div>
+
+        <button class="btn btn--accent btn--full" id="closeConfirmedBtn" style="min-height:48px;font-size:15px;">
+          Tillbaka till butiken
+        </button>
+      </div>`;
+    foot.innerHTML = `
+      <div class="cart-phone-box" style="margin-top:0;">
+        <h4>Har du frågor om beställningen?</h4>
+        <p>Ring oss när som helst på vardagar så hjälper vi dig direkt.</p>
+        <a href="tel:+46700316655" class="cart-phone-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Ring 070-031 66 55
+        </a>
+      </div>`;
+
+    $("#closeConfirmedBtn")?.addEventListener("click", () => {
+      cartCheckoutStep = "cart";
+      closeCart();
+    });
+    return;
+  }
+
+  // 2. TOM VARUKORG
   if (!cart.length) {
-    items.innerHTML = `<div class="cart__empty"><b>Tomt här inne</b>Din varukorg väntar på sin första racket.</div>`;
-    foot.innerHTML = "";
+    items.innerHTML = `
+      <div class="cart__empty">
+        <b>Varukorgen är tom</b>
+        Lägg till en stomme, gummi eller färdigt racket från butiken så dyker de upp här.
+      </div>
+      <div style="padding:0 24px;">
+        <a href="#/butik" class="btn btn--accent btn--full" onclick="closeCart()" style="min-height:46px;justify-content:center;">
+          Gå till butiken ${arrowSvg}
+        </a>
+      </div>`;
+    foot.innerHTML = `
+      <div class="cart-phone-box">
+        <h4>Behöver du råd inför ditt köp?</h4>
+        <p>Ring 070-031 66 55 så guidar vi dig till rätt utrustning.</p>
+        <a href="tel:+46700316655" class="cart-phone-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Ring 070-031 66 55
+        </a>
+      </div>`;
     ship.innerHTML = "";
     return;
   }
+
+  const total = cartTotal();
+  const left = Math.max(0, FREE_SHIP - total);
+  const pct = Math.min(100, Math.round((total / FREE_SHIP) * 100));
+
+  // 3. KASSA / CHECKOUT-FORMULÄR
+  if (cartCheckoutStep === "checkout") {
+    ship.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--surface);border-bottom:1px solid var(--line);">
+        <button id="cartBackBtn" type="button" class="btn btn--ghost" style="padding:6px 12px;font-size:13px;min-height:36px;gap:6px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          Ändra varukorg
+        </button>
+        <span style="font-size:14px;font-weight:700;color:var(--ink-dim);">${n} st · ${kr(total)}</span>
+      </div>`;
+
+    items.innerHTML = `
+      <form id="checkoutForm" class="checkout-form" style="padding:18px 22px;">
+        <h4 style="font-size:17px;font-weight:800;color:var(--ink-bright);margin-bottom:4px;">Dina kontakt- &amp; leveransuppgifter</h4>
+        <p style="font-size:13px;color:var(--ink-dim);margin-bottom:14px;line-height:1.4;">
+          Ingen inloggning krävs. Vi skickar orderbekräftelse och spårnings-SMS hit.
+        </p>
+
+        <div>
+          <label for="coName">För- och efternamn *</label>
+          <input type="text" id="coName" name="name" required placeholder="t.ex. Göran Lindqvist" autocomplete="name">
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="coPhone">Mobilnummer (för SMS-avisering) *</label>
+            <input type="tel" id="coPhone" name="phone" required placeholder="070-123 45 67" autocomplete="tel">
+          </div>
+          <div>
+            <label for="coEmail">E-postadress *</label>
+            <input type="email" id="coEmail" name="email" required placeholder="namn@exempel.se" autocomplete="email">
+          </div>
+        </div>
+
+        <div>
+          <label for="coAddress">Gatuadress *</label>
+          <input type="text" id="coAddress" name="address" required placeholder="Gata och gatunummer" autocomplete="street-address">
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="coPostal">Postnummer *</label>
+            <input type="text" id="coPostal" name="postal" required placeholder="123 45" autocomplete="postal-code">
+          </div>
+          <div>
+            <label for="coCity">Postort *</label>
+            <input type="text" id="coCity" name="city" required placeholder="t.ex. Örebro" autocomplete="address-level2">
+          </div>
+        </div>
+
+        <div style="margin-top:6px;">
+          <label for="coPayment">Välj betalsätt *</label>
+          <select id="coPayment" name="payment">
+            <option value="Faktura via Klarna (30 dagar)">Faktura via Klarna (30 dagar – betala efter leverans)</option>
+            <option value="Swish">Swish (Betala smidigt vid leveransbekräftelse)</option>
+            <option value="Kortbetalning (Visa / Mastercard)">Kortbetalning (Visa / Mastercard)</option>
+            <option value="Förskottsbetalning via Bankgiro">Förskottsbetalning via Bankgiro</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="coNotes">Eventuellt meddelande eller önskemål (frivilligt)</label>
+          <textarea id="coNotes" name="notes" placeholder="T.ex. Önskar montering, greppform, eller portkod"></textarea>
+        </div>
+
+        <div style="background:var(--accent-soft);border:1px solid rgba(192,54,26,0.18);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--ink);line-height:1.45;">
+          <strong>✓ Personlig service:</strong> Vi granskar varje beställning noggrant innan den packas och skickas från Garphyttan.
+        </div>
+      </form>`;
+
+    foot.innerHTML = `
+      <div class="cart__totalrow">
+        <span>Att betala (inkl. moms &amp; fri frakt)</span>
+        <b>${kr(total)}</b>
+      </div>
+      <div class="cart__actions">
+        <button class="btn btn--accent btn--full" id="submitOrderBtn" type="button">
+          Slutför och bekräfta beställning
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+      </div>
+      <div class="cart-phone-box" style="margin-top:14px;">
+        <h4>Känns det tryggare att beställa via telefon?</h4>
+        <p>Ring oss så tar vi dina uppgifter direkt över telefon.</p>
+        <a href="tel:+46700316655" class="cart-phone-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Ring 070-031 66 55
+        </a>
+      </div>`;
+
+    $("#cartBackBtn")?.addEventListener("click", () => {
+      cartCheckoutStep = "cart";
+      renderCart();
+    });
+
+    $("#submitOrderBtn")?.addEventListener("click", () => {
+      const form = $("#checkoutForm");
+      if (!form.reportValidity()) return;
+      const name = $("#coName").value.trim();
+      const phone = $("#coPhone").value.trim();
+      const email = $("#coEmail").value.trim();
+      const address = $("#coAddress").value.trim();
+      const postal = $("#coPostal").value.trim();
+      const city = $("#coCity").value.trim();
+      const payment = $("#coPayment").value;
+      const notes = $("#coNotes").value.trim();
+
+      const orderId = `PP-${Math.floor(100000 + Math.random() * 900000)}`;
+      const orderItems = cart.map(i => {
+        const p = BY_ID.get(i.id);
+        return {
+          id: i.id,
+          name: p ? p.name : "Produkt",
+          qty: i.qty,
+          price: p ? p.price : 0,
+          total: (p ? p.price : 0) * i.qty,
+          note: i.note || ""
+        };
+      });
+
+      lastCompletedOrder = {
+        orderId,
+        date: new Date().toISOString(),
+        name,
+        phone,
+        email,
+        address,
+        postal,
+        city,
+        payment,
+        notes,
+        items: orderItems,
+        total
+      };
+
+      try {
+        const orders = JSON.parse(localStorage.getItem("pp-orders") || "[]");
+        orders.unshift(lastCompletedOrder);
+        localStorage.setItem("pp-orders", JSON.stringify(orders.slice(0, 20)));
+      } catch (e) {}
+
+      // Töm varukorg
+      cart = [];
+      saveCart();
+      cartCheckoutStep = "confirmed";
+      renderCart();
+    });
+    return;
+  }
+
+  // 4. NORMAL VARUKORGSVY (ARTIKLAR)
+  ship.innerHTML = left > 0
+    ? `Lägg till <b style="color:var(--accent)">${kr(left)}</b> till för fri frakt<div class="cart__shipbar"><i style="width:${pct}%"></i></div>`
+    : `<b style="color:var(--ok)">Fri frakt!</b> Din order kvalificerar sig för fri frakt.<div class="cart__shipbar"><i style="width:100%"></i></div>`;
 
   items.innerHTML = cart.map((i, idx) => {
     const p = BY_ID.get(i.id);
@@ -75,7 +338,7 @@ function renderCart() {
       <a class="citem__img" href="#/produkt/${p.id}"><img src="${img(p.imgs[0])}" alt="${esc(p.name)}" loading="lazy"></a>
       <div>
         <div class="citem__name">${esc(p.name)}</div>
-        ${i.note ? `<div style="font-family:var(--font-mono);font-size:11px;color:var(--accent);margin:2px 0 4px;line-height:1.3;">${esc(i.note)}</div>` : ""}
+        ${i.note ? `<div style="font-size:12px;color:var(--accent);margin:3px 0 6px;line-height:1.3;font-weight:600;">${esc(i.note)}</div>` : ""}
         <div class="citem__price">${kr(p.price)} / st</div>
         <div class="citem__row">
           <span class="citem__qty">
@@ -104,99 +367,35 @@ function renderCart() {
       const idx = parseInt(rm.dataset.crm, 10);
       setQtyByIndex(idx, 0);
     }
+    if (e.target.closest(".citem__img")) {
+      closeCart();
+    }
   };
 
-  const total = cartTotal();
-  const left = Math.max(0, FREE_SHIP - total);
-  const pct = Math.min(100, Math.round((total / FREE_SHIP) * 100));
-  ship.innerHTML = left > 0
-    ? `Lägg till <b style="color:var(--accent)">${kr(left)}</b> till för fri frakt<div class="cart__shipbar"><i style="width:${pct}%"></i></div>`
-    : `<b style="color:var(--ok)">Fri frakt!</b> Din order kvalificerar sig.<div class="cart__shipbar"><i style="width:100%"></i></div>`;
-
   foot.innerHTML = `
-    <div class="cart__totalrow"><span>Totalt (inkl. moms)</span><b>${kr(total)}</b></div>
+    <div class="cart__totalrow">
+      <span>Totalt (inkl. moms)</span>
+      <b>${kr(total)}</b>
+    </div>
     <div class="cart__actions">
-      <button class="btn btn--accent btn--full" id="checkoutBtn">
-        Skicka via e-post
+      <button class="btn btn--accent btn--full" id="toCheckoutBtn" type="button">
+        Gå till kassan
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
       </button>
-      <button class="btn btn--ghost btn--full" id="copyOrderBtn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-        Kopiera order till urklipp
-      </button>
     </div>
-    <div class="cart__help">
-      Frågor eller telefonorder? <a href="tel:+46700316655">070-031 66 55</a>
+    <div class="cart-phone-box">
+      <h4>Föredrar du att beställa via telefon?</h4>
+      <p>Ring 070-031 66 55 så tar vi din beställning direkt och ger personlig rådgivning.</p>
+      <a href="tel:+46700316655" class="cart-phone-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Ring 070-031 66 55
+      </a>
     </div>`;
 
-  $("#checkoutBtn").addEventListener("click", checkout);
-  $("#copyOrderBtn").addEventListener("click", copyOrder);
-}
-
-function formatOrderText() {
-  const lines = cart.map(i => {
-    const p = BY_ID.get(i.id);
-    const note = i.note ? `\n    Specialanpassning: ${i.note}` : "";
-    return p ? `${i.qty} × ${p.name}: ${kr(p.price * i.qty)} (art.nr ${p.id})${note}` : "";
-  }).filter(Boolean);
-  return [
-    "Beställning till PP-Pingis (info@pp-pingis.se):",
-    "--------------------------------------------------",
-    ...lines,
-    "--------------------------------------------------",
-    `Totalt: ${kr(cartTotal())} (inkl. moms)`,
-    "",
-    "Namn:",
-    "Leveransadress:",
-    "Telefon:",
-    "Övriga önskemål (t.ex. greppform, svamptjocklek):"
-  ].join("\n");
-}
-
-function copyOrder() {
-  const text = formatOrderText();
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(() => {
-      toast("Orderdetaljer kopierade till urklipp!");
-    }).catch(() => fallbackCopy(text));
-  } else {
-    fallbackCopy(text);
-  }
-}
-
-function fallbackCopy(text) {
-  const ta = document.createElement("textarea");
-  ta.value = text;
-  ta.style.position = "fixed";
-  ta.style.opacity = "0";
-  document.body.appendChild(ta);
-  ta.select();
-  try {
-    document.execCommand("copy");
-    toast("Orderdetaljer kopierade till urklipp!");
-  } catch (err) {
-    toast("Kunde inte kopiera automatiskt");
-  }
-  document.body.removeChild(ta);
-}
-
-function checkout() {
-  const lines = cart.map(i => {
-    const p = BY_ID.get(i.id);
-    return p ? `${i.qty} × ${p.name}: ${kr(p.price * i.qty)} (art.nr ${p.id})` : "";
-  }).filter(Boolean);
-  const body = [
-    "Hej PP-Pingis!",
-    "",
-    "Jag vill gärna beställa:",
-    "",
-    ...lines,
-    "",
-    `Totalt: ${kr(cartTotal())} (inkl. moms)`,
-    "",
-    "Mvh,"
-  ].join("\n");
-  location.href = `mailto:Info@pp-pingis.se?subject=${encodeURIComponent("Beställning via pp-pingis.se")}&body=${encodeURIComponent(body)}`;
+  $("#toCheckoutBtn")?.addEventListener("click", () => {
+    cartCheckoutStep = "checkout";
+    renderCart();
+  });
 }
 
 /* drawers & modals */
@@ -358,11 +557,10 @@ function productCard(p, i = 0) {
     <a class="pcard__imgwrap" href="#/produkt/${p.id}" aria-label="${esc(p.name)}">
       <span class="pcard__badges">
         ${p.stock ? "" : `<span class="badge badge--out">Slutsåld</span>`}
-        ${hot ? `<span class="badge badge--hot">Pro</span>` : ""}
+        ${hot ? `<span class="badge badge--hot">Favorit</span>` : ""}
       </span>
       <img src="${img(p.imgs[0])}" srcset="${img(p.imgs[0])} 1x, ${img(p.imgs[0], "@2x")} 2x" alt="${esc(p.name)}" loading="lazy">
     </a>
-    <button class="pcard__quick" data-add="${p.id}" aria-label="Lägg ${esc(p.name)} i varukorg" ${p.stock ? "" : "disabled"}>${bagSvg}</button>
     <div class="pcard__body">
       <div class="pcard__brand">${esc(p.brand || p.kind)}</div>
       <a href="#/produkt/${p.id}"><h3 class="pcard__name">${esc(p.name)}</h3></a>
@@ -370,6 +568,10 @@ function productCard(p, i = 0) {
         <span class="pcard__price">${kr(p.price)}</span>
         <span class="pcard__stock ${p.stock ? "" : "pcard__stock--out"}"><i></i>${p.stock ? "I lager" : "Slut"}</span>
       </div>
+      <button class="pcard__btn" data-add="${p.id}" ${p.stock ? "" : "disabled"} aria-label="Köp ${esc(p.name)}">
+        ${bagSvg}
+        <span>${p.stock ? "Köp" : "Slutsåld"}</span>
+      </button>
     </div>
   </article>`;
 }
@@ -415,7 +617,7 @@ function homeView() {
   const brands = [...new Set(PRODUCTS.map(p => p.brand).filter(Boolean))]
     .map(b => ({ b, n: PRODUCTS.filter(p => p.brand === b).length }))
     .sort((a, b) => b.n - a.n);
-  const marqueeItems = ["Fri frakt över 1 249 kr", "Yasaka", "Donic", "Gewo", "Tibhar", "Snabba leveranser", "Personlig service", "Joola", "Andro", "Nittaku"];
+  const marqueeItems = ["Fri frakt över 1 249 kr", "Personlig rådgivning: 070-031 66 55", "Snabba leveranser inom 24 h", "Donic", "Yasaka", "Stiga", "Tibhar", "Joola", "Kvalitetsmontering i Garphyttan"];
 
   const catTiles = HOME_CATEGORIES.map((cat, i) => {
     const totalInCat = groupCount(cat.kinds);
@@ -438,19 +640,25 @@ function homeView() {
   <div class="view">
     <section class="hero">
       <div class="hero__copy">
-        <div class="mono-label">Bordtennisbutik · Garphyttan, Örebro</div>
+        <div class="mono-label">Bordtennisbutik &amp; rådgivning · Garphyttan, Örebro</div>
         <h1 class="hero__title display">
-          <span class="row"><span>Precision.</span></span>
-          <span class="row"><span>Spinn.</span></span>
-          <span class="row"><span><em>Speed.</em></span></span>
+          <span class="row"><span>Rätt racket för</span></span>
+          <span class="row"><span><em>ditt spel.</em></span></span>
         </h1>
-        <p class="hero__sub">Stommar, gummi och racketar från världens bästa märken, handplockade av folk som själva står vid bordet. Allt i lager, allt på riktigt.</p>
+        <p class="hero__sub">Handplockade stommar, gummin och bordtennisutrustning från världens ledande tillverkare. Handla tryggt och enkelt online – eller ring oss för personlig rådgivning och hjälp med materialval.</p>
         <div class="hero__ctas">
-          <a class="btn btn--accent" href="#/butik">Öppna butiken ${arrowSvg}</a>
-          <a class="btn btn--ghost" href="#/bygg-racket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> Bygg racket i 3D</a>
+          <a class="btn btn--accent" href="#/butik">Se sortimentet ${arrowSvg}</a>
+          <a class="btn btn--ghost" href="#/bygg-racket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> Racketverkstad (3D)</a>
+        </div>
+        <div class="hero__phone-box">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <div>
+            <strong>Vill du hellre beställa eller rådfråga via telefon?</strong>
+            <span>Ring oss gärna på <a href="tel:+46700316655">070-031 66 55</a> – vi hjälper dig gärna med din order.</span>
+          </div>
         </div>
         <div class="hero__meta">
-          <div><b>${PRODUCTS.length}+</b><span>Produkter</span></div>
+          <div><b>${PRODUCTS.length}+</b><span>Kvalitetsprodukter</span></div>
           <div><b>${brands.length}</b><span>Varumärken</span></div>
           <div><b>1 249 kr</b><span>Fri frakt över</span></div>
         </div>
@@ -488,7 +696,7 @@ function homeView() {
 
     <section class="section wrap">
       <div class="section__head reveal">
-        <h2 class="section__title display">Handla per <em>kategori</em></h2>
+        <h2 class="section__title display">Utforska vårt <em>sortiment</em></h2>
         <a class="section__link" href="#/butik">Visa allt ${arrowSvg}</a>
       </div>
       <div class="catgrid">${catTiles}</div>
@@ -496,7 +704,7 @@ function homeView() {
 
     <section class="section wrap">
       <div class="section__head reveal">
-        <h2 class="section__title display">Hetast <em>just nu</em></h2>
+        <h2 class="section__title display">Populära <em>favoriter</em></h2>
         <a class="section__link" href="#/butik">Hela butiken ${arrowSvg}</a>
       </div>
       <div class="pgrid">${featured.map(productCard).join("")}</div>
@@ -520,7 +728,7 @@ function homeView() {
     ${deals.length ? `
     <section class="section wrap">
       <div class="section__head reveal">
-        <h2 class="section__title display">På <em>rea</em></h2>
+        <h2 class="section__title display">Utvalda <em>erbjudanden</em></h2>
         <a class="section__link" href="#/butik?sort=price-asc">Fynda fler ${arrowSvg}</a>
       </div>
       <div class="pgrid">${deals.map(productCard).join("")}</div>
@@ -566,7 +774,7 @@ function shopView(params) {
   <div class="view shop wrap">
     <div class="shop__head">
       <div class="mono-label">Butiken</div>
-      <h1 class="shop__title display">${shopState.kind ? esc(shopState.kind) : shopState.brand ? esc(shopState.brand) : "Alla <em style='font-style:italic;font-weight:300;color:var(--accent)'>prylar</em>"}</h1>
+      <h1 class="shop__title display">${shopState.kind ? esc(shopState.kind) : shopState.brand ? esc(shopState.brand) : "Alla <em style='font-style:italic;font-weight:300;color:var(--accent)'>produkter</em>"}</h1>
       <div class="shop__count mono-label" id="shopCount"></div>
     </div>
   </div>
@@ -742,7 +950,7 @@ function renderShopGrid() {
     } else if (shopState.brand) {
       titleEl.innerHTML = esc(shopState.brand);
     } else {
-      titleEl.innerHTML = "Alla <em style='font-style:italic;font-weight:300;color:var(--accent)'>prylar</em>";
+      titleEl.innerHTML = "Alla <em style='font-style:italic;font-weight:300;color:var(--accent)'>produkter</em>";
     }
   }
 }
@@ -842,6 +1050,13 @@ function productView(id) {
           <div class="pdp__spec"><dt>Lagerstatus</dt><dd>${p.stock ? "I lager" : "Slut i lager"}</dd></div>
           <div class="pdp__spec"><dt>Leverans</dt><dd>1–3 vardagar med PostNord / Instabox</dd></div>
         </dl>
+        <div class="cart-phone-box" style="margin-top:20px;text-align:left;display:flex;align-items:center;gap:14px;padding:16px;">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);flex-shrink:0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <div>
+            <h4 style="margin:0 0 3px;font-size:15px;font-weight:800;color:var(--ink-bright);">Frågor eller beställning via telefon?</h4>
+            <p style="margin:0;font-size:13.5px;color:var(--ink-dim);line-height:1.4;">Ring <a href="tel:+46700316655" style="color:var(--accent);font-weight:700;">070-031 66 55</a> för personlig rådgivning och direktbeställning.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

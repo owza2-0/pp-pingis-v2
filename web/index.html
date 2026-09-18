@@ -3,27 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>PP PINGIS · Bordtennis på allvar</title>
-<meta name="description" content="PP Pingis: stommar, gummiplattor, racketar, bollar och allt annat för bordtennis. Yasaka, Donic, Gewo, Tibhar m.fl. Fri frakt över 1 249 kr.">
-<meta name="theme-color" content="#0a0a0b">
+<title>PP PINGIS · Bordtennisbutik med personlig service</title>
+<meta name="description" content="PP Pingis i Garphyttan: stommar, gummiplattor, färdiga racketar, bollar och tillbehör för bordtennis. Personlig rådgivning på telefon och fri montering.">
+<meta name="theme-color" content="#faf8f5">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PP PINGIS">
-<meta property="og:title" content="PP PINGIS · Bordtennis på allvar">
-<meta property="og:description" content="PP Pingis: stommar, gummiplattor, racketar, bollar och allt annat för bordtennis. Yasaka, Donic, Gewo, Tibhar m.fl. Fri frakt över 1 249 kr.">
+<meta property="og:title" content="PP PINGIS · Bordtennisbutik med personlig service">
+<meta property="og:description" content="Stommar, gummi och utrustning för bordtennis. Handplockat sortiment, personlig rådgivning och snabba leveranser.">
 <meta property="og:image" content="assets/img/p69980-0@2x.webp">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="PP PINGIS · Bordtennis på allvar">
+<meta name="twitter:title" content="PP PINGIS · Bordtennisbutik med personlig service">
 <meta name="twitter:description" content="Stommar, gummi och utrustning för bordtennis. Handplockat sortiment, snabba leveranser.">
 <meta name="twitter:image" content="assets/img/p69980-0@2x.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='%23FF4A1C'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='%23c0361a'/></svg>">
 </head>
 <body>
-
-<div class="grain" aria-hidden="true"></div>
 
 <header class="nav" id="nav">
   <a class="nav__logo" href="#/" aria-label="PP Pingis, startsida">
@@ -31,18 +29,24 @@
   </a>
   <nav class="nav__links" aria-label="Huvudmeny">
     <a href="#/" data-nav="home">Hem</a>
-    <a href="#/butik" data-nav="shop">Alla prylar</a>
+    <a href="#/butik" data-nav="shop">Alla produkter</a>
     <a href="#/butik?group=rackets" data-nav="rackets">Stommar &amp; Gummi</a>
     <a href="#/bygg-racket" data-nav="workshop" class="nav__link--workshop">Bygg racket <span class="nav__badge-3d">3D</span></a>
     <a href="#/butik?group=training" data-nav="training">Bollar &amp; Träning</a>
     <a href="#/butik?group=care" data-nav="care">Vård &amp; Tillbehör</a>
   </nav>
   <div class="nav__actions">
+    <a class="nav__phone" href="tel:+46700316655" aria-label="Ring kundservice 070-031 66 55">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span class="nav__phonetext">070-031 66 55</span>
+    </a>
     <button class="nav__searchbtn" id="searchToggle" aria-label="Sök">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span class="nav__searchlabel">Sök</span>
     </button>
     <button class="nav__cartbtn" id="cartToggle" aria-label="Öppna varukorg">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 7h12l1.5 13.5a1 1 0 0 1-1 1.1H5.5a1 1 0 0 1-1-1.1L6 7Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>
+      <span class="nav__cartlabel">Varukorg</span>
       <span class="nav__cartcount" id="cartCount" hidden>0</span>
     </button>
     <button class="nav__menubtn" id="menuToggle" aria-label="Öppna meny" aria-expanded="false">
@@ -63,7 +67,7 @@
   <div class="footer__top">
     <div class="footer__brand">
       <span class="nav__logo nav__logo--foot"><span class="nav__logo-ball"></span>PP<em>PINGIS</em></span>
-      <p>Bordtennisbutik i Garphyttan, Örebro. Personlig service, snabba leveranser och prylar som håller match efter match.</p>
+      <p>Bordtennisbutik i Garphyttan, Örebro. Personlig service, snabba leveranser och utrustning som håller match efter match.</p>
     </div>
     <div class="footer__col">
       <h4>Utrustning</h4>
