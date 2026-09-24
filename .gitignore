@@ -8,3 +8,7 @@ data/media_failures.txt
 data/*.ndjson
 .DS_Store
 scratch/
+
+# Vercel CLI-länk och lokala env-filer hamnar aldrig i repot
+.vercel/
+.env*.local

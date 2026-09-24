@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konceptförslag C: Turneringen, PP-Pingis</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='%23c0361a'/></svg>">
+<meta name="description" content="Konceptmockup för PP-Pingis: välj nivå, få ett paket. Tre ingångar in i sortimentet.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;600;700&display=swap">
+<style>
+/* ==========================================================================
+   Konceptförslag C: Turneringen. All form ligger i den här filen.
+   Idén: få beslut. Tre nivåingångar in i sortimentet i stället för 305 val.
+
+   Kontrastmätning (WCAG 2.1, sRGB, formeln (L1+0.05)/(L2+0.05)):
+     vit text #ffffff på bordsblått #123f74 ....... 10.56:1  godkänt
+     kritvit #f8f7f3 på bordsblått #123f74 .........  9.85:1  godkänt
+     text #0e1116 på kritvitt #f8f7f3 .............. 17.64:1  godkänt
+     text #0e1116 på vitt #ffffff .................. 18.91:1  godkänt
+     dämpad text #40485a på vitt #ffffff ...........  9.16:1  godkänt
+     vit text #ffffff på matchrött #d92d20 .........  4.83:1  godkänt
+     mörk text #0e1116 på matchrött #d92d20 ........  3.91:1  FALLER, används inte
+     röd text #a82015 på kritvitt #f8f7f3 ..........  7.20:1  godkänt
+     kantfärg #767e8c på kritvitt #f8f7f3 ..........  3.82:1  godkänt för kontrollkanter
+
+   Matchrödan finns i två steg, av kontrastskäl:
+     --red     #d92d20 är ytans röd. Den bär vit text (4.83:1) och används bara
+               på primär köpknapp och på markerat läge (kant).
+     --red-ink #a82015 är textens röd. Röd text ligger alltid på ljust underlag och
+               används bara på den valda nivån, eftersom vit text på röd yta och
+               mörk text på röd yta mäter 4.83:1 respektive 3.91:1.
+     Rött och blått möts aldrig som text mot text: alla röda ytor ligger på vitt
+     eller kritvitt, och de blå fälten innehåller ingen röd text eller knapp.
+
+   Radie: 3px (panel), 6px (kontroller), 8px (knapp), 10px (kort och bildplattor),
+   12px (nivåblock med kant). Stora färgfält är kantiga, det vill säga 0.
+   ========================================================================== */
+
+:root {
+  --blue: #123f74;
+  --blue-deep: #0d2e55;
+  --paper: #f8f7f3;
+  --ink: #0e1116;
+  --ink-soft: #40485a;
+  --red: #d92d20;
+  --red-ink: #a82015;
+  --ctl: #767e8c;
+  --line: #d5d1c7;
+  --track: #dfe3e8;
+  --anton: "Anton", "Arial Narrow", Impact, sans-serif;
+  --barlow: "Barlow", "Helvetica Neue", Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 16px; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 19px/1.6 var(--barlow);
+}
+
+img { max-width: 100%; }
+p { margin: 0 0 14px; }
+h1, h2, h3 { margin: 0; font-family: var(--anton); font-weight: 400; text-transform: uppercase; letter-spacing: .01em; }
+a { color: inherit; }
+button, input { font-family: inherit; font-size: 19px; color: inherit; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+/* Skärmläsartext, till exempel ordet "varor" efter siffran i varukorgsknappen. */
+.vh {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Fokusmarkeringen tas aldrig bort. Blå ring på ljust underlag, vit ring på blått. */
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+.hero :focus-visible,
+.foot :focus-visible,
+.lvl--start :focus-visible,
+.cartbtn:focus-visible { outline-color: #ffffff; }
+
+/* Rörelse: bara hover, fokus och en kort övergång när ett filter blir aktivt. */
+a, button, input { transition: background-color .16s ease, border-color .16s ease, color .16s ease; }
+.ppc__spec--bar::after { transition: width .18s ease; }
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
+.skip:focus {
+  left: 8px;
+  top: 8px;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 12px 18px;
+  background: #ffffff;
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 40px);
+}
+
+/* ---------- Konceptetiketten, högst upp och synlig utan att scrolla ---------- */
+.mock-label {
+  margin: 0;
+  padding: 10px clamp(16px, 4vw, 40px);
+  background: #ffffff;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 19px;
+}
+
+/* ---------- Sidhuvud ---------- */
+.head {
+  background: var(--paper);
+  border-bottom: 2px solid var(--ink);
+}
+.head__in {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  padding-block: 14px;
+}
+.head__brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+}
+.head__logo {
+  display: block;
+  width: auto;
+  height: 46px;
+}
+.head__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  margin-inline-end: auto;
+}
+.head__nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--ctl);
+}
+.head__nav a:hover { text-decoration-color: var(--blue); }
+
+.cartbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 10px 18px;
+  background: var(--blue);
+  color: #ffffff;
+  border: 2px solid var(--blue);
+  border-radius: 6px;
+  font-size: 19px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cartbtn:hover { background: var(--blue-deep); border-color: var(--blue-deep); }
+.cartbtn__n {
+  display: inline-block;
+  min-width: 30px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: #ffffff;
+  color: var(--blue);
+  text-align: center;
+  font-weight: 700;
+}
+
+/* ---------- Hero, helblått fält ---------- */
+.hero {
+  background: var(--blue);
+  color: #ffffff;
+  padding-block: clamp(36px, 7vw, 84px) clamp(32px, 6vw, 72px);
+}
+.hero__kicker {
+  display: inline-block;
+  min-height: 0;
+  margin: 0 0 18px;
+  padding-top: 14px;
+  border-top: 4px solid #ffffff;
+  font-size: 19px;
+  font-weight: 600;
+}
+.hero__h {
+  max-width: 20ch;
+  font-size: clamp(40px, 7.6vw, 78px);
+  line-height: 1.03;
+  overflow-wrap: break-word;
+}
+.hero__lead {
+  max-width: 62ch;
+  margin: 24px 0 0;
+  font-size: 21px;
+  line-height: 1.6;
+}
+.hero__note {
+  max-width: 62ch;
+  margin: 22px 0 0;
+  padding-top: 16px;
+  border-top: 2px solid #ffffff;
+  font-size: 19px;
+}
+
+/* ---------- Sektionsrubriker ---------- */
+.sec {
+  padding-block: clamp(44px, 7vw, 88px) clamp(36px, 5vw, 64px);
+}
+.sec-h {
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.06;
+}
+.sec-lead {
+  max-width: 74ch;
+  margin: 16px 0 0;
+  color: var(--ink-soft);
+  font-size: 19px;
+}
+
+/* ---------- Nivåingångarna: tre block av olika tyngd ---------- */
+.levels {
+  display: grid;
+  gap: clamp(20px, 3vw, 32px);
+  margin-top: clamp(28px, 4vw, 44px);
+}
+
+.lvl__step {
+  margin: 0 0 6px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.lvl__name { line-height: 1.02; }
+.lvl__who { max-width: 52ch; font-size: 19px; }
+.lvl__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 18px 0 10px;
+  font-size: 19px;
+  color: var(--ink-soft);
+}
+.lvl__pick {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.lvl__pname {
+  margin: 4px 0 2px;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.lvl__price {
+  margin: 0 0 12px;
+  font-size: 30px;
+  font-weight: 700;
+}
+.lvl__blurb {
+  max-width: 56ch;
+  margin: 0 0 20px;
+  font-size: 19px;
+}
+.lvl__cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 12px 20px;
+  border: 3px solid var(--blue);
+  border-radius: 6px;
+  background: var(--blue);
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.lvl__cta:hover { background: var(--blue-deep); border-color: var(--blue-deep); }
+
+.lvl__media {
+  position: relative;
+  display: block;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.lvl__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 18px;
+  object-fit: contain;
+}
+.lvl__ph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  font-size: 19px;
+  color: var(--ink-soft);
+}
+.lvl__media.is-loaded .lvl__ph { display: none; }
+.lvl__media.is-error .lvl__img { display: none; }
+
+/* Nivå 1: störst. Helblått fält,stor bild, störst typografi. */
+.lvl--start {
+  display: grid;
+  gap: clamp(20px, 3vw, 36px);
+  padding: clamp(22px, 4vw, 48px);
+  background: var(--blue);
+  color: #ffffff;
+  border-radius: 0;
+}
+.lvl--start .lvl__step,
+.lvl--start .lvl__who,
+.lvl--start .lvl__meta,
+.lvl--start .lvl__pick,
+.lvl--start .lvl__blurb { color: #ffffff; }
+.lvl--start .lvl__step { padding-top: 12px; border-top: 3px solid #ffffff; }
+.lvl--start .lvl__name { font-size: clamp(40px, 7vw, 76px); }
+.lvl--start .lvl__pname { font-size: 26px; }
+.lvl--start .lvl__price { font-size: 38px; }
+.lvl--start .lvl__media { aspect-ratio: 1 / 1; }
+.lvl--start .lvl__cta {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--blue);
+}
+.lvl--start .lvl__cta:hover { background: var(--paper); border-color: var(--paper); color: var(--blue-deep); }
+
+/* Nivå 2: mellanvikt. Vit platta med kant, bilden till vänster. */
+.lvl--vidare {
+  display: grid;
+  gap: clamp(18px, 3vw, 32px);
+  padding: clamp(20px, 3vw, 36px);
+  background: #ffffff;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+}
+.lvl--vidare .lvl__name { font-size: clamp(30px, 4.4vw, 44px); }
+.lvl--vidare .lvl__media { aspect-ratio: 1 / 1; }
+
+/* Nivå 3: minst vikt. Ingen platta, bara en linje och en liten bild. */
+.lvl--tavling {
+  display: grid;
+  gap: 18px;
+  padding-top: clamp(20px, 3vw, 32px);
+  border-top: 2px solid var(--ink);
+}
+.lvl--tavling .lvl__name { font-size: clamp(26px, 3.4vw, 34px); }
+.lvl--tavling .lvl__pname { font-size: 20px; }
+.lvl--tavling .lvl__price { font-size: 26px; }
+.lvl--tavling .lvl__media { aspect-ratio: 1 / 1; }
+.lvl__caveat {
+  max-width: 56ch;
+  margin: 0 0 20px;
+  padding-left: 14px;
+  border-left: 3px solid var(--ink-soft);
+  color: var(--ink-soft);
+  font-size: 19px;
+}
+
+/* ---------- Filter ---------- */
+.filters {
+  margin-top: clamp(24px, 3vw, 36px);
+  padding: clamp(18px, 3vw, 28px);
+  background: #ffffff;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+}
+.search { max-width: 560px; }
+.search__label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 19px;
+  font-weight: 700;
+}
+.search__input {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 16px;
+  background: var(--paper);
+  border: 2px solid var(--ctl);
+  border-radius: 6px;
+  font-size: 19px;
+}
+.search__input:hover { border-color: var(--blue); }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.mchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 10px 18px;
+  background: #ffffff;
+  border: 2px solid var(--ctl);
+  border-radius: 6px;
+  font-size: 19px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.mchip:hover { border-color: var(--blue); }
+.mchip__n { font-weight: 700; color: var(--ink-soft); }
+/* Markerat läge: röd kant, och text i den mörkare rödan som klarar ljust underlag. */
+.mchip.is-on {
+  border: 3px solid var(--red);
+  padding: 9px 17px;
+  color: var(--red-ink);
+}
+.mchip.is-on .mchip__n { color: var(--red-ink); }
+
+.count {
+  margin: 22px 0 0;
+  font-size: 19px;
+  font-weight: 700;
+}
+.status {
+  min-height: 30px;
+  margin: 6px 0 0;
+  color: var(--ink-soft);
+  font-size: 19px;
+}
+
+/* ---------- Produktlistan: bild överst, innehåll under ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+.empty-hold { margin-top: 20px; }
+
+.hint { color: var(--ink-soft); font-size: 19px; }
+
+/* ---------- Kortet, markup kommer ur shop.js ---------- */
+.ppc {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.ppc:hover { border-color: var(--ctl); }
+.ppc__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  background: #ffffff;
+  border-bottom: 1px solid var(--line);
+}
+.ppc__ph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+}
+.ppc__ph-t { font-size: 19px; color: var(--ink-soft); }
+.ppc__media.is-loaded .ppc__ph { display: none; }
+.ppc__media.is-error .ppc__img { display: none; }
+.ppc__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 18px;
+  object-fit: contain;
+}
+.ppc__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 18px;
+}
+.ppc__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 0 0 8px;
+  font-size: 19px;
+}
+.ppc__brand { font-weight: 700; }
+.ppc__kind { color: var(--ink-soft); }
+.ppc__name {
+  margin: 0 0 10px;
+  font-family: var(--barlow);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: none;
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+}
+.ppc__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--ctl);
+}
+.ppc__link:hover { text-decoration-color: var(--blue); color: var(--blue); }
+/* Texten "(öppnas hos butiken)" upprepas på varje kort och blir bara brus visuellt.
+   Den ligger kvar i markupen och läses av skärmläsare. */
+.ppc__ext {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.ppc__blurb {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  margin: 0;
+  overflow: hidden;
+  font-size: 19px;
+}
+.ppc__specs {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 0;
+}
+.ppc__spec {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+.ppc__spec-k { margin: 0; font-size: 19px; color: var(--ink-soft); }
+.ppc__spec-v { margin: 0; font-size: 19px; font-weight: 700; }
+/* Stapeln ritas under butikens eget tal, som alltid står kvar som text. */
+.ppc__spec--bar { padding-bottom: 14px; }
+.ppc__spec--bar::before,
+.ppc__spec--bar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 6px;
+  border-radius: 3px;
+}
+.ppc__spec--bar::before { right: 0; background: var(--track); }
+.ppc__spec--bar::after { width: calc(var(--level) * 100%); background: var(--blue); }
+
+.ppc__foot {
+  display: grid;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+.ppc__price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 12px;
+  margin: 0;
+}
+.ppc__kr { font-size: 26px; font-weight: 700; }
+.ppc__stock { font-size: 19px; color: var(--ink-soft); }
+/* Primär köpknapp: röd yta med vit text, 4.83:1. */
+.ppc__add {
+  min-height: 52px;
+  padding: 12px 18px;
+  background: var(--red);
+  color: #ffffff;
+  border: 1px solid var(--red);
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ppc__add:hover { background: var(--ink); border-color: var(--ink); }
+.ppc__add:disabled {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #ffffff;
+  cursor: default;
+}
+
+/* ---------- Tomt läge ---------- */
+.ppc-empty {
+  padding: clamp(20px, 3vw, 32px);
+  background: #ffffff;
+  border: 2px dashed var(--ctl);
+  border-radius: 8px;
+}
+.ppc-empty__t {
+  margin: 0 0 10px;
+  font-size: 26px;
+  font-weight: 700;
+}
+.ppc-empty__d {
+  max-width: 62ch;
+  margin: 0 0 18px;
+  color: var(--ink-soft);
+  font-size: 19px;
+}
+.ppc-empty__btn {
+  min-height: 52px;
+  padding: 12px 20px;
+  background: var(--ink);
+  color: #ffffff;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  font-size: 19px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ppc-empty__btn:hover { background: var(--blue); border-color: var(--blue); }
+
+/* ---------- Sidfot, helblått fält ---------- */
+.foot {
+  margin-top: clamp(36px, 6vw, 72px);
+  padding-block: clamp(36px, 6vw, 72px);
+  background: var(--blue);
+  color: #ffffff;
+}
+.foot__h { font-size: clamp(28px, 4.4vw, 44px); line-height: 1.06; }
+.foot__lead { max-width: 62ch; margin: 16px 0 0; font-size: 19px; }
+.foot__cols {
+  display: grid;
+  gap: clamp(24px, 4vw, 44px);
+  margin-top: clamp(28px, 4vw, 40px);
+}
+.foot__c h3 {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ffffff;
+  font-size: 24px;
+}
+.foot__c p, .foot__c li { font-size: 19px; }
+.foot__c li + li { margin-top: 8px; }
+/* Fotlänkarna är enskilda mål för tummen, inte text i en mening, så de får full klickyta. */
+.foot a { display: inline-flex; align-items: center; min-height: 2.75rem; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.foot__end { margin: clamp(28px, 4vw, 40px) 0 0; font-size: 19px; }
+
+/* ---------- Byte mellan förslagen, fylls av shop.js ---------- */
+.varnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: clamp(28px, 4vw, 40px);
+  padding-top: clamp(24px, 3vw, 32px);
+  border-top: 2px solid #ffffff;
+}
+.mvar {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  min-height: 52px;
+  padding: 12px 18px;
+  border: 2px solid #ffffff;
+  border-radius: 6px;
+  color: #ffffff;
+  text-decoration: none;
+}
+.mvar:hover { background: rgba(255, 255, 255, .16); }
+.mvar__b { font-size: 20px; font-weight: 700; }
+.mvar__s { font-size: 19px; text-decoration: underline; text-underline-offset: 4px; }
+.mvar.is-here {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+}
+.mvar.is-here:hover { background: #ffffff; border-color: #ffffff; }
+
+/* ---------- Varukorgen, fylls av shop.js ---------- */
+.cart {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 30;
+  width: min(430px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 18px;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 3px;
+}
+.cart__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--ink);
+}
+.cart__t { font-size: 28px; }
+.cart__close {
+  min-height: 48px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  font-size: 19px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cart__close:hover { background: var(--blue); border-color: var(--blue); color: #ffffff; }
+
+.mcart__none { margin: 16px 0 0; color: var(--ink-soft); font-size: 19px; }
+.mcart__list { display: grid; gap: 14px; margin: 16px 0 0; }
+.mcart__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.mcart__n { grid-column: 1; font-size: 19px; font-weight: 700; }
+.mcart__name { grid-column: 1 / -1; font-size: 19px; }
+.mcart__p { grid-row: 1; grid-column: 2; font-size: 19px; font-weight: 700; text-align: right; }
+.mcart__x {
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-height: 48px;
+  padding: 10px 16px;
+  background: #ffffff;
+  border: 2px solid var(--ctl);
+  border-radius: 6px;
+  font-size: 19px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.mcart__x:hover { border-color: var(--ink); }
+.mcart__sum {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 6px 0 0;
+  border-top: 2px solid var(--ink);
+  font-size: 21px;
+}
+.mcart__ship { margin: 14px 0 0; color: var(--ink-soft); font-size: 19px; }
+.mcart__go {
+  display: block;
+  margin-top: 16px;
+  min-height: 52px;
+  padding: 14px 18px;
+  background: var(--blue);
+  color: #ffffff;
+  border-radius: 6px;
+  font-size: 19px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+.mcart__go:hover { background: var(--blue-deep); }
+
+/* ---------- Bredare skärmar ---------- */
+@media (min-width: 700px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .foot__cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lvl--start { grid-template-columns: 1.15fr .85fr; align-items: start; }
+  .lvl--vidare { grid-template-columns: 240px minmax(0, 1fr); align-items: start; }
+  .lvl--tavling { grid-template-columns: 132px minmax(0, 1fr); align-items: start; }
+}
+@media (min-width: 1040px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Hoppa till innehållet</a>
+
+<p class="mock-label">Konceptförslag C: Turneringen. Inte produktionssajt.</p>
+
+<header class="head">
+  <div class="wrap head__in">
+    <a class="head__brand" href="https://pp-pingis.se/" target="_blank" rel="noopener">
+      <img class="head__logo" src="assets/logo.webp" alt="PP-Pingis" width="222" height="100">
+    </a>
+    <nav class="head__nav" aria-label="Sektioner på sidan">
+      <a href="#nivaer">Nivåer</a>
+      <a href="#sortiment">Sortimentet</a>
+      <a href="#praktiskt">Butiken och frakten</a>
+    </nav>
+    <button class="cartbtn" type="button" data-cart-toggle aria-expanded="false" aria-controls="cart-panel">
+      Varukorg <span class="cartbtn__n" data-cart-count>0</span><span class="vh"> varor</span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" aria-labelledby="hero-rubrik">
+    <div class="wrap">
+      <p class="hero__kicker">Bordtennisbutik i Garphyttan, Örebro</p>
+      <h1 class="hero__h" id="hero-rubrik">Vet du inte vad du ska ha? Börja här.</h1>
+      <p class="hero__lead">Tre vägar leder in i sortimentet: Nybörjare, Fortsättning och Tävlingsspelare. Välj den nivå som liknar din, så visar vi paketet som hör till. Du behöver inte kunna något om fart, skruv eller hårdhet för att komma vidare.</p>
+      <p class="hero__note">305 produkter i sortimentet, och du behöver bara välja en av tre vägar.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="nivaer" aria-labelledby="nivaer-rubrik">
+    <div class="wrap">
+      <h2 class="sec-h" id="nivaer-rubrik">Tre vägar in</h2>
+      <p class="sec-lead">Konceptets förslag på tre ingångar. Namn, pris och bild nedan är butikens egna uppgifter, hämtade ur sortimentet. I en produktionsversion skulle PP-Pingis själva välja ut vad varje nivå innehåller och sätta ihop paketen.</p>
+
+      <div class="levels">
+
+        <article class="lvl lvl--start" data-level="112245">
+          <div class="lvl__text">
+            <p class="lvl__step">Nivå 1</p>
+            <h3 class="lvl__name">Nybörjare</h3>
+            <p class="lvl__who">För dig som ska börja spela, och för dig som köper present till någon annan. Ett paket, inget mer att välja.</p>
+            <p class="lvl__pick">Butikens paket</p>
+            <p class="lvl__pname" data-level-pname></p>
+            <p class="lvl__price" data-level-price></p>
+            <p class="lvl__blurb" data-level-blurb></p>
+            <p class="lvl__meta"><span data-level-brand></span><span data-level-kind></span></p>
+            <a class="lvl__cta" href="#" target="_blank" rel="noopener" data-level-cta></a>
+          </div>
+          <a class="lvl__media" data-level-media href="#" tabindex="-1" aria-hidden="true" target="_blank" rel="noopener">
+            <span class="lvl__ph" data-level-ph>Bild laddas</span>
+            <img class="lvl__img" data-level-img alt="" width="900" height="900" loading="lazy" decoding="async">
+          </a>
+        </article>
+
+        <article class="lvl lvl--vidare" data-level="68002">
+          <a class="lvl__media" data-level-media href="#" tabindex="-1" aria-hidden="true" target="_blank" rel="noopener">
+            <span class="lvl__ph" data-level-ph>Bild laddas</span>
+            <img class="lvl__img" data-level-img alt="" width="900" height="900" loading="lazy" decoding="async">
+          </a>
+          <div class="lvl__text">
+            <p class="lvl__step">Nivå 2</p>
+            <h3 class="lvl__name">Fortsättning</h3>
+            <p class="lvl__who">För dig som har spelat ett tag och vill ta nästa steg, men helst slippa välja mellan hundra gummin.</p>
+            <p class="lvl__pick">Butikens paket</p>
+            <p class="lvl__pname" data-level-pname></p>
+            <p class="lvl__price" data-level-price></p>
+            <p class="lvl__blurb" data-level-blurb></p>
+            <p class="lvl__meta"><span data-level-brand></span><span data-level-kind></span></p>
+            <a class="lvl__cta" href="#" target="_blank" rel="noopener" data-level-cta></a>
+          </div>
+        </article>
+
+        <article class="lvl lvl--tavling" data-level="32148">
+          <a class="lvl__media" data-level-media href="#" tabindex="-1" aria-hidden="true" target="_blank" rel="noopener">
+            <span class="lvl__ph" data-level-ph>Bild laddas</span>
+            <img class="lvl__img" data-level-img alt="" width="900" height="900" loading="lazy" decoding="async">
+          </a>
+          <div class="lvl__text">
+            <p class="lvl__step">Nivå 3</p>
+            <h3 class="lvl__name">Tävlingsspelare</h3>
+            <p class="lvl__who">För dig som tävlar och vet vad du vill ha, men gärna vill se vad butiken själv pekar på.</p>
+            <p class="lvl__pick">Butikens stomme</p>
+            <p class="lvl__pname" data-level-pname></p>
+            <p class="lvl__price" data-level-price></p>
+            <p class="lvl__blurb" data-level-blurb></p>
+            <p class="lvl__caveat">Nivån pekar på en stomme, inte på ett färdigt paket. I en produktionsversion skulle ingången vara ett paket för tävlingsspelaren, sammanställt av butiken.</p>
+            <p class="lvl__meta"><span data-level-brand></span><span data-level-kind></span></p>
+            <a class="lvl__cta" href="#" target="_blank" rel="noopener" data-level-cta></a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="sortiment" aria-labelledby="sortiment-rubrik">
+    <div class="wrap">
+      <h2 class="sec-h" id="sortiment-rubrik">Sortimentet</h2>
+      <p class="sec-lead">Butikens egna kategorier och produkter. Sök, eller välj en kategori, så ändras listan direkt.</p>
+
+      <div class="filters">
+        <div class="search" role="search" aria-label="Sök i sortimentet">
+          <label class="search__label" for="sok">Sök bland produkterna</label>
+          <input class="search__input" id="sok" type="search" data-search autocomplete="off" spellcheck="false"
+                 placeholder="Till exempel Yasaka, stomme eller boll">
+        </div>
+        <div class="chips" data-chips role="group" aria-label="Kategorier"></div>
+      </div>
+
+      <p class="count" data-count></p>
+      <p class="status" data-status aria-live="polite"></p>
+
+      <noscript><p class="hint">Produktlistan fylls av shop.js, så den syns bara med JavaScript påslaget i den här konceptvyn.</p></noscript>
+
+      <div class="grid" data-grid></div>
+      <div class="empty-hold" data-empty></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot" id="praktiskt">
+  <div class="wrap">
+    <h2 class="foot__h">PP-Pingis i Garphyttan</h2>
+    <p class="foot__lead">Bordtennisbutik i Garphyttan, Örebro. Sortimentet täcker 305 produkter, och allt som köps härifrån skickas därifrån.</p>
+
+    <div class="foot__cols">
+      <div class="foot__c">
+        <h3>Hitta hit</h3>
+        <p>Hinnerssonsväg 9c<br>719 40 Garphyttan</p>
+        <p>Telefon <a href="tel:+46700316655">070-031 66 55</a><br>E-post <a href="mailto:info@pp-pingis.se">info@pp-pingis.se</a></p>
+      </div>
+      <div class="foot__c">
+        <h3>Köp och leverans</h3>
+        <ul>
+          <li>Fri frakt över 1 249 kr inom Sverige (ej skrymmande)</li>
+          <li>Snabba leveranser inom 24 h</li>
+          <li>Kvalitetsmontering i Garphyttan</li>
+        </ul>
+      </div>
+      <div class="foot__c">
+        <h3>Föreningar och märken</h3>
+        <p>Är du med i en BTK? Kontakta oss för erbjudanden.</p>
+        <p>Donic, Yasaka, Stiga, Tibhar, Joola, Andro, Gewo, Mizuno, DHS.</p>
+      </div>
+    </div>
+
+    <nav class="varnav" data-variants aria-label="De tre konceptförslagen"></nav>
+
+    <p class="foot__end">Butikens egen sajt: <a href="https://pp-pingis.se/" target="_blank" rel="noopener">Öppna pp-pingis.se</a></p>
+  </div>
+</footer>
+
+<div class="cart" id="cart-panel" hidden aria-labelledby="cart-rubrik">
+  <div class="cart__head">
+    <h2 class="cart__t" id="cart-rubrik">Varukorgen</h2>
+    <button class="cart__close" type="button" data-cart-toggle aria-expanded="false" aria-controls="cart-panel">Stäng varukorgen</button>
+  </div>
+  <div class="cart__body" data-cart-body></div>
+</div>
+
+<script src="products.js"></script>
+<script src="shop.js"></script>
+<script>
+/* De tre nivåingångarna fylls ur products.js, så att namn, pris, bild och länk
+   alltid är butikens egna uppgifter och aldrig skrivs av hand. */
+(() => {
+  "use strict";
+  const M = window.PP_MOCK;
+  if (!M) return;
+
+  const IMG = "assets/img/";
+  const kr = n => new Intl.NumberFormat("sv-SE", { maximumFractionDigits: 0 }).format(n) + " kr";
+  const set = (box, sel, text) => {
+    const el = box.querySelector(sel);
+    if (el) el.textContent = text;
+  };
+
+  document.querySelectorAll("[data-level]").forEach(box => {
+    const p = M.products.find(x => x.id === box.dataset.level);
+    if (!p) { box.hidden = true; return; }
+
+    set(box, "[data-level-pname]", p.name);
+    set(box, "[data-level-price]", kr(p.price));
+    set(box, "[data-level-brand]", p.brand);
+    set(box, "[data-level-kind]", p.kind);
+    set(box, "[data-level-blurb]", p.blurb);
+
+    const cta = box.querySelector("[data-level-cta]");
+    if (cta) {
+      cta.href = p.url;
+      cta.textContent = "Se " + p.name + " hos pp-pingis.se";
+    }
+
+    const media = box.querySelector("[data-level-media]");
+    const ph = box.querySelector("[data-level-ph]");
+    const img = box.querySelector("[data-level-img]");
+    if (!media || !img) return;
+
+    media.href = p.url;
+    const one = IMG + p.imgs[0] + ".webp";
+    img.src = one;
+    img.srcset = one + " 1x, " + IMG + p.imgs[0] + "@2x.webp 2x";
+
+    const missing = () => {
+      media.classList.add("is-error");
+      if (ph) ph.textContent = "Bild saknas för " + p.name;
+    };
+    if (img.complete) {
+      if (img.naturalWidth > 0) media.classList.add("is-loaded"); else missing();
+      return;
+    }
+    img.addEventListener("load", () => media.classList.add("is-loaded"), { once: true });
+    img.addEventListener("error", missing, { once: true });
+  });
+})();
+</script>
+
+</body>
+</html>
